@@ -1,0 +1,5 @@
+# app/config/routing.yml
+
+oc_platform:
+    resource: "@LulhumRepartitionMedecineBundle/Resources/config/routing.yml"
+    prefix:   / 

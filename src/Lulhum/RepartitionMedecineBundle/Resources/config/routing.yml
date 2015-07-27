@@ -1,0 +1,3 @@
+lulhum_repartitionmedecine_home:
+    path:      /repartition
+    defaults:  { _controller: LulhumRepartitionMedecineBundle:Repartition:index } 
