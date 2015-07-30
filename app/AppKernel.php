@@ -17,6 +17,8 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Lulhum\RepartitionMedecineBundle\LulhumRepartitionMedecineBundle(),
+            new FOS\UserBundle\FOSUserBundle(),
+            new Lulhum\UserBundle\LulhumUserBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

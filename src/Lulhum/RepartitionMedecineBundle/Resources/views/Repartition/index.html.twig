@@ -1,0 +1,11 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Advert/index.html.twig #}
+
+{% extends "LulhumRepartitionMedecineBundle::layout.html.twig" %}
+
+{% block title %}
+  Accueil - {{ parent() }}
+{% endblock %}
+
+{% block lulhumrepartitionmedecine_body %}
+  <h2>Bienvenue {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}{{ app.user.fullname }}{% endif %}</h2>
+{% endblock %}

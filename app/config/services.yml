@@ -4,6 +4,15 @@ parameters:
 #    parameter_name: value
 
 services:
-#    service_name:
-#        class: AppBundle\Directory\ClassName
-#        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
+    lulhum_user.form.registration:
+        class: Lulhum\UserBundle\Form\RegistrationType
+        arguments: [%fos_user.model.user.class%, @service_container]
+        tags:
+            - { name: form.type, alias: app_user_registration }
+    lulhum_toolbox:
+        class: Lulhum\RepartitionMedecineBundle\Util\Toolbox
+    lulhum_user.form.profile_edit:
+        class: Lulhum\UserBundle\Form\ProfileType
+        arguments: [%fos_user.model.user.class%, @service_container]
+        tags:
+            - { name: form.type, alias: app_user_profile_edit }

@@ -1,0 +1,4 @@
+services:
+#    lulhum_user.example:
+#        class: Lulhum\UserBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]
