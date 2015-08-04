@@ -1,0 +1,20 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/listusers.html.twig #}
+
+{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+
+{% block title %}
+  {{ user.fullname }} - {{ parent() }}
+{% endblock %}
+
+{% block lulhumrepartitionmedecine_body %}
+	
+	{% include "FOSUserBundle:Profile:show_content.html.twig" %}
+	
+	<p><a href="{{ path('lulhum_user_admin_user_edit', {'id': user.id}) }}">Modifier le profil</a></p>
+	{% if listUserPromotion is null %}
+		<p><a href="{{ path('lulhum_user_admin_userlist') }}">Retour à la liste</a></p>
+	{% else %}
+		<p><a href="{{ path('lulhum_user_admin_userlist_promotion', {'promotion': listUserPromotion }) }}">Retour à la liste</a></p>
+	{% endif %}
+	
+{% endblock %}

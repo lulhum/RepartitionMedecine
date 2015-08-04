@@ -1,4 +1,4 @@
-{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Advert/index.html.twig #}
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Repartition/index.html.twig #}
 
 {% extends "LulhumRepartitionMedecineBundle::layout.html.twig" %}
 
@@ -7,5 +7,5 @@
 {% endblock %}
 
 {% block lulhumrepartitionmedecine_body %}
-  <h2>Bienvenue {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}{{ app.user.fullname }}{% endif %}</h2>
+  <h2>Bienvenue {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}{{ app.user.firstname }} {{ app.user.lastname }}{% endif %}</h2>
 {% endblock %}

@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use FOS\UserBundle\Model\User as BaseUser;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Lulhum\UserBundle\Repository\UserRepository")
  */
 class User extends BaseUser
 {
@@ -43,7 +43,7 @@ class User extends BaseUser
     private $phone;
 
     /**
-     * @ORM\Column(name="promotion", type="string", columnDefinition="enum('PACES', 'L2', 'rL2', 'L3', 'rL3', 'DFASM1', 'rDFASM1', 'DFASM2', 'rDCEM3', 'DCEM4')")
+     * @ORM\Column(name="promotion", type="string", nullable=true, columnDefinition="enum('PACES', 'L2', 'rL2', 'L3', 'rL3', 'DFASM1', 'rDFASM1', 'DFASM2', 'rDCEM3', 'DCEM4')")
      */
     private $promotion;
 
@@ -61,6 +61,57 @@ class User extends BaseUser
      * @ORM\ManyToOne(targetEntity="Lulhum\UserBundle\Entity\User")
      */
     private $proxy;
+
+    /**
+     * @ORM\Column(name="repartition_group", type="string", nullable=true, columnDefinition="enum('A', 'B')")
+     */
+    private $repartitionGroup;
+
+    /**
+     * @ORM\Column(name="repartition_group_requested_at", type="datetime", nullable=true)
+     */
+    private $repartitionGroupRequestedAt;
+
+    /**
+     * @ORM\Column(name="repartition_group_force", type="boolean")
+     */
+    private $repartitionGroupForce = False;
+
+    public function setRepartitionGroup($repartitionGroup)
+    {
+        $this->repartitionGroup = $repartitionGroup;
+        $this->repartitionGroupRequestedAt = new \DateTime();
+        
+        return $this;
+    }
+
+    public function getRepartitionGroup()
+    {
+        return $this->repartitionGroup;
+    }
+
+    public function getRepartitionGroupRequestedAt()
+    {
+        return $this->repartitionGroupRequestedAt;
+    }
+
+    private function setRepartitionGroupRequestedAt($repartitionGroupRequestedAt) {
+        $this->repartitionGroupRequestedAt = null;
+
+        return $this;
+    }
+
+    public function setRepartitionGroupForce($repartitionGroupForce)
+    {
+        $this->repartitionGroupForce = $repartitionGroupForce;
+
+        return $this;
+    }
+
+    public function getRepartitionGroupForce()
+    {
+        return $this->repartitionGroupForce;
+    }
 
     public function setFirstname($firstname)
     {
@@ -127,6 +178,22 @@ class User extends BaseUser
         return $this->promotion;
     }
 
+    public function getTextPromotion()
+    {
+        if(array_key_exists($this->getPromotion(), self::PROMOTIONS)) {
+            
+            return self::PROMOTIONS[$this->getPromotion()];
+        }
+        elseif(is_null($this->getPromotion())) {
+
+            return 'Non défini';
+        }
+        else {
+
+            return $this->getPromotion();
+        }
+    }
+
     public function setPresent($present)
     {
         $this->present = $present;
@@ -186,4 +253,20 @@ class User extends BaseUser
     {
         return $this->getFullname();
     }
+
+    public function resetRepartitionGroup() {
+        $this->setRepartitionGroup(null);
+        $this->setRepartitionGroupForce(null);
+        $this->setRepartitionGroupRequestedAt(null);
+    }
+
+    public function switchRepartitionGroup() {        
+        if($this->repartitionGroup == 'A') {
+            $this->setRepartitionGroup('B');
+        }
+        else {
+            $this->setRepartitionGroup('A');
+        }
+    }
+
 }

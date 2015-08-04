@@ -1,0 +1,15 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/useredit.html.twig #}
+
+{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+
+{% block title %}
+  {{ user.fullname }} - {{ parent() }}
+{% endblock %}
+
+{% block lulhumrepartitionmedecine_body %}
+
+	<h3>Modifier</h3>
+	
+	{{ form(form) }}
+	
+{% endblock %}

@@ -1,3 +1,47 @@
 lulhum_repartitionmedecine_home:
-    path:      /repartition
+    path:      /home
     defaults:  { _controller: LulhumRepartitionMedecineBundle:Repartition:index } 
+
+lulhum_repartitionmedecine_groupes:
+    path: /groupes/{promotion}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:Repartition:groupes }
+    requirements:
+        promotion: DFASM1|DFASM2
+
+lulhum_repartitionmedecine_admin_home:
+    path: /admin/home
+    defaults: { _controller: LulhumRepartitionMedecineBundle:Admin:index }
+
+lulhum_repartitionmedecine_admin_repartitiongroup_home:
+    path: /admin/group/home
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminRepartitionGroup:index }
+
+lulhum_repartitionmedecine_admin_repartitiongroup_stop:
+    path: /admin/group/stop/{promotion}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminRepartitionGroup:stop }
+    requirements:
+        promotion: DFASM1|DFASM2
+
+lulhum_repartitionmedecine_admin_repartitiongroup_start:
+    path: /admin/group/start/{promotion}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminRepartitionGroup:start }
+    requirements:
+        promotion: DFASM1|DFASM2
+
+lulhum_repartitionmedecine_admin_repartition_parameters:
+    path: /admin/repartition/parameters
+    defaults: { _controller: LulhumRepartitionMedecineBundle:Admin:repartitionParameters }
+
+lulhum_repartitionmedecine_admin_repartitiongroup_switchuser:
+    path: /admin/group/switch/user/{id}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminRepartitionGroup:switchUser }
+    requirements:
+        id: \d+
+
+lulhum_repartitionmedecine_admin_stage_categories:
+    path: /admin/stages/stagecategories
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stageCategories }
+
+lulhum_repartitionmedecine_admin_stage_categories_new:
+    path: /admin/stages/stagecategories/new
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:newStageCategory }

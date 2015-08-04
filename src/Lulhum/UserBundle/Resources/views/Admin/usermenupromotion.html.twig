@@ -1,0 +1,9 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/usermenupromotion.html.twig #}
+
+{% for key, promotion in promotions %}
+	<li>
+		<a href="{{ path('lulhum_user_admin_userlist_promotion', {'promotion': key}) }}">
+			{{ promotion }}
+		</a>
+	</li>
+{% endfor %}

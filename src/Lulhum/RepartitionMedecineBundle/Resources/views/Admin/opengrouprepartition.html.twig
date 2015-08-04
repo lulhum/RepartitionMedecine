@@ -1,0 +1,15 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/useradd.html.twig #}
+
+{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+
+{% block title %}
+	Ouvrir la répartition de groupe {{ promotion }} - {{ parent() }}
+{% endblock %}
+
+{% block lulhumrepartitionmedecine_body %}
+
+	<h3>Ouvrir la répartition de groupe {{ promotion }}</h3>
+	
+	{{ form(form) }}
+	
+{% endblock %}

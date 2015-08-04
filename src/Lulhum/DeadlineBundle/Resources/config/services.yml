@@ -1,0 +1,8 @@
+services:
+    lulhum_deadline.deadlines.listener:
+        class: Lulhum\DeadlineBundle\EventListener\DeadlinesListener
+        arguments: [ @doctrine.orm.default_entity_manager ]
+        tags:
+            - { name: kernel.event_listener, event: kernel.request, method: processDeadlines }
+        calls:
+            - [ setContainer,  [@service_container] ]

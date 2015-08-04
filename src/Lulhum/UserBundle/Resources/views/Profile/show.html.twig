@@ -1,0 +1,7 @@
+{% extends "FOSUserBundle::layout.html.twig" %}
+
+{% block fos_user_content %}
+	{% include "FOSUserBundle:Profile:show_content.html.twig" %}
+	<p><a href="{{ path('fos_user_profile_edit') }}">Modifier mon profil</a></p>
+	<p><a href="{{ path('fos_user_change_password') }}">Modifier mon mot de passe</a></p>
+{% endblock fos_user_content %}

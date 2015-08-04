@@ -1,0 +1,55 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Repartition/groupes_content.html.twig #}
+
+<div class="row">
+	{% for key, userListGroup in userListGroups %}
+		{% if key not in ['limit', 'none'] %}
+			<div class="col-md-6">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<span style="margin-right:20px">
+							<a role="button" data-toggle="collapse" href="#repartitiongroup{{ promotion }}{{ key }}" aria-expanded=" {{ expanded ? 'true':'false' }}" aria-controls="repartitiongroup{{ promotion }}{{ key }}">
+								Groupe {{ key }}
+							</a>
+						</span>						
+						<span class="label label-{% if userListGroup|length > userListGroups['limit']  %}danger{% else %}success{% endif %}">	
+							{{ userListGroup|length }}/{{ userListGroups['limit'] }}
+						</span>
+					</div>
+					<div class="collapse{{ expanded ? ' in':'' }}" id="repartitiongroup{{ promotion }}{{ key }}">
+						<table class="table">
+							{% for u in userListGroup %}
+								<tr>
+									{% if admin %}
+										{% if key == 'B' %}
+											<td>
+												<a href="{{ path('lulhum_repartitionmedecine_admin_repartitiongroup_switchuser', {'id': u.id}) }}">
+													<span class="glyphicon glyphicon-arrow-left" ></span>
+												</a>
+											</td>
+										{% endif %}
+										<td>
+											<a href="{{ path('lulhum_user_admin_user', {'id': u.id}) }}">
+												{{ u.fullname }}
+											</a>
+										</td>
+										<td>{{ u.repartitionGroupRequestedAt|date('d/m - H:i') }}</td>
+										<td>{% if u.repartitionGroupForce %}<span class="glyphicon glyphicon-lock" ></span>{% endif %}</td>
+										{% if key == 'A' %}
+											<td>
+												<a href="{{ path('lulhum_repartitionmedecine_admin_repartitiongroup_switchuser', {'id': u.id}) }}">
+													<span class="glyphicon glyphicon-arrow-right" ></span>
+												</a>
+											</td>
+										{% endif %}
+									{% else %}
+										<td>{{ u.fullname }}</td>
+									{% endif %}
+								</tr>
+							{% endfor %}
+						</table>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+	{% endfor %}
+</div>

@@ -1,0 +1,15 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/useradd.html.twig #}
+
+{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+
+{% block title %}
+	Modifier les paramètres - {{ parameterGroup }} - {{ parent() }}
+{% endblock %}
+
+{% block lulhumrepartitionmedecine_body %}
+
+	<h3>Modifier les paramètres - {{ parameterGroup }}</h3>
+	
+	{{ form(form) }}
+	
+{% endblock %}

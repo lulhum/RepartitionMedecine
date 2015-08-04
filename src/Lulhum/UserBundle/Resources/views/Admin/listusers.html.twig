@@ -1,0 +1,108 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/listusers.html.twig #}
+
+{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+
+{% block title %}
+  Utilisateurs - {{ parent() }}
+{% endblock %}
+
+{% block lulhumrepartitionmedecine_body %}
+
+	{% for key, messages in app.session.flashbag.all() %}
+		{% for message in messages %}
+			<div class="alert alert-{{ key }}">
+				{{ message }}
+			</div>
+		{% endfor %}
+	{% endfor %}
+	
+	<h2>
+		Liste des utilisateurs
+		<div class="btn-group" >
+			<button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+				Afficher Colonne <span class="caret" ></span>
+			</button>
+			<ul class="dropdown-menu" >
+				<li>
+					<button type button class="btn btn-link" data-toggle="collapse" data-target=".email" aria-expanded="false" >
+						Adresse mail
+					</button>
+				</li>
+				<li>
+					<button type button class="btn btn-link" data-toggle="collapse" data-target=".cellnumber" aria-expanded="false" >
+						Numéro de Portable
+					</button>
+				</li>
+				<li>
+					<button type button class="btn btn-link" data-toggle="collapse" data-target=".student-id" aria-expanded="false" >
+						Numéro étudiant
+					</button>
+				</li>
+				<li>
+					<button type button class="btn btn-link" data-toggle="collapse" data-target=".repartition-group" aria-expanded="false" >
+						Groupe
+					</button>
+				</li>
+				<li>
+					<button type button class="btn btn-link" data-toggle="collapse" data-target=".repartition-group-force" aria-expanded="false" >
+						Forcer le Groupe
+					</button>
+				</li>
+				<li>
+					<button type button class="btn btn-link" data-toggle="collapse" data-target=".repartition-presence" aria-expanded="false" >
+						Présent pendant la répartition
+					</button>
+				</li>
+				<li>
+					<button type button class="btn btn-link" data-toggle="collapse" data-target=".internet-access" aria-expanded="false" >
+						Accès Internet pendant la répartition
+					</button>
+				</li>
+				<li>
+					<button type button class="btn btn-link" data-toggle="collapse" data-target=".proxy-user" aria-expanded="false" >
+						Procuration
+					</button>
+				</li>
+			</ul>
+		</div>
+	</h2>
+	
+
+				
+	<table class="table table-striped table-hover">
+		<tr>
+			<th>Nom</th>
+			<th>Prénom</th>
+			<th><span class="collapse email">Adresse mail</span></th>
+			<th><span class="collapse cellnumber">Numéro de Portable</span></th>
+			<th><span class="collapse student-id">Numéro étudiant</span></th>
+			<th>Promotion</th>
+			<th><span class="collapse repartition-group">Groupe</span></th>
+			<th><span class="collapse repartition-group-force" >Forcer le Groupe</span></th>
+			<th><span class="collapse repartition-presence" >Présent pendant la répartition</span></th>
+			<th><span class="collapse internet-access" >Accès Internet pendant la répartition</span></th>
+			<th><span class="collapse proxy-user" >Procuration</span></th>
+			<th></th>
+		</tr>
+		{% for u in userList %}
+			<tr>
+				<td><a href="{{ path('lulhum_user_admin_user', {'id': u.id}) }}">{{ u.lastname }}</a></td>
+				<td>{{ u.firstname }}</td>
+				<td><span class="collapse email">{{ u.email }}</span></td>
+				<td><span class="collapse cellnumber">{{ u.phone }}</span></td>
+				<td><span class="collapse student-id">{{ u.studentId }}</span></td>
+				<td>{{ u.textPromotion }}</td>
+				<td><span class="collapse repartition-group">{{ u.repartitionGroup }}</span></td>
+				<td><span class="collapse repartition-group-force" >{% if u.repartitionGroupForce %}Oui{% else %}Non{% endif %}</span></td>
+				<td><span class="collapse repartition-presence">{{ u.present }}</span></td>
+				<td><span class="collapse internet-access">{{ u.internetAccess }}</span></td>
+				<td><span class="collapse proxy-user">{% if u.proxy is null %}Aucun{% else %}{{ u.proxy.fullname }}{% endif %}</span></td>
+				<td>
+					<a href="{{ path('lulhum_user_admin_user_edit', {'id': u.id}) }}">
+						<span class="glyphicon glyphicon-edit" ></span>
+					</a>
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
+{% endblock %}

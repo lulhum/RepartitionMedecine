@@ -5,7 +5,11 @@
 	<p>{{ 'profile.show.email'|trans }}: {{ user.email }}</p>
 	<p>Numéro étudiant: {{ user.studentId }}</p>
 	<p>Numéro de portable: {{ user.phone }}</p>
-	<p>Promotion pour l'année {{ lulhum_toolbox.getCurrentSchoolYear() }}: {{ user.promotion }}</p>
+	<p>Promotion pour l'année {{ lulhum_toolbox.getCurrentSchoolYear() }}: {{ user.textPromotion }}</p>
+	{% if not user.repartitionGroup is null %}
+		<p>Groupe de répartition: {{ user.repartitionGroup }}</p>
+		<p>Forcer le groupe de répartition: {% if user.repartitionGroupForce %}Oui{% else %}Non{% endif %}</p>
+	{% endif %}
 	<p>Présence pendant la période de répartion: {{ user.present }}</p>
 	<p>Accès internet pendant la période de répartition: {{ user.internetAccess }}</p>
 	<p>
@@ -16,6 +20,4 @@
 			{{ user.proxy.fullname }}
 		{% endif %}
 	</p>
-	<p><a href="{{ path('fos_user_profile_edit') }}">Modifier mon profil</a></p>
-	<p><a href="{{ path('fos_user_change_password') }}">Modifier mon mot de passe</a></p>
 </div>

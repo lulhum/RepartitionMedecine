@@ -19,6 +19,7 @@ class AppKernel extends Kernel
             new Lulhum\RepartitionMedecineBundle\LulhumRepartitionMedecineBundle(),
             new FOS\UserBundle\FOSUserBundle(),
             new Lulhum\UserBundle\LulhumUserBundle(),
+            new Lulhum\DeadlineBundle\LulhumDeadlineBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

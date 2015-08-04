@@ -1,0 +1,15 @@
+{# src/Lulhum/UserBundle/Resources/views/Admin/useradd.html.twig #}
+
+{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+
+{% block title %}
+	Nouvel utilisateur - {{ parent() }}
+{% endblock %}
+
+{% block lulhumrepartitionmedecine_body %}
+
+	<h3>Ajouter un nouvel utilisateur</h3>
+	
+	{{ form(form) }}
+	
+{% endblock %}

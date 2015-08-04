@@ -1,0 +1,42 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/repartitiongroupindex.html.twig #}
+
+{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+
+{% block title %}
+	Répartition des Groupes - {{ parent() }}
+{% endblock %}
+
+{% block lulhumrepartitionmedecine_body %}
+	<h2>Groupes de répartition</h2>
+
+	{% set promotions = {'DFASM1': 'DFASM 1', 'DFASM2': 'DFASM 2'} %}
+	{% set expanded = false %}
+	{% set admin = true %}
+
+	{% for promotion, promotionTitle in promotions %}
+
+		<h3>{{ promotionTitle }}</h3>
+
+		<p>
+			Répartition:
+			{% if deadline[promotion].active %}
+				<span class="label label-success" >En Cours</span>				
+				<a href="{{ path('lulhum_repartitionmedecine_admin_repartitiongroup_stop', {'promotion': promotion}) }}" class="btn btn-primary">
+					<span class="badge" >
+						{{ deadline[promotion].date|date('d/m - H:i') }} +{{ deadline[promotion].delay|date('H:i') }}
+						<span class="glyphicon glyphicon-time" ></span>
+					</span>
+					Stop
+				</a>
+			{% else %}
+				<span class="label label-danger" >Terminée</span>
+				<a href="{{ path('lulhum_repartitionmedecine_admin_repartitiongroup_start', {'promotion': promotion}) }}" class="btn btn-primary">Démarrer</a>
+			{% endif %}		
+		</p>
+
+		{% set userListGroups = userListGroupsAll[promotion] %}
+		{% include "LulhumRepartitionMedecineBundle:Repartition:groupes_content.html.twig" %}
+		
+	{% endfor %}
+	
+{% endblock %}
