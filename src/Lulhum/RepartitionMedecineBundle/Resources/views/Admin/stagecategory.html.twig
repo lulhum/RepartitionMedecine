@@ -1,0 +1,81 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/stagecategory.html.twig #}
+
+{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+
+{% block title %}
+  Modèle de stage - {{ parent() }}
+{% endblock %}
+
+{% block lulhumrepartitionmedecine_body %}
+	<h3>Modèle de stage</h3>
+
+	<div class="well" >
+		{{ form(form) }}
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script type="text/javascript">
+	$(document).ready(function() {
+		
+		var $categoryContainer = $('div#lulhum_repartitionmedecine_stagecategory_new_categories');
+		var $locationContainer = $('div#lulhum_repartitionmedecine_stagecategory_new_location');
+
+		var $addCategoryLink = $('<a href="#" id="add_category" class="btn btn-default">Créer une nouvelle catégorie</a>');
+		$categoryContainer.append($addCategoryLink);
+		
+		var $addLocationLink = $('<a href="#" id="add_location" class="btn btn-default" data-activated="false">Créer un nouveau lieu</a>');
+		var $locationPrototype = $locationContainer.html();
+		$locationContainer.html('');
+		$locationContainer.append($addLocationLink);
+		$locationContainer.append($('<div id="add_location_container"></div>'));
+
+		$addCategoryLink.click(function(e) {
+			addCategory($categoryContainer);
+			e.preventDefault();
+			return false;
+		});
+
+		$addLocationLink.click(function(e) {
+			if($addLocationLink.attr('data-activated') === 'false') {
+				$('div#add_location_container').append($locationPrototype);
+				$addLocationLink.attr('data-activated', 'true');
+				$addLocationLink.html('Annuler');
+			}
+			else {
+				$addLocationLink.attr('data-activated', 'false');
+				$('div#add_location_container').html('');
+			}
+			e.preventDefault();
+			return false;
+		});
+		
+		var index = $categoryContainer.find(':input').length;
+		if (index == 0) {
+			{# addCategory($categoryContainer); #}
+		} else {
+			$categoryContainer.children('div').each(function() {
+				addDeleteLink($(this));
+			});
+		}
+
+		function addCategory($categoryContainer) {
+			var $prototype = $($categoryContainer.attr('data-prototype').replace(/__name__label__/g, 'Catégorie n°' + (index+1)).replace(/__name__/g, index));
+			addDeleteLink($prototype);
+			$categoryContainer.append($prototype);
+			index++;
+		}
+
+		function addDeleteLink($prototype) {
+			$deleteLink = $('<a href="#" class="btn btn-danger">Supprimer</a>');
+			$prototype.append($deleteLink);
+			$deleteLink.click(function(e) {
+				$prototype.remove();
+				e.preventDefault();
+				return false;
+			});
+		}
+	});
+	</script>
+{% endblock %}

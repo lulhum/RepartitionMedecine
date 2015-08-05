@@ -4,12 +4,13 @@ namespace Lulhum\RepartitionMedecineBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Lulhum\RepartitionMedecineBundle\Repository\StageCategoryRepository;
 
 /**
  * StageCategory
  *
  * @ORM\Table()
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Lulhum\RepartitionMedecineBundle\Repository\StageCategoryRepository")
  */
 class StageCategory
 {
@@ -32,18 +33,18 @@ class StageCategory
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="text")
+     * @ORM\Column(name="description", type="text", nullable=true)
      */
     private $description;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\Location")
+     * @ORM\ManyToOne(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\Location", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */   
     private $location;
 
     /**
-     * @ORM\ManyToMany(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\Category", inversedBy="stageCategories")
+     * @ORM\ManyToMany(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\Category", inversedBy="stageCategories", cascade={"persist"})
      */ 
     private $categories;
 
@@ -178,6 +179,33 @@ class StageCategory
         $this->categories->removeElement($category);
 
         return $this;
+    }
+
+    public function newCategories() {
+        return new ArrayCollection();
+    }
+
+    public function addNewCategory(Category $category) {
+        return $this->addCategory($category);
+    }
+
+    public function removeNewCategory(Category $category) {
+        return $this->removeCategory($category);        
+    }
+
+    public function newLocation()
+    {
+        return new Location();
+    }
+
+    public function setNewLocation($location)
+    {
+        if(is_null($location->getName())) {
+
+            return $this;
+        }
+        
+        return $this->setLocation($location);
     }
 
 }

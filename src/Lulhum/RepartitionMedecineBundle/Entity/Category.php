@@ -32,7 +32,7 @@ class Category
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="string", length=255)
+     * @ORM\Column(name="description", type="string", length=255, nullable=true)
      */
     private $description;
 
@@ -145,5 +145,15 @@ class Category
         $this->stageCategories->removeElement($stageCategory);
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        if(is_null($this->getDescription())) {
+            
+            return $this->getName();
+        }
+
+        return $this->getDescription();
     }
 }

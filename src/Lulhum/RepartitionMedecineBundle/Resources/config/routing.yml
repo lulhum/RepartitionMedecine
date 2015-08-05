@@ -45,3 +45,13 @@ lulhum_repartitionmedecine_admin_stage_categories:
 lulhum_repartitionmedecine_admin_stage_categories_new:
     path: /admin/stages/stagecategories/new
     defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:newStageCategory }
+
+lulhum_repartitionmedecine_admin_stage_categories_edit:
+    path: /admin/stages/stagecategories/edit/{id}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:editStageCategory }
+    requirements:
+        id: \d+
+
+lulhum_repartitionmedecine_admin_stage_proposals:
+    path: /admin/stages/stageproposals
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stageProposals }
