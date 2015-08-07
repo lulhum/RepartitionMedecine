@@ -49,6 +49,11 @@ class Period
      */
     private $stop;
 
+    public function __construct()
+    {
+        $this->start = new \DateTime();
+        $this->stop = new \DateTime();
+    }
 
     /**
      * Get id
@@ -150,5 +155,10 @@ class Period
     public function getStop()
     {
         return $this->stop;
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
     }
 }

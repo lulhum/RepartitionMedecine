@@ -8,10 +8,19 @@ use Doctrine\ORM\Mapping as ORM;
  * Requirement
  *
  * @ORM\Table()
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Lulhum\RepartitionMedecineBundle\Repository\RequirementRepository")
  */
 class Requirement
 {
+
+    const TYPES = array(
+        'maxPlaces' => 'Nombre de places maximum',
+        'promotion' => 'Promotion',
+        'maxChoicesInPeriod' => 'Maximum de choix pour cette période',
+        'maxStagesInCategory' => 'Maximum de stages dans la catégorie',
+        'maxStagesInStageCategory' => 'Maximum de stages avec ce modèle',
+    );
+    
     /**
      * @var integer
      *
@@ -29,9 +38,9 @@ class Requirement
     private $type;
 
     /**
-     * @var array
+     * @var string
      *
-     * @ORM\Column(name="params", type="array")
+     * @ORM\Column(name="params", type="string", length=255)
      */
     private $params;
 
@@ -43,7 +52,7 @@ class Requirement
     private $strict;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\StageProposal")
+     * @ORM\ManyToOne(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\StageProposal", inversedBy="requirements")
      * @ORM\JoinColumn(nullable=false)
      */     
     private $proposal;
@@ -150,4 +159,28 @@ class Requirement
     {
         return $this->proposal;
     }
+
+    public function __toString()        
+    {
+        return self::TYPES[$this->getType()].': '.$this->getParams();
+    }
+
+    public function isValid(Stage $stage)
+    {
+        if(!$this->strict) {
+            
+            return true;
+        }
+
+        if($this->type === 'maxPlaces') {
+            
+            return $this->proposal->getStages()->count() <= (int)$this->params;
+        }
+
+        if($this->type === 'promotion') {
+
+            return $stage->getUser()->getPromotion() === $this->params;
+        }
+    }            
+        
 }

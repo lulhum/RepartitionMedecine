@@ -1,0 +1,36 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Repartition/stages.html.twig #}
+
+{% extends "LulhumRepartitionMedecineBundle::layout.html.twig" %}
+
+{% block title %}
+  Choix des stages - {{ parent() }}
+{% endblock %}
+
+{% block lulhumrepartitionmedecine_body %}
+	<div class="row" >
+		<h3>Propositions de stage</h3>
+		{% for proposal in proposals %}
+			<div class="panel panel-default" >
+				<div class="panel-heading" >{{ proposal.name }}</div>
+				<div class="panel-body" >
+					Période: {{ proposal.period.description }}<br/>
+					Places:
+					{% set taked = proposal.stages.count %}
+					{% if proposal.hasRequirementType('maxPlaces') %}
+						{% set max = proposal.getRequirementsByType('maxPlaces')[0].params %}
+						<span class="label label-{% if taked > max %}danger{% elseif taked == max %}warning{% else %}success{% endif %}" >
+							{{ taked  }}/{{ max }}
+						</span>
+					{% else %}
+						<span class="label label-success" >{{ taked }}/&infin;</span>
+					{% endif %}
+				</div>
+				<div class="panel-footer" >
+					<a href="{{ path('lulhum_repartitionmedecine_stages_suscribe', {'id': proposal.id}) }}" class="btn btn-primary" >
+						S'inscrire au stage
+					</a>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+{% endblock %}

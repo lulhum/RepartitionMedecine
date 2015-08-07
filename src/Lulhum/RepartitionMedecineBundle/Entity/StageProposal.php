@@ -3,12 +3,13 @@
 namespace Lulhum\RepartitionMedecineBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * StageProposal
  *
  * @ORM\Table()
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Lulhum\RepartitionMedecineBundle\Repository\StageProposalRepository")
  */
 class StageProposal
 {
@@ -22,7 +23,7 @@ class StageProposal
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\Period")
+     * @ORM\ManyToOne(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\Period", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */   
     private $period;
@@ -30,12 +31,12 @@ class StageProposal
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255, unique=true)
+     * @ORM\Column(name="name", type="string", length=255, nullable=true)
      */
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\StageCategory")
+     * @ORM\ManyToOne(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\StageCategory", inversedBy="proposals")
      * @ORM\JoinColumn(nullable=false)
      */  
     private $category;
@@ -59,6 +60,22 @@ class StageProposal
      * @ORM\JoinColumn(nullable=true)
      */  
     private $deadline;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\Requirement", mappedBy="proposal", cascade={"persist"})
+     */  
+    private $requirements;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\Stage", mappedBy="proposal", cascade={"remove"})
+     */  
+    private $stages;
+
+    public function __construct()
+    {
+        $this->requirements = new ArrayCollection();
+        $this->stages = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -113,6 +130,11 @@ class StageProposal
      */
     public function getName()
     {
+        if(is_null($this->name) && !is_null($this->getCategory())) {
+
+            return $this->getCategory()->getName();
+        }
+        
         return $this->name;
     }
 
@@ -207,4 +229,117 @@ class StageProposal
     {
         return $this->deadline;
     }
+
+    public function setRequirements(ArrayCollection $requirements)
+    {
+        foreach($requirements as $requirement) {
+            $requirement->setProposal($this);
+        }
+
+        $this->requirements = $requirements;
+
+        return $this;
+    }
+
+    public function getRequirements()
+    {
+        return $this->requirements;
+    }
+
+    public function addRequirement(Requirement $requirement)
+    {
+        $requirement->setProposal($this);
+        $this->requirements[] = $requirement;
+
+        return $this;
+    }
+
+    public function removeRequirement(Requirement $requirement)
+    {
+        $this->requirements->removeElement($requirement);
+
+        return $this;
+    }
+
+    public function newPeriod()
+    {
+        return new Period();
+    }
+
+    public function setNewPeriod(Period $period)
+    {
+        if(is_null($period->getName())) {
+
+            return $this;
+        }
+        
+        return $this->setPeriod($period);
+    }
+
+    public function __toString() {
+        return $this->getName();
+    }
+
+    public function isValid(Stage $stage)
+    {
+        if($this->stages->exists(function($k, $s) use (&$stage) {
+            return $s->getUser() === $stage->getUser();
+        })) {
+            return false;
+        }
+        foreach($this->requirements as $requirement) {
+            if(!$requirement->isValid($stage)) {
+                
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function setStages(ArrayCollection $stages)
+    {
+        foreach($stages as $stage) {
+            $stage->setProposal($this);
+        }
+
+        $this->stages = $stages;
+
+        return $this;
+    }
+
+    public function getStages()
+    {
+        return $this->stages;
+    }
+
+    public function addStage(Stage $stage)
+    {
+        $stage->setProposal($this);
+        $this->stages[] = $stage;
+
+        return $this;
+    }
+
+    public function removeStage(Stage $stage)
+    {
+        $this->stages->removeElement($stage);
+
+        return $this;
+    }
+
+    public function hasRequirementType($type)
+    {
+        return $this->requirements->exists(function($key, $requirement) use (&$type) {
+            return $requirement->getType() === $type;
+        });
+    }
+
+    public function getRequirementsByType($type)
+    {
+        return $this->requirements->filter(function($requirement) use (&$type) {
+            return $requirement->getType() === $type;
+        });
+    }
+        
 }

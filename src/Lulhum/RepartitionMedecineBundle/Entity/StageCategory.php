@@ -48,9 +48,15 @@ class StageCategory
      */ 
     private $categories;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\StageProposal", mappedBy="category")
+     */
+    private $proposals;
+
     public function __construct()
     {
         $this->categories = new ArrayCollection();
+        $this->proposals = new ArrayCollection();
     }
 
     /**
@@ -206,6 +212,64 @@ class StageCategory
         }
         
         return $this->setLocation($location);
+    }
+
+    public function __toString()
+    {
+        return $this->getName();
+    }
+
+    /**
+     * Set proposals
+     *
+     * @param ArrayCollection $proposals
+     * @return StageCategory
+     */
+    public function setProposals($proposals)
+    {
+        foreach($proposal as $proposals) {
+            $proposal->setCategory($this);
+        }
+        $this->proposals = $proposals;
+
+        return $this;
+    }
+
+    /**
+     * Get proposals
+     *
+     * @return ArrayCollection
+     */
+    public function getProposals()
+    {
+        return $this->proposals;
+    }
+
+    /**
+     * Add proposal
+     *
+     * @param \Lulhum\RepartitionMedecineBundle\Entity\StageProposal $proposal
+     * @return StageCategory
+     */
+    public function addProposal(StageProposal $proposal)
+    {
+        $proposal->setCategory($this);
+        $this->proposals[] = $proposal;
+
+        return $this;
+    }
+
+    /**
+     * Remove proposal
+     *
+     * @param \Lulhum\RepartitionMedecineBundle\Entity\StageProposal $proposal
+     * @return StageCategory
+     */
+    public function removeProposal(StageProposal $proposal)
+    {
+        $this->proposals->removeElement($proposal);
+
+        return $this;
     }
 
 }

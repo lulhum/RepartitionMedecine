@@ -6,6 +6,8 @@ namespace Lulhum\RepartitionMedecineBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Lulhum\RepartitionMedecineBundle\Entity\StageProposal;
+use Lulhum\RepartitionMedecineBundle\Entity\Stage;
 
 class RepartitionController extends Controller
 {
@@ -20,17 +22,48 @@ class RepartitionController extends Controller
 
         $securityContext = $this->container->get('security.context');
         $user = $securityContext->getToken()->getUser();
-        if($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED') && ($user->getPromotion() === 'DFASM1' || $user->getPromotion() === 'DFASM2')) {
+        if($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
+            if($user->getPromotion() === 'DFASM1' || $user->getPromotion() === 'DFASM2') {
+                $listItems[] = array(
+                    'label' => 'Choix de Groupe',
+                    'path' => 'lulhum_repartitionmedecine_groupes',
+                    'options' => array('promotion' => $user->getPromotion())
+                );
+            }
             $listItems[] = array(
-                'label' => 'Choix de Groupe',
-                'path' => 'lulhum_repartitionmedecine_groupes',
-                'options' => array('promotion' => $user->getPromotion())
+                'label' => 'Choix de Stages',
+                'path' => 'lulhum_repartitionmedecine_stages_proposals',
+                'options' => array()
             );
         }
 
         return $this->render('LulhumRepartitionMedecineBundle:Repartition:menu.html.twig', array(
             'listItems' => $listItems
         ));
+    }
+
+    public function stagesProposalsAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+
+        $proposals = $em->getRepository('LulhumRepartitionMedecineBundle:StageProposal')->findByLocked(false);
+
+        return $this->render('LulhumRepartitionMedecineBundle:Repartition:stageproposals.html.twig', array(
+            'proposals' => $proposals,
+        ));
+    }
+
+    public function stagesSuscribeAction(StageProposal $proposal, $id)
+    {
+        $em = $this->getDoctrine()->getManager();        
+        $user = $this->container->get('security.context')->getToken()->getUser();        
+        $stage = new Stage($user, $proposal);
+        if($stage->isValid()) {
+            $em->persist($stage);
+            $em->flush();
+        }
+
+        return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_stages_proposals'));
     }
 
     public function groupesAction(Request $request)

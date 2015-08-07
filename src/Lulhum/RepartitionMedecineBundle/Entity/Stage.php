@@ -3,6 +3,7 @@
 namespace Lulhum\RepartitionMedecineBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Lulhum\UserBundle\Entity\User;
 
 /**
  * Stage
@@ -35,10 +36,16 @@ class Stage
     private $user;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\StageProposal")
+     * @ORM\ManyToOne(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\StageProposal", inversedBy="stages")
      * @ORM\JoinColumn(nullable=false)
      */     
     private $proposal;
+
+    public function __construct(User $user, StageProposal $proposal)
+    {
+        $this->user = $user;
+        $this->proposal = $proposal;
+    }
 
     /**
      * Get id
@@ -117,6 +124,10 @@ class Stage
     public function getProposal()
     {
         return $this->proposal;
+    }
+
+    public function isValid() {
+        return $this->proposal->isValid($this);
     }
 
 }

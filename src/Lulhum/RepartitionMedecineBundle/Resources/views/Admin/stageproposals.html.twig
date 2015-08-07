@@ -1,0 +1,154 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/stagecategories.html.twig #}
+
+{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+
+{% block title %}
+  Propositions de stage - {{ parent() }}
+{% endblock %}
+
+{% block lulhumrepartitionmedecine_body %}
+	<h3>Gestion des propositions de stage</h3>
+
+	<div class="panel panel-default" >
+		<div class="panel-heading" >
+			{{ form_start(filterForm, {'attr': {'class': 'form-inline'}}) }}
+			{{ form_errors(filterForm) }}
+			<div class="form-group" >
+				{{ form_label(filterForm.periods, null, {'label_attr': {'class': 'control-label'}}) }}
+				<br/>
+				{{ form_errors(filterForm.periods) }}
+				{{ form_widget(filterForm.periods, {'attr': {'class': 'form-control', 'multiple': 'true', 'size': '2'}}) }}
+			</div>
+			<div class="form-group" >
+				{{ form_label(filterForm.stageCategories, null, {'label_attr': {'class': 'control-label'}}) }}
+				<br/>
+				{{ form_errors(filterForm.stageCategories) }}
+				{{ form_widget(filterForm.stageCategories, {'attr': {'class': 'form-control', 'multiple': 'true', 'size': '2'}}) }}
+			</div>
+			<div class="form-group" >
+				{{ form_label(filterForm.categoriesOr, null, {'label_attr': {'class': 'control-label'}}) }}
+				<br/>
+				{{ form_errors(filterForm.categoriesOr) }}
+				{{ form_widget(filterForm.categoriesOr, {'attr': {'class': 'form-control', 'multiple': 'true', 'size': '2'}}) }}
+			</div>
+			<div class="form-group" >
+				{{ form_label(filterForm.categoriesAnd, null, {'label_attr': {'class': 'control-label'}}) }}
+				<br/>
+				{{ form_errors(filterForm.categoriesAnd) }}
+				{{ form_widget(filterForm.categoriesAnd, {'attr': {'class': 'form-control', 'multiple': 'true', 'size': '2'}}) }}
+			</div>
+			<br/>
+			<div style="margin-top:10px" >
+				<div class="form-group" >
+					{{ form_widget(filterForm.filtrer, {'attr': {'class': 'btn btn-primary' }}) }}
+				</div>
+				<div class="form-group" >				
+					<a class="btn btn-success" href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals_new') }}">Nouvelle proposition</a>
+				</div>
+			</div>
+			{{ form_rest(filterForm) }}
+			{{ form_end(filterForm) }}	
+		</div>
+		{{ form_start(groupActionForm, {'attr': {'class': 'form-inline'}}) }}
+		<table class="table table-hover" >
+			<tr>
+				<th><input type="checkbox" id="master-check" /></th>
+				<th>Nom</th>
+				<th>Période</th>
+				<th>Modèle</th>
+				<th>Contraintes</th>
+				<th>Active</th>
+				<th>Actions</th>
+			</tr>
+			{% for child in groupActionForm.proposals %}
+				<tr>
+					<td>{{ form_widget(child) }}</td>
+					<td>{{ stageProposals[loop.index0].name }}</td>
+					<td>
+						{% if stageProposals[loop.index0].period.description is not null %}
+							{{ stageProposals[loop.index0].period.description }}
+						{% else %}
+							{{ stageProposals[loop.index0].period }}
+						{% endif %}
+					</td>
+					<td>
+						<a href="{{ path('lulhum_repartitionmedecine_admin_stage_categories_show', {'id': stageProposals[loop.index0].category.id}) }}">
+							{{ stageProposals[loop.index0].category }}
+						</a>
+					</td>
+					<td>
+						<div class="dropdown" >
+							<button class="btn btn-default dropdown-toggle" type="button" id="requirements-for-stage-proposal-{{ loop.index0 }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+								Contraintes
+								<span class="badge">{{ stageProposals[loop.index0].requirements|length }}</span>
+								<span class="caret" ></span>
+							</button>
+							<ul class="dropdown-menu" aria-labelledby="requirements-for-stage-proposal-{{ loop.index0 }}" >
+								{% for requirement in stageProposals[loop.index0].requirements %}
+									<li><a href="">{{ requirement }}</a></li>
+								{% endfor %}
+							</ul>
+						</div>
+					</td>
+					<td>
+						{% if stageProposals[loop.index0].locked %}
+							<span class="label label-danger" >Non</span>
+						{% else %}
+							<span class="label label-success" >Oui</span>
+						{% endif %}
+					</td>
+					<td>
+						<a href="">
+							<span class="glyphicon glyphicon-share" ></span>
+						</a>
+						<a href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals_edit', {'id': stageProposals[loop.index0].getId()}) }}">
+							<span class="glyphicon glyphicon-edit" ></span>
+						</a>
+						<a href="" class="text-danger">
+							<span class="glyphicon glyphicon-remove" ></span>
+						</a>
+					</td>
+				</tr>
+			{% endfor %}			
+		</div>
+		</table>
+		<div class="panel-footer" >
+			<div class="form-group" >
+				{{ form_label(groupActionForm.action, null, {'label_attr': {'class': 'control-label'}}) }}
+				{{ form_errors(groupActionForm.action) }}
+				{{ form_widget(groupActionForm.action, {'attr': {'class': 'form-control'}}) }}
+			</div>
+			<div class="form-group" >
+				{{ form_widget(groupActionForm.appliquer, {'attr': {'class': 'btn btn-primary' }}) }}
+			</div>
+			{{ form_rest(groupActionForm) }}
+		</div>
+		{{ form_end(groupActionForm) }}
+	</div>
+	<div>
+		<span class="text-primary" >
+			<span class="glyphicon glyphicon-share" ></span>
+		</span>
+		Voir les stages correspondants -
+		<span class="text-primary" >
+			<span class="glyphicon glyphicon-edit" ></span>
+		</span>
+		Éditer la proposition -
+		<span class="text-danger" >
+			<span class="glyphicon glyphicon-remove" ></span>
+		</span>
+		Supprimer la proposition
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script type="text/javascript" >
+	$(document).ready(function() {
+		$('input#master-check').change(function() {
+			var $checkboxes = $('form[name="lulhum_repartitionmedecine_stageproposalgroupaction"] :checkbox');
+			$checkboxes.prop('checked', $(this).prop('checked'));
+		});
+	});
+	</script>
+{% endblock %}

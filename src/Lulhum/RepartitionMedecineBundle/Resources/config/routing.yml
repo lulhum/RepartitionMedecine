@@ -8,6 +8,14 @@ lulhum_repartitionmedecine_groupes:
     requirements:
         promotion: DFASM1|DFASM2
 
+lulhum_repartitionmedecine_stages_proposals:
+    path: /stages/proposals
+    defaults: { _controller: LulhumRepartitionMedecineBundle:Repartition:stagesProposals }
+
+lulhum_repartitionmedecine_stages_suscribe:
+    path: /stages/suscribe/{id}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:Repartition:stagesSuscribe }
+
 lulhum_repartitionmedecine_admin_home:
     path: /admin/home
     defaults: { _controller: LulhumRepartitionMedecineBundle:Admin:index }
@@ -52,6 +60,28 @@ lulhum_repartitionmedecine_admin_stage_categories_edit:
     requirements:
         id: \d+
 
+lulhum_repartitionmedecine_admin_stage_categories_show:
+    path: /admin/stages/stagecategories/show/{id}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stageCategory }
+    requirements:
+        id: \d+
+
 lulhum_repartitionmedecine_admin_stage_proposals:
     path: /admin/stages/stageproposals
     defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stageProposals }
+
+lulhum_repartitionmedecine_admin_stage_proposals_incategory:
+    path: /admin/stages/stageproposals/category/{id}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stageProposalsInCategory }
+    requirements:
+        id: \d+
+
+lulhum_repartitionmedecine_admin_stage_proposals_new:
+    path: /admin/stages/stageproposals/new
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:newStageProposal }
+
+lulhum_repartitionmedecine_admin_stage_proposals_edit:
+    path: /admin/stages/stageproposals/edit/{id}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:editStageProposal }
+    requirements:
+        id: \d+

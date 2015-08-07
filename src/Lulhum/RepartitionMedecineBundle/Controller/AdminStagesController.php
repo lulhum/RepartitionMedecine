@@ -5,10 +5,17 @@ namespace Lulhum\RepartitionMedecineBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Lulhum\RepartitionMedecineBundle\Form\StageCategoryType;
 use Lulhum\RepartitionMedecineBundle\Entity\StageCategory;
 use Lulhum\RepartitionMedecineBundle\Form\StageCategoryFilterType;
 use Lulhum\RepartitionMedecineBundle\Entity\StageCategoryFilter;
+use Lulhum\RepartitionMedecineBundle\Form\StageProposalType;
+use Lulhum\RepartitionMedecineBundle\Entity\StageProposal;
+use Lulhum\RepartitionMedecineBundle\Form\StageProposalFilterType;
+use Lulhum\RepartitionMedecineBundle\Entity\StageProposalFilter;
+use Lulhum\RepartitionMedecineBundle\Form\StageProposalGroupActionType;
+use Lulhum\RepartitionMedecineBundle\Entity\StageProposalGroupAction;
 
 class AdminStagesController extends Controller
 {
@@ -66,6 +73,118 @@ class AdminStagesController extends Controller
         }
 
         return $this->render('LulhumRepartitionMedecineBundle:Admin:stagecategory.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
+
+    public function stageCategoryAction(StageCategory $stageCategory, $id)
+    {
+        return $this->render('LulhumRepartitionMedecineBundle:Admin:viewstagecategory.html.twig', array(
+            'stageCategory' => $stageCategory,
+        ));
+    }
+
+    public function stageProposalsInCategoryAction(StageCategory $stageCategory, $id)
+    {
+        $stageProposalFilter = new StageProposalFilter();
+        $stageProposalFilter->addStageCategory($stageCategory);
+        $session = new Session();
+        $session->set('adminStageProposalsFilter', $stageProposalFilter);
+
+        return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals'));
+    }
+
+    public function stageProposalsAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        
+        $session = new Session();
+        if($session->has('adminStageProposalsFilter') && $session->get('adminStageProposalsFilter') instanceof StageProposalFilter) {
+            $stageProposalFilter = $session->get('adminStageProposalsFilter');
+            // Merge all the filter entities into the entity manager
+            foreach($stageProposalFilter->getCollections() as $key => $collection) {
+                call_user_func(array($stageProposalFilter, 'set'.ucfirst($key)), call_user_func(array($stageProposalFilter, 'get'.ucfirst($key)))->map(function($item) use (&$em) {
+                    return $em->merge($item);
+                }));
+            }
+        }
+        else {
+            $stageProposalFilter = new StageProposalFilter();
+        }
+                                 
+        $filterFormType = new StageProposalFilterType();
+        $filterForm = $this->createForm($filterFormType, $stageProposalFilter);
+        if($request->getMethod() === 'POST' && $request->request->has($filterFormType->getName())) {
+                $filterForm->handleRequest($request);
+                $session->set('adminStageProposalsFilter', $stageProposalFilter);
+        }
+
+        $groupAction = new StageProposalGroupAction();
+        $groupActionFormType = new StageProposalGroupActionType(array('filter' => $stageProposalFilter));
+        $groupActionForm = $this->createForm($groupActionFormType, $groupAction);        
+
+        if($request->getMethod() === 'POST' && $request->request->has($groupActionFormType->getName())) {                
+            $groupActionForm->handleRequest($request);    
+            if($groupActionForm->isValid()) {
+                $groupAction->executeAction();
+                foreach($groupAction->getProposals() as $proposal) {
+                    $em->persist($proposal);
+                }
+                $em->flush();
+            }
+        }
+
+        $stageProposals = $em->getRepository('LulhumRepartitionMedecineBundle:StageProposal')->filteredFind($stageProposalFilter);
+
+        return $this->render('LulhumRepartitionMedecineBundle:Admin:stageproposals.html.twig', array(
+            'stageProposals' => $stageProposals,
+            'filterForm' => $filterForm->createView(),
+            'groupActionForm' => $groupActionForm->createView(),
+        ));
+    }
+
+    public function newStageProposalAction(Request $request)
+    {
+        $stageProposal = new StageProposal();
+        $form = $this->createForm(new StageProposalType(), $stageProposal);
+
+        $form->handleRequest($request);
+
+        if($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($stageProposal);
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals'));
+        }
+
+        return $this->render('LulhumRepartitionMedecineBundle:Admin:stageproposal.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
+
+    public function editStageProposalAction(Request $request, StageProposal $stageProposal, $id)
+    {
+        $form = $this->createForm(new StageProposalType(), $stageProposal);
+
+        $form->handleRequest($request);
+
+        if($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($stageProposal);
+            
+            foreach($em->getRepository('LulhumRepartitionMedecineBundle:Requirement')->findByProposal($stageProposal) as $requirement) {
+                if(!$stageProposal->getRequirements()->contains($requirement)) {
+                    $em->remove($requirement);
+                }
+            }
+
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals'));
+        }
+
+        return $this->render('LulhumRepartitionMedecineBundle:Admin:stageproposal.html.twig', array(
             'form' => $form->createView(),
         ));
     }
