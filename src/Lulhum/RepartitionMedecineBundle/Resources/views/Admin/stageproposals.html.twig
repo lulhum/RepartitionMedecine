@@ -1,9 +1,9 @@
-{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/stagecategories.html.twig #}
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/stageproposals.html.twig #}
 
 {% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
 
 {% block title %}
-  Propositions de stage - {{ parent() }}
+  Mes Stages - {{ parent() }}
 {% endblock %}
 
 {% block lulhumrepartitionmedecine_body %}
@@ -85,7 +85,17 @@
 							</button>
 							<ul class="dropdown-menu" aria-labelledby="requirements-for-stage-proposal-{{ loop.index0 }}" >
 								{% for requirement in stageProposals[loop.index0].requirements %}
-									<li><a href="">{{ requirement }}</a></li>
+									<li><a href="">
+										{% if requirement.type == 'promotion' %}
+											{{ requirement.textType }}: {{ promotions[requirement.params] }}
+										{% elseif requirement.type in ['maxStagesInCategory', 'maxChoicesInCategory'] %}
+											{{ requirement.textType }}
+											"{{ categories[requirement.paramsArray[0]] }}":
+											{{ requirement.paramsArray[1] }}
+										{% else %}
+											{{ requirement }}
+										{% endif %}
+									</a></li>
 								{% endfor %}
 							</ul>
 						</div>

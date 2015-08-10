@@ -5,6 +5,7 @@ namespace Lulhum\RepartitionMedecineBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Lulhum\RepartitionMedecineBundle\Entity\StageProposal;
 use Lulhum\RepartitionMedecineBundle\Entity\Stage;
@@ -25,13 +26,13 @@ class RepartitionController extends Controller
         if($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             if($user->getPromotion() === 'DFASM1' || $user->getPromotion() === 'DFASM2') {
                 $listItems[] = array(
-                    'label' => 'Choix de Groupe',
+                    'label' => 'Groupe',
                     'path' => 'lulhum_repartitionmedecine_groupes',
                     'options' => array('promotion' => $user->getPromotion())
                 );
             }
             $listItems[] = array(
-                'label' => 'Choix de Stages',
+                'label' => 'Stages',
                 'path' => 'lulhum_repartitionmedecine_stages_proposals',
                 'options' => array()
             );
@@ -45,25 +46,75 @@ class RepartitionController extends Controller
     public function stagesProposalsAction()
     {
         $em = $this->getDoctrine()->getManager();
+        $user = $this->container->get('security.context')->getToken()->getUser();
 
-        $proposals = $em->getRepository('LulhumRepartitionMedecineBundle:StageProposal')->findByLocked(false);
+        $proposals = $em->getRepository('LulhumRepartitionMedecineBundle:StageProposal')->findAllValidForUser($user);
 
-        return $this->render('LulhumRepartitionMedecineBundle:Repartition:stageproposals.html.twig', array(
+        return $this->render('LulhumRepartitionMedecineBundle:Repartition:stages.html.twig', array(
             'proposals' => $proposals,
+            'type' => 'proposals',
         ));
     }
 
-    public function stagesSuscribeAction(StageProposal $proposal, $id)
+    public function stagesPendingAction()
     {
+        $em = $this->getDoctrine()->getManager();
+        $user = $this->container->get('security.context')->getToken()->getUser();
+
+        $proposals = array_map(function($stage) {
+            return $stage->getProposal();
+        }, $em->getRepository('LulhumRepartitionMedecineBundle:Stage')->findByUser($user));
+
+        return $this->render('LulhumRepartitionMedecineBundle:Repartition:stages.html.twig', array(
+            'proposals' => $proposals,
+            'type' => 'pending',
+        ));
+    }
+
+    public function stagesSuscribeAction(Request $request, StageProposal $proposal, $id)
+    {
+        $session = $request->getSession();
         $em = $this->getDoctrine()->getManager();        
         $user = $this->container->get('security.context')->getToken()->getUser();        
         $stage = new Stage($user, $proposal);
         if($stage->isValid()) {
             $em->persist($stage);
             $em->flush();
+            $session->getFlashBag()->add('success', 'Inscription au stage "'.$proposal->getName().'" effectuée.');
+        }
+        else {
+            $session->getFlashBag()->add('danger', 'Vous n\'avez pas pu être inscrit au stage "'.$proposal->getName().'".');
         }
 
         return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_stages_proposals'));
+    }
+
+    public function stagesUnsuscribeAction(Request $request, StageProposal $proposal, $id)
+    {
+        $session = $request->getSession();
+        if(!$proposal->getLocked()) {
+            $user = $this->container->get('security.context')->getToken()->getUser();
+            $stages = $proposal->getStages()->filter(function($stage) use (&$user) {
+                return $user == $stage->getUser();
+            });
+            if($stages->count() == 0) {
+                $session->getFlashBag()->add('danger', 'Vous ne pouvez pas vous désinscrire d\'un stage auquel vous n\'êtes pas inscrit.');
+            }
+            elseif($stages->first()->getLocked()) {
+                $session->getFlashBag()->add('danger', 'Votre inscription au stage "'.$proposal->getName().'" n\'a pas pu être annulée.');
+            }
+            else {
+                $em = $this->getDoctrine()->getManager();            
+                $em->remove($stages->first());
+                $em->flush();
+                $session->getFlashBag()->add('success', 'Votre inscription au stage "'.$proposal->getName().'" a bien été annulée.');
+            }
+        }
+        else {
+            $session->getFlashBag()->add('danger', 'Votre inscription au stage "'.$proposal->getName().'" n\'a pas pu être annulée.');
+        }
+
+        return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_stages_pending'));
     }
 
     public function groupesAction(Request $request)

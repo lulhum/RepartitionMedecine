@@ -1,0 +1,47 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/stageproposaladdconstraint.html.twig #}
+
+{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+
+{% block title %}
+  Propositions de stage - Ajout de contrainte - {{ parent() }}
+{% endblock %}
+
+{% block lulhumrepartitionmedecine_body %}
+	<h3>Propositions de stage - Ajout de contrainte</h3>
+
+	<div class="panel panel-default" >
+		<div class="panel-heading" >
+			Ajouter des contraintes pour les propositions de stages:
+		</div>
+		<div class="panel-body" >
+			<ul class="list-group" >
+				{% for proposal in groupAction.proposals %}
+					<li class="list-group-item" >
+						{{ proposal.name }}
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+		<div class="panel-footer" >
+			{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+			<div id="lulhum_repartitionmedecine_requirements" data-prototype="
+											  {% filter escape %}
+											  {{ include('LulhumRepartitionMedecineBundle:Admin:requirement_prototype.html.twig', {'form': form.requirements.vars.prototype}) }}
+											  {% endfilter %}">
+			</div>
+			{{ form_widget(form.valider, {'attr': {'class': 'btn btn-primary'}}) }}
+			{{ form_rest(form) }}
+			{{ form_end(form) }}
+		</div>
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script type="text/javascript" src="{{ asset('bundles/lulhumrepartitionmedecine/js/requirement.js') }}"></script>
+	<script type="text/javascript">
+	$(document).ready(function() {
+		manageRequirements($('div#lulhum_repartitionmedecine_requirements'), '{{ path('lulhum_repartitionmedecine_admin_requirements_getform') }}', '', 1);
+	});
+	</script>
+{% endblock %}

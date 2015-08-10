@@ -16,9 +16,10 @@ class Requirement
     const TYPES = array(
         'maxPlaces' => 'Nombre de places maximum',
         'promotion' => 'Promotion',
-        'maxChoicesInPeriod' => 'Maximum de choix pour cette période',
+        //'maxChoicesInPeriod' => 'Maximum de choix pour cette période',
         'maxStagesInCategory' => 'Maximum de stages dans la catégorie',
-        'maxStagesInStageCategory' => 'Maximum de stages avec ce modèle',
+        //'maxStagesInStageCategory' => 'Maximum de stages avec ce modèle',
+        'maxChoicesInCategory' => 'Maximum de choix dans la catégorie',
     );
     
     /**
@@ -174,13 +175,35 @@ class Requirement
 
         if($this->type === 'maxPlaces') {
             
-            return $this->proposal->getStages()->count() <= (int)$this->params;
+            return $this->proposal->getStages()->count() < (int)$this->params;
         }
 
         if($this->type === 'promotion') {
 
             return $stage->getUser()->getPromotion() === $this->params;
         }
-    }            
+
+        if($this->type === 'maxChoicesInCategory') {
+
+            return $stage->getUser()->countStagesInCategory((int)$this->getParamsArray()[0], false) < (int)$this->getParamsArray()[1];
+        }
+
+        if($this->type === 'maxStagesInCategory') {
+
+            return $stage->getUser()->countStagesInCategory((int)$this->getParamsArray()[0], true) < (int)$this->getParamsArray()[1];
+        }
+
+        return true;
+    }
+
+    public function getTextType()
+    {
+        return self::TYPES[$this->getType()];
+    }
+
+    public function getParamsArray()
+    {        
+        return preg_split("/[,{}]/", $this->getParams(), -1, PREG_SPLIT_NO_EMPTY);
+    }
         
 }

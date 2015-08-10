@@ -30,7 +30,7 @@ class Stage
     private $locked=false;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Lulhum\UserBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="Lulhum\UserBundle\Entity\User", inversedBy="stages")
      * @ORM\JoinColumn(nullable=false)
      */     
     private $user;

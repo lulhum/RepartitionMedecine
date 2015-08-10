@@ -36,7 +36,7 @@ class StageProposal
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\StageCategory", inversedBy="proposals")
+     * @ORM\ManyToOne(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\StageCategory", inversedBy="proposals", cascade="merge")
      * @ORM\JoinColumn(nullable=false)
      */  
     private $category;

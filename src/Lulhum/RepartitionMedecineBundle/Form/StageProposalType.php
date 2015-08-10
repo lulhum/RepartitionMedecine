@@ -19,7 +19,7 @@ class StageProposalType extends AbstractType
     {
         $builder
             ->add('name', 'text', array(
-                'label' => 'Nom de la propositon',
+                'label' => 'Nom',
                 'required' => false,
             ))
             ->add('description', 'text', array(
@@ -39,7 +39,7 @@ class StageProposalType extends AbstractType
                 'required' => false,
             ))
             ->add('requirements', 'collection', array(
-                'label' => 'Contraintes',
+                'label' => false,
                 'type' => new RequirementType(),
                 'allow_add' => true,
                 'allow_delete' => true,

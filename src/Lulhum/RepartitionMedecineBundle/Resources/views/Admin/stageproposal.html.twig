@@ -3,40 +3,150 @@
 {% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
 
 {% block title %}
-  Modèle de stage - {{ parent() }}
+  Proposition de stage - {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.0/css/bootstrap-datepicker.min.css" />	
 {% endblock %}
 
 {% block lulhumrepartitionmedecine_body %}
 	<h3>Proposition de stage</h3>
 
 	<div class="well" >
-		{{ form(form) }}
+		{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+		<div class="form-group" >
+			{{ form_label(form.name, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+			{{ form_errors(form.name) }}
+			<div class="col-md-10" >
+				{{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+			</div>
+		</div>
+		<div class="form-group" >
+			{{ form_label(form.description, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+			{{ form_errors(form.description) }}
+			<div class="col-md-10" >
+				{{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+			</div>
+		</div>
+		<div class="form-group" >
+			{{ form_label(form.category, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+			{{ form_errors(form.category) }}
+			<div class="col-md-10" >
+				{{ form_widget(form.category, {'attr': {'class': 'form-control'}}) }}
+			</div>
+		</div>
+		<div class="form-group" >
+			{{ form_label(form.period, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+			{{ form_errors(form.period) }}
+			<div class="col-md-10" >
+				{{ form_widget(form.period, {'attr': {'class': 'form-control'}}) }}
+			</div>
+		</div>
+		<div id="lulhum_repartitionmedecine_stageproposal_new_period" class="panel panel-default" >
+			<div class="panel-heading" >
+				<a href="#" id="add_period" class="btn btn-success" data-activated="false">Créer une nouvelle période</a>
+			</div>
+			<div class="panel-body" >
+				<div class="form-group" >
+					{{ form_label(form.new_period.name, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+					{{ form_errors(form.new_period.name) }}
+					<div class="col-md-10" >
+						{{ form_widget(form.new_period.name, {'attr': {'class': 'form-control'}}) }}
+					</div>
+				</div>
+				<div class="form-group" >
+					{{ form_label(form.new_period.description, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+					{{ form_errors(form.new_period.description) }}
+					<div class="col-md-10" >
+						{{ form_widget(form.new_period.description, {'attr': {'class': 'form-control'}}) }}
+					</div>
+				</div>
+				<div class="form-group" >
+					{{ form_label(form.new_period.start, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+					{{ form_errors(form.new_period.start) }}
+					<div class="col-md-10" >
+						{{ form_widget(form.new_period.start, {'attr': {'class': 'form-control'}}) }}
+					</div>
+				</div>
+				<div class="form-group" >
+					{{ form_label(form.new_period.stop, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+					{{ form_errors(form.new_period.stop) }}
+					<div class="col-md-10" >
+						{{ form_widget(form.new_period.stop, {'attr': {'class': 'form-control'}}) }}
+					</div>
+				</div>
+			</div>
+		</div>
+		<div id="lulhum_repartitionmedecine_stageproposal_requirements" data-prototype="
+												{% filter escape %}
+												{{ include('LulhumRepartitionMedecineBundle:Admin:requirement_prototype.html.twig', {'form': form.requirements.vars.prototype}) }}
+												{% endfilter %}">
+			{% for child in form.requirements %}
+				<div class="panel panel-default">
+					<div class="panel-heading" >
+						<label class="required"></label>
+					</div>
+					<div class="panel-body" >
+						<div class="form-group" >
+							{{ form_label(child.type, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+							{{ form_errors(child.type) }}
+							<div class="col-md-10" >
+								{{ form_widget(child.type) }}
+							</div>
+						</div>
+						<div class="form-group" >
+							{{ form_label(child.params, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+							{{ form_errors(child.params) }}
+							<div class="col-md-10" >
+								{{ form_widget(child.params) }}
+							</div>
+						</div>
+						<div class="form-group" >
+							{{ form_label(child.strict, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+							{{ form_errors(child.strict) }}
+							<div class="col-md-10" >
+								{{ form_widget(child.strict, {'attr': {'style': 'width:0'}}) }}
+							</div>
+						</div>
+					</div>
+					<div class="panel-footer" ></div>
+				</div>
+			{% endfor %}
+			{{ form_widget(form.valider, {'attr': {'class': 'btn btn-primary'}}) }}
+		</div>
+		{{ form_rest(form) }}
+		{{ form_end(form) }}
 	</div>
 {% endblock %}
 
 {% block javascripts %}
 	{{ parent() }}
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.0/js/bootstrap-datepicker.min.js"></script> 
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.0/locales/bootstrap-datepicker.fr.min.js"></script>
+	<script type="text/javascript" src="{{ asset('bundles/lulhumrepartitionmedecine/js/requirement.js') }}"></script>
 	<script type="text/javascript">
-	$(document).ready(function() {
-
+	$(document).ready(function() {		
+		
 		var $periodContainer = $('div#lulhum_repartitionmedecine_stageproposal_new_period');
 		
-		var $addPeriodLink = $('<a href="#" id="add_period" class="btn btn-success" data-activated="false">Créer une nouvelle période</a>');
-		var $periodPrototype = $periodContainer.html();
-		$periodContainer.html('');
-		$periodContainer.append($addPeriodLink);
-		$periodContainer.append($('<div id="add_period_container"></div>'));
+		var $addPeriodLink = $periodContainer.children('div.panel-heading').children('a');
+		var $periodPrototype = $periodContainer.children('div.panel-body').html();
+		$periodContainer.children('div.panel-body').html('');
 
 		$addPeriodLink.click(function(e) {
 			if($addPeriodLink.attr('data-activated') === 'false') {
-				$('div#add_period_container').append($periodPrototype);
+				$periodContainer.children('div.panel-body').append($periodPrototype);
 				$addPeriodLink.attr('data-activated', 'true');
 				$addPeriodLink.attr('class', 'btn btn-danger');
 				$addPeriodLink.html('Annuler');
+				$('#lulhum_repartitionmedecine_stageproposal_new_period_start').datepicker({format: 'dd/mm/yyyy', weekStart: 1, language: "fr"});
+				$('#lulhum_repartitionmedecine_stageproposal_new_period_stop').datepicker({format: 'dd/mm/yyyy', weekStart: 1, language: "fr"});
 			}
 			else {
 				$addPeriodLink.attr('data-activated', 'false');
-				$('div#add_period_container').html('');
+				$periodContainer.children('div.panel-body').html('');
 				$addPeriodLink.attr('class', 'btn btn-success');
 				$addPeriodLink.html('Créer une nouvelle période');
 			}
@@ -44,42 +154,8 @@
 			return false;
 		});
 
-		var $requirementsContainer = $('div#lulhum_repartitionmedecine_stageproposal_requirements');
+		manageRequirements($('#lulhum_repartitionmedecine_stageproposal_requirements'), '{{ path('lulhum_repartitionmedecine_admin_requirements_getform') }}', {{ proposal.id }}, 0);
 
-		var $addRequirementLink = $('<a href="#" id="add_requirement" class="btn btn-success">Ajouter une contrainte</a>');
-		$requirementsContainer.append($addRequirementLink);
-
-		$addRequirementLink.click(function(e) {
-			addRequirement($requirementsContainer);
-			e.preventDefault();
-			return false;
-		});
-
-		var index = 0;$requirementsContainer.find(':input').length;
-
-		$requirementsContainer.children('div').each(function() {
-			addDeleteLink($(this));
-			$(this).children('label').html('Contrainte n°' + (index+1));
-			index++;
-		});
-
-		function addRequirement($container) {
-			var $prototype = $($container.attr('data-prototype').replace(/__name__label__/g, 'Contrainte n°' + (index+1))
-				.replace(/__name__/g, index));
-			addDeleteLink($prototype);
-			$container.append($prototype);
-			index++;
-		}
-
-		function addDeleteLink($prototype) {
-			$deleteLink = $('<a href="#" class="btn btn-danger">Supprimer</a>');
-			$prototype.append($deleteLink);
-			$deleteLink.click(function(e) {
-				$prototype.remove();
-				e.preventDefault();
-				return false;
-			});
-		} 
 	});
 	</script>
 {% endblock %}

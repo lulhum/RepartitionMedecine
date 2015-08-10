@@ -5,6 +5,8 @@ namespace Lulhum\RepartitionMedecineBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Lulhum\RepartitionMedecineBundle\Entity\StageProposalFilter;
+use Lulhum\RepartitionMedecineBundle\Entity\Stage;
+use Lulhum\UserBundle\Entity\User;
 
 class StageProposalRepository extends EntityRepository
 {
@@ -41,5 +43,12 @@ class StageProposalRepository extends EntityRepository
     public function filteredFind(StageProposalFilter $filter)
     {
         return $this->filteredFindQB($filter)->getQuery()->getResult();
+    }
+
+    public function findAllValidForUser(User $user)
+    {
+        return array_filter($this->findByLocked(false), function($proposal) use (&$user) {
+            return $proposal->isValid(new Stage($user, $proposal));
+        });
     }
 }

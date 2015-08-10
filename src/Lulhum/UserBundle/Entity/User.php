@@ -4,6 +4,7 @@
 namespace Lulhum\UserBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Model\User as BaseUser;
 
 /**
@@ -76,6 +77,16 @@ class User extends BaseUser
      * @ORM\Column(name="repartition_group_force", type="boolean")
      */
     private $repartitionGroupForce = False;
+
+    /**
+     * @ORM\OneToMany(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\Stage", mappedBy="user", cascade="remove")
+     */
+    private $stages;
+
+    public function __construct()
+    {
+        $this->stages = new ArrayCollection();
+    }
 
     public function setRepartitionGroup($repartitionGroup)
     {
@@ -267,6 +278,25 @@ class User extends BaseUser
         else {
             $this->setRepartitionGroup('A');
         }
+    }
+
+    public function getStages()
+    {
+        return $this->stages;
+    }
+
+    public function setStages(ArrayCollection $stages)
+    {
+        $this->stages = $stages;
+    }
+
+    public function countStagesInCategory($categoryId, $locked)
+    {
+        return $this->stages->filter(function($stage) use (&$categoryId, &$locked) {
+            return $stage->getLocked() === $locked && $stage->getProposal()->getCategory()->getCategories()->exists(function($key, $category) use (&$categoryId) {
+                return $category->getId() === (int)$categoryId;
+            });
+        })->count();
     }
 
 }

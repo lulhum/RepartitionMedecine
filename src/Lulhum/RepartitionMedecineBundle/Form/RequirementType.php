@@ -21,11 +21,19 @@ class RequirementType extends AbstractType
             ->add('type', 'choice', array(
                 'label' => 'Type',
                 'choices' => Requirement::TYPES,
+                'attr' => array('class' => 'form-control'),
+                'label_attr' => array('class' => 'label-control'),
             ))
-            ->add('params', 'text', array('label' => 'Paramètre'))
+            ->add('params', 'text', array(
+                'label' => 'Paramètre',
+                'attr' => array('class' => 'form-control'),
+                'label_attr' => array('class' => 'label-control'),
+            ))
             ->add('strict', 'checkbox', array(
                 'label' => 'Stricte',
                 'required' => false,
+                'attr' => array('class' => 'form-control'),
+                'label_attr' => array('class' => 'label-control'),
             ));
     }
     

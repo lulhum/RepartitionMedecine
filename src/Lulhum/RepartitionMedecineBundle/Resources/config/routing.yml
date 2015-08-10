@@ -15,6 +15,18 @@ lulhum_repartitionmedecine_stages_proposals:
 lulhum_repartitionmedecine_stages_suscribe:
     path: /stages/suscribe/{id}
     defaults: { _controller: LulhumRepartitionMedecineBundle:Repartition:stagesSuscribe }
+    requirements:
+        id: \d+
+
+lulhum_repartitionmedecine_stages_unsuscribe:
+    path: /stages/unsuscribe/{id}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:Repartition:stagesUnsuscribe }
+    requirements:
+        id: \d+
+
+lulhum_repartitionmedecine_stages_pending:
+    path: /stages/pending
+    defaults: { _controller: LulhumRepartitionMedecineBundle:Repartition:stagesPending }
 
 lulhum_repartitionmedecine_admin_home:
     path: /admin/home
@@ -79,6 +91,14 @@ lulhum_repartitionmedecine_admin_stage_proposals_incategory:
 lulhum_repartitionmedecine_admin_stage_proposals_new:
     path: /admin/stages/stageproposals/new
     defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:newStageProposal }
+
+lulhum_repartitionmedecine_admin_stage_proposals_group_add_constraint:
+    path: /admin/stages/stageproposals/addconstraint
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stageProposalAddConstraint }
+
+lulhum_repartitionmedecine_admin_requirements_getform:
+    path: /admin/requirements/getform
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:getRequirementForm }
 
 lulhum_repartitionmedecine_admin_stage_proposals_edit:
     path: /admin/stages/stageproposals/edit/{id}

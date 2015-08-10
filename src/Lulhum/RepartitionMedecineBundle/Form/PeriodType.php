@@ -22,8 +22,18 @@ class PeriodType extends AbstractType
                 'label' => 'Description',
                 'required' => false,
             ))
-            ->add('start', 'date', array('label' => 'Date de début'))
-            ->add('stop', 'date', array('label' => 'Date de fin'));
+            ->add('start', 'date', array(
+                'label' => 'Date de début',
+                'widget' => 'single_text',
+                'input' => 'datetime',
+                'format' => 'dd/MM/yyyy',
+            ))
+            ->add('stop', 'date', array(
+                'label' => 'Date de fin',
+                'widget' => 'single_text',
+                'input' => 'datetime',
+                'format' => 'dd/MM/yyyy',
+            ));
     }
     
     public function setDefaultOptions(OptionsResolverInterface $resolver)

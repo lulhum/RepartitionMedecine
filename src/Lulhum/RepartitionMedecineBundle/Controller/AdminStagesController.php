@@ -16,6 +16,9 @@ use Lulhum\RepartitionMedecineBundle\Form\StageProposalFilterType;
 use Lulhum\RepartitionMedecineBundle\Entity\StageProposalFilter;
 use Lulhum\RepartitionMedecineBundle\Form\StageProposalGroupActionType;
 use Lulhum\RepartitionMedecineBundle\Entity\StageProposalGroupAction;
+use Lulhum\RepartitionMedecineBundle\Form\RequirementType;
+use Lulhum\RepartitionMedecineBundle\Form\RequirementParamsType;
+use Lulhum\UserBundle\Entity\User;
 
 class AdminStagesController extends Controller
 {
@@ -126,6 +129,11 @@ class AdminStagesController extends Controller
         if($request->getMethod() === 'POST' && $request->request->has($groupActionFormType->getName())) {                
             $groupActionForm->handleRequest($request);    
             if($groupActionForm->isValid()) {
+                if($groupAction->getAction() === 'addConstraint') {
+                    $session->set('adminStageProposalsGroupAction', $groupAction);
+
+                    return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals_group_add_constraint'));
+                }
                 $groupAction->executeAction();
                 foreach($groupAction->getProposals() as $proposal) {
                     $em->persist($proposal);
@@ -136,10 +144,17 @@ class AdminStagesController extends Controller
 
         $stageProposals = $em->getRepository('LulhumRepartitionMedecineBundle:StageProposal')->filteredFind($stageProposalFilter);
 
+        $categories = array();
+        foreach($em->getRepository('LulhumRepartitionMedecineBundle:Category')->findAll() as $category) {
+            $categories[$category->getId()] = $category;
+        }
+
         return $this->render('LulhumRepartitionMedecineBundle:Admin:stageproposals.html.twig', array(
             'stageProposals' => $stageProposals,
             'filterForm' => $filterForm->createView(),
             'groupActionForm' => $groupActionForm->createView(),
+            'categories' => $categories,
+            'promotions' => User::PROMOTIONS,
         ));
     }
 
@@ -186,6 +201,77 @@ class AdminStagesController extends Controller
 
         return $this->render('LulhumRepartitionMedecineBundle:Admin:stageproposal.html.twig', array(
             'form' => $form->createView(),
+            'proposal' => $stageProposal,
         ));
     }
+
+    public function stageProposalAddConstraintAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        
+        $session = new Session();
+        if($session->has('adminStageProposalsGroupAction') && $session->get('adminStageProposalsGroupAction') instanceof StageProposalGroupAction) {
+            $groupAction = $session->get('adminStageProposalsGroupAction');
+            if($groupAction->getProposals()->count() == 0) {
+
+                return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals'));
+            }
+            $groupAction->setProposals($groupAction->getProposals()->map(function($item) use (&$em) {
+                return $em->merge($item);
+            }));
+        }
+        else {
+
+            return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals'));
+        }
+        
+        $form = $this->get('form.factory')->createBuilder('form')
+                     ->add('requirements', 'collection', array(
+                         'label' => false,
+                         'type' => new RequirementType(),
+                         'allow_add' => true,
+                     ))
+                     ->add('valider', 'submit')
+                     ->getForm();
+
+        $form->handleRequest($request);
+
+        if($form->isValid()) {            
+            foreach($groupAction->getProposals() as $proposal) {
+                foreach($form['requirements'] as $requirement) {
+                    $proposal->addRequirement(clone $requirement->getData());
+                }
+                $em->persist($proposal);
+            }
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals'));
+        }
+
+        return $this->render('LulhumRepartitionMedecineBundle:Admin:stageproposaladdconstraint.html.twig', array(
+            'groupAction' => $groupAction,
+            'form' => $form->createView(),
+        ));
+    }
+
+    public function getRequirementFormAction(Request $request)
+    {
+        if($request->isXmlHttpRequest()) {
+            $type = '';
+            $type = $request->request->get('paramType');
+            $proposalId = '';
+            $proposalId = $request->request->get('proposal');
+
+            $form = $this->createForm(new RequirementParamsType(array(
+                'paramType' => $type,
+                'proposal' => $proposalId,
+            )));
+        }
+
+        return $this->render('LulhumRepartitionMedecineBundle:Admin:requirementform.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
+    
 }
+

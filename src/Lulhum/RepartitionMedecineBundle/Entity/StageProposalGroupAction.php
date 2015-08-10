@@ -10,6 +10,7 @@ class StageProposalGroupAction
     const ACTIONS = array(
         'unlock' => 'Activer',
         'lock' => 'Désactiver',
+        'addConstraint' => 'Ajouter une Contrainte',
     );
 
     protected $proposals;
