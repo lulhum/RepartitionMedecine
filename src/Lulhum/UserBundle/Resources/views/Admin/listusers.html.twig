@@ -6,17 +6,8 @@
   Utilisateurs - {{ parent() }}
 {% endblock %}
 
-{% block lulhumrepartitionmedecine_body %}
-
-	{% for key, messages in app.session.flashbag.all() %}
-		{% for message in messages %}
-			<div class="alert alert-{{ key }}">
-				{{ message }}
-			</div>
-		{% endfor %}
-	{% endfor %}
-	
-	<h2>
+{% block bodytitle %}
+	<div class="panel-title" >
 		Liste des utilisateurs
 		<div class="btn-group" >
 			<button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
@@ -65,7 +56,20 @@
 				</li>
 			</ul>
 		</div>
-	</h2>
+	</div>
+{% endblock %}
+
+{% block nobody %}
+
+	{% for key, messages in app.session.flashbag.all() %}
+		{% for message in messages %}
+			<div class="alert alert-{{ key }}">
+				{{ message }}
+			</div>
+		{% endfor %}
+	{% endfor %}
+	
+	
 	
 
 				

@@ -6,8 +6,11 @@
 	Répartition des Groupes - {{ parent() }}
 {% endblock %}
 
-{% block lulhumrepartitionmedecine_body %}
-	<h2>Groupes de répartition</h2>
+{% block bodytitle %}
+	<h3>Groupes de répartition</h3>
+{% endblock %}
+
+{% block body %}	
 
 	{% set promotions = {'DFASM1': 'DFASM 1', 'DFASM2': 'DFASM 2'} %}
 	{% set expanded = false %}

@@ -6,30 +6,30 @@
   Choix des groupes - {{ parent() }}
 {% endblock %}
 
-{% block lulhumrepartitionmedecine_body %}
-	<div class="row well">
-		<div>
-			{% for key, messages in app.session.flashbag.all() %}
-				{% for message in messages %}
-					<div class="alert alert-{{ key }}">
-						{{ message }}
-					</div>
-				{% endfor %}
-			{% endfor %}
+{% block bodytitle %}
+	<h3>Répartition des groupes - {{ app.user.textPromotion }}</h3>
+	{% if deadline.active %}
+		<div class="col-md-3">
+			{{ form(form) }}
 		</div>
-		<h3>Répartition des groupes - {{ app.user.textPromotion }}</h3>
-		{% if deadline.active %}
-			<div class="col-md-3">
-				{{ form(form) }}
-			</div>
-			<div class="label label-primary">
-				Répartition ouverte jusqu'au {{ deadline.date|date('d/m - H:i') }}
-				<span class="glyphicon glyphicon-time" ></span>
-			</div>
-		{% else %}
-			<div>Groupe {{ app.user.repartitionGroup }}</div>
-		{% endif %}
+		<div class="label label-primary">
+			Répartition ouverte jusqu'au {{ deadline.date|date('d/m - H:i') }}
+			<span class="glyphicon glyphicon-time" ></span>
+		</div>
+	{% else %}
+		<div>Groupe {{ app.user.repartitionGroup }}</div>
+	{% endif %}
+{% endblock %}
 
+{% block body %}
+	<div>
+		{% for key, messages in app.session.flashbag.all() %}
+			{% for message in messages %}
+				<div class="alert alert-{{ key }}">
+					{{ message }}
+				</div>
+			{% endfor %}
+		{% endfor %}
 	</div>
 
 	{% set expanded = false %}

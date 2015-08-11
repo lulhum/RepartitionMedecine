@@ -6,10 +6,10 @@
   {{ user.fullname }} - {{ parent() }}
 {% endblock %}
 
-{% block lulhumrepartitionmedecine_body %}
+{% block bodytitle %}
+	<div class="panel-title" >Modifier</div>
+{% endblock %}
 
-	<h3>Modifier</h3>
-	
-	{{ form(form) }}
-	
+{% block body %}
+	{{ form(form) }}	
 {% endblock %}

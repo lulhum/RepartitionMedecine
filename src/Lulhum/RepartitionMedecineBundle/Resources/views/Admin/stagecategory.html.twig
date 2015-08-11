@@ -6,12 +6,12 @@
   Modèle de stage - {{ parent() }}
 {% endblock %}
 
-{% block lulhumrepartitionmedecine_body %}
+{% block bodytitle %}
 	<h3>Modèle de stage</h3>
+{% endblock %}
 
-	<div class="well" >
-		{{ form(form) }}
-	</div>
+{% block body %}
+	{{ form(form) }}
 {% endblock %}
 
 {% block javascripts %}

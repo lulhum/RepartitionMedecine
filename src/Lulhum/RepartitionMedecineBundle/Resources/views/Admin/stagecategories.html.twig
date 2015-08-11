@@ -3,110 +3,112 @@
 {% block title %}
 	Modèles de stage - {{ parent() }}
 {% endblock %}
-{% block lulhumrepartitionmedecine_body %}
+
+{% block bodytitle %}
 	<h3>Gestion des modèles de stage</h3>
-	<div class="panel panel-default" >
-		<div class="panel-heading" >			
-			{{ form_start(form, {'attr': {'class': 'form-inline'}}) }}
-			{{ form_errors(form) }}
-			<div class="form-group" >
-				{{ form_label(form.locations, null, {'label_attr': {'class': 'control-label'}}) }}
-				<br/>
-				{{ form_errors(form.locations) }}
-				{{ form_widget(form.locations, {'attr': {'class': 'form-control', 'multiple': 'true', 'size': '2'}}) }}
-			</div>
-			<div class="form-group" >
-				{{ form_label(form.categoriesOr, null, {'label_attr': {'class': 'control-label'}}) }}
-				<br/>
-				{{ form_errors(form.categoriesOr) }}
-				{{ form_widget(form.categoriesOr, {'attr': {'class': 'form-control', 'multiple': 'true', 'size': '2'}}) }}
-			</div>
-			<div class="form-group" >
-				{{ form_label(form.categoriesAnd, null, {'label_attr': {'class': 'control-label'}}) }}
-				<br/>
-				{{ form_errors(form.categoriesAnd) }}
-				{{ form_widget(form.categoriesAnd, {'attr': {'class': 'form-control', 'multiple': 'true', 'size': '2'}}) }}
-			</div>
-			<div style="margin-top:10px" >
-				<div class="form-group" >
-					{{ form_widget(form.filtrer, {'attr': {'class': 'btn btn-primary' }}) }}
-				</div>
-				<div class="form-group" >
-					<a class="btn btn-success" href="{{ path('lulhum_repartitionmedecine_admin_stage_categories_new') }}">Nouveau Modèle</a>
-				</div>
-			</div>
-			{{ form_rest(form) }}
-			{{ form_end(form) }}			
+	<hr/>
+	{{ form_start(form, {'attr': {'class': 'form-inline'}}) }}
+	{{ form_errors(form) }}
+	<div class="form-group" >
+		{{ form_label(form.locations, null, {'label_attr': {'class': 'control-label'}}) }}
+		<br/>
+		{{ form_errors(form.locations) }}
+		{{ form_widget(form.locations, {'attr': {'class': 'form-control', 'multiple': 'true', 'size': '2'}}) }}
+	</div>
+	<div class="form-group" >
+		{{ form_label(form.categoriesOr, null, {'label_attr': {'class': 'control-label'}}) }}
+		<br/>
+		{{ form_errors(form.categoriesOr) }}
+		{{ form_widget(form.categoriesOr, {'attr': {'class': 'form-control', 'multiple': 'true', 'size': '2'}}) }}
+	</div>
+	<div class="form-group" >
+		{{ form_label(form.categoriesAnd, null, {'label_attr': {'class': 'control-label'}}) }}
+		<br/>
+		{{ form_errors(form.categoriesAnd) }}
+		{{ form_widget(form.categoriesAnd, {'attr': {'class': 'form-control', 'multiple': 'true', 'size': '2'}}) }}
+	</div>
+	<div style="margin-top:10px" >
+		<div class="form-group" >
+			{{ form_widget(form.filtrer, {'attr': {'class': 'btn btn-primary' }}) }}
 		</div>
-		<table class="table table-hover" >
+		<div class="form-group" >
+			<a class="btn btn-success" href="{{ path('lulhum_repartitionmedecine_admin_stage_categories_new') }}">Nouveau Modèle</a>
+		</div>
+	</div>
+	{{ form_rest(form) }}
+	{{ form_end(form) }}			
+{% endblock %}
+
+{% block nobody %}
+	<table class="table table-hover" >
+		<tr>
+			<th>Nom</th>
+			<th>Description</th>
+			<th>Lieu</th>
+			<th>Catégories</th>
+			<th>Actions</th>
+		</tr>
+		{% for key, stageCategory in stageCategories %}
 			<tr>
-				<th>Nom</th>
-				<th>Description</th>
-				<th>Lieu</th>
-				<th>Catégories</th>
-				<th>Actions</th>
+				<td>
+					<a href="{{ path('lulhum_repartitionmedecine_admin_stage_categories_show', {'id': stageCategory.id}) }}">
+						{{ stageCategory.name }}
+					</a>
+				</td>
+				<td>
+					{% if stageCategory.description is not null %}
+						<button class="btn btn-default" type="button" data-toggle="collapse" data-target="#description-for-stage-category-{{ key }}" aria-expanded="false" aria-controls="description-for-stage-category-{{ key }}" >
+							<span class="glyphicon glyphicon-zoom-in" ></span>
+						</button>
+					{% endif %}
+				</td>
+				<td>{{ stageCategory.location }}</td>
+				<td>
+					<div class="dropdown" >
+						<button class="btn btn-default dropdown-toggle" type="button" id="categories-for-stage-category-{{ key }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+							Catégories
+							<span class="badge">{{ stageCategory.categories|length }}</span>
+							<span class="caret" ></span>
+						</button>
+						<ul class="dropdown-menu" aria-labelledby="categories-for-stage-category-{{ key }}" >
+							{% for category in stageCategory.categories %}
+								<li><a href="">{{ category }}</a></li>
+							{% endfor %}
+						</ul>
+					</div>
+				</td>
+				<td>
+					<a href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals_incategory', {'id': stageCategory.id}) }}">
+						<span class="glyphicon glyphicon-share" ></span>
+					</a>
+					<a href="{{ path('lulhum_repartitionmedecine_admin_stage_categories_edit', {'id': stageCategory.id}) }}">
+						<span class="glyphicon glyphicon-edit" ></span>
+					</a>
+					<a href="{{ path('lulhum_repartitionmedecine_admin_stage_categories_delete', {'id': stageCategory.id}) }}" class="text-danger">
+						<span class="glyphicon glyphicon-remove" ></span>
+					</a>
+				</td>
 			</tr>
-			{% for key, stageCategory in stageCategories %}
-				<tr>
-					<td>
-						<a href="{{ path('lulhum_repartitionmedecine_admin_stage_categories_show', {'id': stageCategory.id}) }}">
-							{{ stageCategory.name }}
-						</a>
-					</td>
-					<td>
-						{% if stageCategory.description is not null %}
-							<button class="btn btn-default" type="button" data-toggle="collapse" data-target="#description-for-stage-category-{{ key }}" aria-expanded="false" aria-controls="description-for-stage-category-{{ key }}" >
-								<span class="glyphicon glyphicon-zoom-in" ></span>
-							</button>
-						{% endif %}
-					</td>
-					<td>{{ stageCategory.location }}</td>
-					<td>
-						<div class="dropdown" >
-							<button class="btn btn-default dropdown-toggle" type="button" id="categories-for-stage-category-{{ key }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
-								Catégories
-								<span class="badge">{{ stageCategory.categories|length }}</span>
-								<span class="caret" ></span>
-							</button>
-							<ul class="dropdown-menu" aria-labelledby="categories-for-stage-category-{{ key }}" >
-								{% for category in stageCategory.categories %}
-									<li><a href="">{{ category }}</a></li>
-								{% endfor %}
-							</ul>
-						</div>
-					</td>
-					<td>
-						<a href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals_incategory', {'id': stageCategory.id}) }}">
-							<span class="glyphicon glyphicon-share" ></span>
-						</a>
-						<a href="{{ path('lulhum_repartitionmedecine_admin_stage_categories_edit', {'id': stageCategory.id}) }}">
-							<span class="glyphicon glyphicon-edit" ></span>
-						</a>
-						<a href="{{ path('lulhum_repartitionmedecine_admin_stage_categories_delete', {'id': stageCategory.id}) }}" class="text-danger">
-							<span class="glyphicon glyphicon-remove" ></span>
-						</a>
-					</td>
+			{% if stageCategory.description is not null %}
+				<tr class="collapse" id="description-for-stage-category-{{ key }}">
+					<td colspan="5">{{ stageCategory.description }}</td>
 				</tr>
-				{% if stageCategory.description is not null %}
-					<tr class="collapse" id="description-for-stage-category-{{ key }}">
-						<td colspan="5">{{ stageCategory.description }}</td>
-					</tr>
-				{% endif %}
-			{% endfor %}
-		</table>
-	</div>
-	<div>
-		<span class="text-primary" >
-			<span class="glyphicon glyphicon-share" ></span>
-		</span>
-		Voir les propositions correspondantes -
-		<span class="text-primary" >
-			<span class="glyphicon glyphicon-edit" ></span>
-		</span>
-		Éditer le modèle -
-		<span class="text-danger" >
-			<span class="glyphicon glyphicon-remove" ></span>
-		</span>
-		Supprimer le modèle
-	</div>
+			{% endif %}
+		{% endfor %}
+	</table>
+{% endblock %}
+
+{% block bodyunder %}
+	<span class="text-primary" >
+		<span class="glyphicon glyphicon-share" ></span>
+	</span>
+	Voir les propositions correspondantes -
+	<span class="text-primary" >
+		<span class="glyphicon glyphicon-edit" ></span>
+	</span>
+	Éditer le modèle -
+	<span class="text-danger" >
+		<span class="glyphicon glyphicon-remove" ></span>
+	</span>
+	Supprimer le modèle
 {% endblock %}

@@ -6,10 +6,10 @@
 	Ouvrir la répartition de groupe {{ promotion }} - {{ parent() }}
 {% endblock %}
 
-{% block lulhumrepartitionmedecine_body %}
+{% block bodytitle %}
+	<h3 class="panel-title" >Ouvrir la répartition de groupe {{ promotion }}</h3>
+{% endblock %}
 
-	<h3>Ouvrir la répartition de groupe {{ promotion }}</h3>
-	
+{% block body %}
 	{{ form(form) }}
-	
 {% endblock %}

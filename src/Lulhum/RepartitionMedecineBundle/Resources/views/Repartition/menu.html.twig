@@ -1,11 +1,9 @@
 {# src/Lulhum/RepartitionMedecineBundle/Resources/views/Repartition/menu.html.twig #}
 
-<ul class="nav nav-pills nav-stacked">
-	{% for item in listItems %}
-		<li>
-			<a href="{{ path(item.path, item.options) }}">
-				{{ item.label }}
-			</a>
-		</li>
-	{% endfor %}
-</ul> 
+{% for item in listItems %}
+	<li>
+		<a href="{{ path(item.path, item.options) }}">
+			{{ item.label }}
+		</a>
+	</li>
+{% endfor %}

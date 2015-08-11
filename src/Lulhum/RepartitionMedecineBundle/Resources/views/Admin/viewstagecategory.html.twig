@@ -3,41 +3,39 @@
 {% block title %}
 	Modèle de stage - {{ stageCategory.name }} - {{ parent() }}
 {% endblock %}
-{% block lulhumrepartitionmedecine_body %}
-	<div class="panel panel-default" >
-		<div class="panel-heading" >
-			<h3 class="panel-title" >Modèle de stage - {{ stageCategory.name }}</h3>
-		</div>
-		<div class="panel-body" >
-			{% if stageCategory.description is not null %}
-				<div class="well" >{{ stageCategory.description }}</div>
-			{% endif %}
-			<div class="well">
-				<span style="font-weight:bold" >Lieu:</span>
-				{{ stageCategory.location }}
-			</div>
-			<div class="panel panel-default">
-				<div class="panel-heading" style="font-weight:bold" >Catégories:</div>				
-				<ul class="list-group" >
-					{% for category in stageCategory.categories %}
-						<li class="list-group-item" >{{ category }}</li>
-					{% endfor %}
-				</ul>				
-			</div>
-			<div class="panel panel-default">
-				<div class="panel-heading" style="font-weight:bold" >Proposition de stage associées:</div>				
-				<ul class="list-group" >
-					{% for proposal in stageCategory.proposals %}
-						<li class="list-group-item" >{{ proposal.name }}</li>
-					{% endfor %}
-				</ul>				
-			</div>
-			<a class="btn btn-primary" href="{{ path('lulhum_repartitionmedecine_admin_stage_categories_edit', {'id': stageCategory.id}) }}">
-				Modifier
-			</a>
-			<a class="btn btn-primary" href="{{ path('lulhum_repartitionmedecine_admin_stage_categories') }}">
-				Retour à la liste
-			</a>
-		</div>
+
+{% block bodytitle %}
+	<h3 class="panel-title" >Modèle de stage - {{ stageCategory.name }}</h3>
+{% endblock %}
+
+{% block body %}
+	{% if stageCategory.description is not null %}
+		<div class="well" >{{ stageCategory.description }}</div>
+	{% endif %}
+	<div class="well">
+		<span style="font-weight:bold" >Lieu:</span>
+		{{ stageCategory.location }}
 	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading" style="font-weight:bold" >Catégories:</div>				
+		<ul class="list-group" >
+			{% for category in stageCategory.categories %}
+				<li class="list-group-item" >{{ category }}</li>
+			{% endfor %}
+		</ul>				
+	</div>
+	<div class="panel panel-default">
+		<div class="panel-heading" style="font-weight:bold" >Proposition de stage associées:</div>				
+		<ul class="list-group" >
+			{% for proposal in stageCategory.proposals %}
+				<li class="list-group-item" >{{ proposal.name }}</li>
+			{% endfor %}
+		</ul>				
+	</div>
+	<a class="btn btn-primary" href="{{ path('lulhum_repartitionmedecine_admin_stage_categories_edit', {'id': stageCategory.id}) }}">
+		Modifier
+	</a>
+	<a class="btn btn-primary" href="{{ path('lulhum_repartitionmedecine_admin_stage_categories') }}">
+		Retour à la liste
+	</a>
 {% endblock %}

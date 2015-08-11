@@ -6,6 +6,6 @@
   Accueil - {{ parent() }}
 {% endblock %}
 
-{% block lulhumrepartitionmedecine_body %}
+{% block body %}
   <h2>Bienvenue {% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}{{ app.user.firstname }} {{ app.user.lastname }}{% endif %}</h2>
 {% endblock %}

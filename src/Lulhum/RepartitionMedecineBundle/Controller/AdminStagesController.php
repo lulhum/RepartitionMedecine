@@ -179,6 +179,7 @@ class AdminStagesController extends Controller
 
         return $this->render('LulhumRepartitionMedecineBundle:Admin:stageproposal.html.twig', array(
             'form' => $form->createView(),
+            'proposal' => $stageProposal,
         ));
     }
 

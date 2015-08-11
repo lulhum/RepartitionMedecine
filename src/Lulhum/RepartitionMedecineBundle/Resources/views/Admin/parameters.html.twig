@@ -6,10 +6,10 @@
 	Modifier les paramètres - {{ parameterGroup }} - {{ parent() }}
 {% endblock %}
 
-{% block lulhumrepartitionmedecine_body %}
-
+{% block bodytitle %}
 	<h3>Modifier les paramètres - {{ parameterGroup }}</h3>
-	
-	{{ form(form) }}
-	
+{% endblock %}
+
+{% block body %}	
+	{{ form(form) }}	
 {% endblock %}

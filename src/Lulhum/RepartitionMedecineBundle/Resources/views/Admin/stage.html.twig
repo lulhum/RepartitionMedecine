@@ -6,41 +6,43 @@
 Stage - {{ parent() }}
 {% endblock %}
 
-{% block lulhumrepartitionmedecine_body %}
+{% block bodytitle %}
+	<h3>Stage</h3>
+{% endblock %}
+
+{% block nobody %}
 	{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
-	<div class="panel panel-default" >
-		<div class="panel-heading" >Stage</div>
-		<div class="panel-body" >
-			<div class="form-group" >
-				{{ form_label(form.user, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
-				{{ form_errors(form.user) }}
-				<div class="col-md-10" >
-					{{ form_widget(form.user, {'attr': {'class': 'form-control'}}) }}
-				</div>
-			</div>
-			<div class="form-group" >
-				{{ form_label(form.proposal, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
-				{{ form_errors(form.proposal) }}
-				<div class="col-md-10" >
-					{{ form_widget(form.proposal, {'attr': {'class': 'form-control'}}) }}
-				</div>
-			</div>
-			<div class="form-group" >
-				{{ form_label(form.locked, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
-				{{ form_errors(form.locked) }}
-				<div class="col-md-10" >
-					{% for child in form.locked %}
-						<label class="radio-inline" >
-							{{ form_widget(child) }}
-							{{ child.vars.label }}
-						</label>
-					{% endfor %}
-				</div>
+	<div class="panel-body" >
+		<div class="form-group" >
+			{{ form_label(form.user, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+			{{ form_errors(form.user) }}
+			<div class="col-md-10" >
+				{{ form_widget(form.user, {'attr': {'class': 'form-control'}}) }}
 			</div>
 		</div>
-		<div class="panel-footer" >
-			{{ form_widget(form.valider, {'attr': {'class': 'btn btn-primary'}}) }}
-		</div>		
+		<div class="form-group" >
+			{{ form_label(form.proposal, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+			{{ form_errors(form.proposal) }}
+			<div class="col-md-10" >
+				{{ form_widget(form.proposal, {'attr': {'class': 'form-control'}}) }}
+			</div>
+		</div>
+		<div class="form-group" >
+			{{ form_label(form.locked, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+			{{ form_errors(form.locked) }}
+			<div class="col-md-10" >
+				{% for child in form.locked %}
+					<label class="radio-inline" >
+						{{ form_widget(child) }}
+						{{ child.vars.label }}
+					</label>
+				{% endfor %}
+			</div>
+		</div>
+	</div>
+	<div class="panel-footer" >
+		{{ form_widget(form.valider, {'attr': {'class': 'btn btn-primary'}}) }}
+	</div>		
 	</div>
 	{{ form_rest(form) }}
 	{{ form_end(form) }}

@@ -6,33 +6,36 @@
   Propositions de stage - Ajout de contrainte - {{ parent() }}
 {% endblock %}
 
-{% block lulhumrepartitionmedecine_body %}
+{% block bodytitle %}
 	<h3>Propositions de stage - Ajout de contrainte</h3>
+{% endblock %}
 
-	<div class="panel panel-default" >
-		<div class="panel-heading" >
-			Ajouter des contraintes pour les propositions de stages:
+{% block nobody %}
+	<ul class="list-group" >
+		<li class="list-group-item" >
+			<h4 class="list-group-item-heading" >
+				Propositions de stage affectées: {{ groupAction.proposals|length }}
+			</h4>
+		</li>
+		{% for proposal in groupAction.proposals %}
+			<li class="list-group-item" >
+				{{ proposal.name }}
+			</li>
+		{% endfor %}
+	</ul>
+{% endblock %}
+
+{% block bodyfooter %}
+	<div class="panel-footer" >
+		{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+		<div id="lulhum_repartitionmedecine_requirements" data-prototype="
+										  {% filter escape %}
+										  {{ include('LulhumRepartitionMedecineBundle:Admin:requirement_prototype.html.twig', {'form': form.requirements.vars.prototype}) }}
+										  {% endfilter %}">
 		</div>
-		<div class="panel-body" >
-			<ul class="list-group" >
-				{% for proposal in groupAction.proposals %}
-					<li class="list-group-item" >
-						{{ proposal.name }}
-					</li>
-				{% endfor %}
-			</ul>
-		</div>
-		<div class="panel-footer" >
-			{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
-			<div id="lulhum_repartitionmedecine_requirements" data-prototype="
-											  {% filter escape %}
-											  {{ include('LulhumRepartitionMedecineBundle:Admin:requirement_prototype.html.twig', {'form': form.requirements.vars.prototype}) }}
-											  {% endfilter %}">
-			</div>
-			{{ form_widget(form.valider, {'attr': {'class': 'btn btn-primary'}}) }}
-			{{ form_rest(form) }}
-			{{ form_end(form) }}
-		</div>
+		{{ form_widget(form.valider, {'attr': {'class': 'btn btn-primary'}}) }}
+		{{ form_rest(form) }}
+		{{ form_end(form) }}
 	</div>
 {% endblock %}
 

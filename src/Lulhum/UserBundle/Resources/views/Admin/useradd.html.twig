@@ -6,10 +6,10 @@
 	Nouvel utilisateur - {{ parent() }}
 {% endblock %}
 
-{% block lulhumrepartitionmedecine_body %}
+{% block bodytitle %}
+	<h3 class="panel-title">Ajouter un nouvel utilisateur</h3>
+{% endblock %}
 
-	<h3>Ajouter un nouvel utilisateur</h3>
-	
-	{{ form(form) }}
-	
+{% block body %}
+	{{ form(form) }}	
 {% endblock %}

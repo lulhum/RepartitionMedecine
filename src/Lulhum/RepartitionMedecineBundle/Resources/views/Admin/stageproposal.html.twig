@@ -11,114 +11,114 @@
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.0/css/bootstrap-datepicker.min.css" />	
 {% endblock %}
 
-{% block lulhumrepartitionmedecine_body %}
+{% block bodytitle %}
 	<h3>Proposition de stage</h3>
+{% endblock %}
 
-	<div class="well" >
-		{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
-		<div class="form-group" >
-			{{ form_label(form.name, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
-			{{ form_errors(form.name) }}
-			<div class="col-md-10" >
-				{{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
-			</div>
+{% block body %}
+	{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+	<div class="form-group" >
+		{{ form_label(form.name, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+		{{ form_errors(form.name) }}
+		<div class="col-md-10" >
+			{{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
 		</div>
-		<div class="form-group" >
-			{{ form_label(form.description, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
-			{{ form_errors(form.description) }}
-			<div class="col-md-10" >
-				{{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
-			</div>
-		</div>
-		<div class="form-group" >
-			{{ form_label(form.category, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
-			{{ form_errors(form.category) }}
-			<div class="col-md-10" >
-				{{ form_widget(form.category, {'attr': {'class': 'form-control'}}) }}
-			</div>
-		</div>
-		<div class="form-group" >
-			{{ form_label(form.period, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
-			{{ form_errors(form.period) }}
-			<div class="col-md-10" >
-				{{ form_widget(form.period, {'attr': {'class': 'form-control'}}) }}
-			</div>
-		</div>
-		<div id="lulhum_repartitionmedecine_stageproposal_new_period" class="panel panel-default" >
-			<div class="panel-heading" >
-				<a href="#" id="add_period" class="btn btn-success" data-activated="false">Créer une nouvelle période</a>
-			</div>
-			<div class="panel-body" >
-				<div class="form-group" >
-					{{ form_label(form.new_period.name, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
-					{{ form_errors(form.new_period.name) }}
-					<div class="col-md-10" >
-						{{ form_widget(form.new_period.name, {'attr': {'class': 'form-control'}}) }}
-					</div>
-				</div>
-				<div class="form-group" >
-					{{ form_label(form.new_period.description, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
-					{{ form_errors(form.new_period.description) }}
-					<div class="col-md-10" >
-						{{ form_widget(form.new_period.description, {'attr': {'class': 'form-control'}}) }}
-					</div>
-				</div>
-				<div class="form-group" >
-					{{ form_label(form.new_period.start, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
-					{{ form_errors(form.new_period.start) }}
-					<div class="col-md-10" >
-						{{ form_widget(form.new_period.start, {'attr': {'class': 'form-control'}}) }}
-					</div>
-				</div>
-				<div class="form-group" >
-					{{ form_label(form.new_period.stop, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
-					{{ form_errors(form.new_period.stop) }}
-					<div class="col-md-10" >
-						{{ form_widget(form.new_period.stop, {'attr': {'class': 'form-control'}}) }}
-					</div>
-				</div>
-			</div>
-		</div>
-		<div id="lulhum_repartitionmedecine_stageproposal_requirements" data-prototype="
-												{% filter escape %}
-												{{ include('LulhumRepartitionMedecineBundle:Admin:requirement_prototype.html.twig', {'form': form.requirements.vars.prototype}) }}
-												{% endfilter %}">
-			{% for child in form.requirements %}
-				<div class="panel panel-default">
-					<div class="panel-heading" >
-						<label class="required"></label>
-					</div>
-					<div class="panel-body" >
-						<div class="form-group" >
-							{{ form_label(child.type, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
-							{{ form_errors(child.type) }}
-							<div class="col-md-10" >
-								{{ form_widget(child.type) }}
-							</div>
-						</div>
-						<div class="form-group" >
-							{{ form_label(child.params, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
-							{{ form_errors(child.params) }}
-							<div class="col-md-10" >
-								{{ form_widget(child.params) }}
-							</div>
-						</div>
-						<div class="form-group" >
-							{{ form_label(child.strict, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
-							{{ form_errors(child.strict) }}
-							<div class="col-md-10" >
-								{{ form_widget(child.strict, {'attr': {'style': 'width:0'}}) }}
-							</div>
-						</div>
-					</div>
-					<div class="panel-footer" ></div>
-				</div>
-			{% endfor %}
-			{{ form_widget(form.valider, {'attr': {'class': 'btn btn-primary'}}) }}
-		</div>
-		{{ form_rest(form) }}
-		{{ form_end(form) }}
 	</div>
+	<div class="form-group" >
+		{{ form_label(form.description, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+		{{ form_errors(form.description) }}
+		<div class="col-md-10" >
+			{{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+		</div>
+	</div>
+	<div class="form-group" >
+		{{ form_label(form.category, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+		{{ form_errors(form.category) }}
+		<div class="col-md-10" >
+			{{ form_widget(form.category, {'attr': {'class': 'form-control'}}) }}
+		</div>
+	</div>
+	<div class="form-group" >
+		{{ form_label(form.period, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+		{{ form_errors(form.period) }}
+		<div class="col-md-10" >
+			{{ form_widget(form.period, {'attr': {'class': 'form-control'}}) }}
+		</div>
+	</div>
+	<div id="lulhum_repartitionmedecine_stageproposal_new_period" class="panel panel-default" >
+		<div class="panel-heading" >
+			<a href="#" id="add_period" class="btn btn-success" data-activated="false">Créer une nouvelle période</a>
+		</div>
+		<div class="panel-body" >
+			<div class="form-group" >
+				{{ form_label(form.new_period.name, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+				{{ form_errors(form.new_period.name) }}
+				<div class="col-md-10" >
+					{{ form_widget(form.new_period.name, {'attr': {'class': 'form-control'}}) }}
+				</div>
+			</div>
+			<div class="form-group" >
+				{{ form_label(form.new_period.description, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+				{{ form_errors(form.new_period.description) }}
+				<div class="col-md-10" >
+					{{ form_widget(form.new_period.description, {'attr': {'class': 'form-control'}}) }}
+				</div>
+			</div>
+			<div class="form-group" >
+				{{ form_label(form.new_period.start, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+				{{ form_errors(form.new_period.start) }}
+				<div class="col-md-10" >
+					{{ form_widget(form.new_period.start, {'attr': {'class': 'form-control'}}) }}
+				</div>
+			</div>
+			<div class="form-group" >
+				{{ form_label(form.new_period.stop, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+				{{ form_errors(form.new_period.stop) }}
+				<div class="col-md-10" >
+					{{ form_widget(form.new_period.stop, {'attr': {'class': 'form-control'}}) }}
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="lulhum_repartitionmedecine_stageproposal_requirements" data-prototype="
+											{% filter escape %}
+											{{ include('LulhumRepartitionMedecineBundle:Admin:requirement_prototype.html.twig', {'form': form.requirements.vars.prototype}) }}
+											{% endfilter %}">
+		{% for child in form.requirements %}
+			<div class="panel panel-default">
+				<div class="panel-heading" >
+					<label class="required"></label>
+				</div>
+				<div class="panel-body" >
+					<div class="form-group" >
+						{{ form_label(child.type, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+						{{ form_errors(child.type) }}
+						<div class="col-md-10" >
+							{{ form_widget(child.type) }}
+						</div>
+					</div>
+					<div class="form-group" >
+						{{ form_label(child.params, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+						{{ form_errors(child.params) }}
+						<div class="col-md-10" >
+							{{ form_widget(child.params) }}
+						</div>
+					</div>
+					<div class="form-group" >
+						{{ form_label(child.strict, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+						{{ form_errors(child.strict) }}
+						<div class="col-md-10" >
+							{{ form_widget(child.strict, {'attr': {'style': 'width:0'}}) }}
+						</div>
+					</div>
+				</div>
+				<div class="panel-footer" ></div>
+			</div>
+		{% endfor %}
+		{{ form_widget(form.valider, {'attr': {'class': 'btn btn-primary'}}) }}
+	</div>
+	{{ form_rest(form) }}
+	{{ form_end(form) }}
 {% endblock %}
 
 {% block javascripts %}
@@ -154,7 +154,7 @@
 			return false;
 		});
 
-		manageRequirements($('#lulhum_repartitionmedecine_stageproposal_requirements'), '{{ path('lulhum_repartitionmedecine_admin_requirements_getform') }}', {{ proposal.id }}, 0);
+		manageRequirements($('#lulhum_repartitionmedecine_stageproposal_requirements'), '{{ path('lulhum_repartitionmedecine_admin_requirements_getform') }}', String({{ proposal.id }}), 0);
 
 	});
 	</script>
