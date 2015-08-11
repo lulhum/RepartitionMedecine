@@ -9,7 +9,7 @@ use Lulhum\UserBundle\Entity\User;
  * Stage
  *
  * @ORM\Table()
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Lulhum\RepartitionMedecineBundle\Repository\StageRepository")
  */
 class Stage
 {
@@ -41,7 +41,7 @@ class Stage
      */     
     private $proposal;
 
-    public function __construct(User $user, StageProposal $proposal)
+    public function __construct(User $user=null, StageProposal $proposal=null)
     {
         $this->user = $user;
         $this->proposal = $proposal;
@@ -126,8 +126,14 @@ class Stage
         return $this->proposal;
     }
 
-    public function isValid() {
+    public function isValid()
+    {
         return $this->proposal->isValid($this);
+    }
+
+    public function __toString()
+    {
+        return $this->user->getFullname().' - '.$this->proposal;
     }
 
 }

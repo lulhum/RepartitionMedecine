@@ -49,7 +49,7 @@ class StageCategory
     private $categories;
 
     /**
-     * @ORM\OneToMany(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\StageProposal", mappedBy="category")
+     * @ORM\OneToMany(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\StageProposal", mappedBy="category", cascade={"remove"})
      */
     private $proposals;
 

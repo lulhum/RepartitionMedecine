@@ -3,7 +3,7 @@
 {% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
 
 {% block title %}
-  Mes Stages - {{ parent() }}
+  Propositions de stage - {{ parent() }}
 {% endblock %}
 
 {% block lulhumrepartitionmedecine_body %}
@@ -114,7 +114,7 @@
 						<a href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals_edit', {'id': stageProposals[loop.index0].getId()}) }}">
 							<span class="glyphicon glyphicon-edit" ></span>
 						</a>
-						<a href="" class="text-danger">
+						<a href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals_delete', {'id': stageProposals[loop.index0].getId()}) }}" class="text-danger">
 							<span class="glyphicon glyphicon-remove" ></span>
 						</a>
 					</td>

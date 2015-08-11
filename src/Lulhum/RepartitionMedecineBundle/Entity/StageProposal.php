@@ -36,7 +36,7 @@ class StageProposal
     private $name;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\StageCategory", inversedBy="proposals", cascade="merge")
+     * @ORM\ManyToOne(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\StageCategory", inversedBy="proposals", cascade={"merge"})
      * @ORM\JoinColumn(nullable=false)
      */  
     private $category;
@@ -62,7 +62,7 @@ class StageProposal
     private $deadline;
 
     /**
-     * @ORM\OneToMany(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\Requirement", mappedBy="proposal", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\Requirement", mappedBy="proposal", cascade={"persist", "remove"})
      */  
     private $requirements;
 
@@ -132,7 +132,7 @@ class StageProposal
     {
         if(is_null($this->name) && !is_null($this->getCategory())) {
 
-            return $this->getCategory()->getName();
+            return $this->getCategory().' - '.$this->getPeriod();
         }
         
         return $this->name;

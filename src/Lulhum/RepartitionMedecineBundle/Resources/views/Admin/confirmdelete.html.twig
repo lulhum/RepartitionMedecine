@@ -1,0 +1,55 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/stageproposaladdconstraint.html.twig #}
+
+{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+
+{% block title %}
+  Confirmation avant suppression - {{ parent() }}
+{% endblock %}
+
+{% block lulhumrepartitionmedecine_body %}
+	<div class="panel panel-danger" >
+		<div class="panel-heading" >
+			Attention, vous êtes sur le point de supprimer les éléments suivants de manière définitive !
+		</div>
+		<div class="panel-body" >
+			{% if categories|length > 0 %}
+				<div class="panel panel-danger" >
+					<div class="panel-heading" >Modèle{% if categories|length > 1 %}s{% endif %} de stage</div>
+					<ul class="list-group" >
+						{% for category in categories %}
+							<li class="list-group-item" >{{ category }}</li>
+						{% endfor %}
+					</ul>
+				</div>
+			{% endif %}
+			{% if proposals|length > 0 %}
+				<div class="panel panel-danger" >
+					<div class="panel-heading" >Proposition{% if categories|length > 1 %}s{% endif %} de stage</div>
+					<ul class="list-group" >
+						{% for proposal in proposals %}
+							<li class="list-group-item" >{{ proposal }}</li>
+						{% endfor %}
+					</ul>
+				</div>
+			{% endif %}
+			{% if stages|length > 0 %}
+				<div class="panel panel-danger" >
+					<div class="panel-heading" >Stage{% if categories|length > 1 %}s{% endif %}</div>
+					<ul class="list-group" >
+						{% for stage in stages %}
+							<li class="list-group-item" >{{ stage }}</li>
+						{% endfor %}
+					</ul>
+
+				</div>
+			{% endif %}
+		</div>
+		<div class="panel-footer" style="background-color: #f2dede" >
+			{{ form_start(form) }}
+			{{ form_widget(form.Confirmer) }}
+			<a href="{{ app.request.headers.get('referer') }}" class="btn btn-primary" >Annuler</a>
+			{{ form_rest(form) }}
+			{{ form_end(form) }}
+		</div>
+	</div>
+{% endblock %}

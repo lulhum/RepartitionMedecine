@@ -66,6 +66,12 @@ lulhum_repartitionmedecine_admin_stage_categories_new:
     path: /admin/stages/stagecategories/new
     defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:newStageCategory }
 
+lulhum_repartitionmedecine_admin_stage_categories_delete:
+    path: /admin/stages/stagecategories/delete/{id}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:deleteStageCategory }
+    requirements:
+        id: \d+
+
 lulhum_repartitionmedecine_admin_stage_categories_edit:
     path: /admin/stages/stagecategories/edit/{id}
     defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:editStageCategory }
@@ -92,6 +98,12 @@ lulhum_repartitionmedecine_admin_stage_proposals_new:
     path: /admin/stages/stageproposals/new
     defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:newStageProposal }
 
+lulhum_repartitionmedecine_admin_stage_proposals_delete:
+    path: /admin/stages/stageproposals/delete/{id}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:deleteStageProposal }
+    requirements:
+        id: \d+
+
 lulhum_repartitionmedecine_admin_stage_proposals_group_add_constraint:
     path: /admin/stages/stageproposals/addconstraint
     defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stageProposalAddConstraint }
@@ -103,5 +115,19 @@ lulhum_repartitionmedecine_admin_requirements_getform:
 lulhum_repartitionmedecine_admin_stage_proposals_edit:
     path: /admin/stages/stageproposals/edit/{id}
     defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:editStageProposal }
+    requirements:
+        id: \d+
+
+lulhum_repartitionmedecine_admin_stage_stages:
+    path: /admin/stages/stages
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stages }
+
+lulhum_repartitionmedecine_admin_stage_stages_new:
+    path: /admin/stages/stages/new
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:newStage }
+
+lulhum_repartitionmedecine_admin_stage_stages_delete:
+    path: /admin/stages/stages/delete/{id}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:deleteStage }
     requirements:
         id: \d+
