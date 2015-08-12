@@ -48,7 +48,7 @@ class RepartitionController extends Controller
         $em = $this->getDoctrine()->getManager();
         $user = $this->container->get('security.context')->getToken()->getUser();
 
-        $proposals = $em->getRepository('LulhumRepartitionMedecineBundle:StageProposal')->findAllValidForUser($user);
+        $proposals = $em->getRepository('LulhumRepartitionMedecineBundle:StageProposal')->findAllValidForUser($user, $this->get('lulhum_repartitionmedecine_stagevalidator'));
 
         return $this->render('LulhumRepartitionMedecineBundle:Repartition:stages.html.twig', array(
             'proposals' => $proposals,
@@ -77,7 +77,7 @@ class RepartitionController extends Controller
         $em = $this->getDoctrine()->getManager();        
         $user = $this->container->get('security.context')->getToken()->getUser();        
         $stage = new Stage($user, $proposal);
-        if($stage->isValid()) {
+        if($this->get('lulhum_repartitionmedecine_stagevalidator')->isValid($stage)) {
             $em->persist($stage);
             $em->flush();
             $session->getFlashBag()->add('success', 'Inscription au stage "'.$proposal->getName().'" effectuée.');

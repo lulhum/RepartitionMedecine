@@ -6,6 +6,7 @@ namespace Lulhum\UserBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Model\User as BaseUser;
+use Lulhum\RepartitionMedecineBundle\Entity\Stage;
 
 /**
  * @ORM\Entity(repositoryClass="Lulhum\UserBundle\Repository\UserRepository")
@@ -289,6 +290,22 @@ class User extends BaseUser
     {
         $this->stages = $stages;
     }
+
+    public function addStage(Stage $stage)
+    {
+        $stage->setUser($this);
+        $this->stages[] = $stage;
+
+        return $this;
+    }
+
+    public function removeStage(Stage $stage)
+    {
+        $this->stages->removeElement($stage);
+
+        return $this;
+    }
+
 
     public function countStagesInCategory($categoryId, $locked)
     {

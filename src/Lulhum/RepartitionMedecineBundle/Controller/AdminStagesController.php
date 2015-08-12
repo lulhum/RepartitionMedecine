@@ -305,9 +305,15 @@ class AdminStagesController extends Controller
         
         $stages = $em->getRepository('LulhumRepartitionMedecineBundle:Stage')->filteredFind($stagesFilter);
 
+        $requirements = array();
+        foreach($stages as $stage) {
+            $requirements[] = $this->get('lulhum_repartitionmedecine_stagevalidator')->checkRequirements($stage);
+        }
+
         return $this->render('LulhumRepartitionMedecineBundle:Admin:stages.html.twig', array(
             'stages' => $stages,
             'filterForm' => $filterForm->createView(),
+            'requirements' => $requirements,
         ));
     }
 

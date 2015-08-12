@@ -166,36 +166,6 @@ class Requirement
         return self::TYPES[$this->getType()].': '.$this->getParams();
     }
 
-    public function isValid(Stage $stage)
-    {
-        if(!$this->strict) {
-            
-            return true;
-        }
-
-        if($this->type === 'maxPlaces') {
-            
-            return $this->proposal->getStages()->count() < (int)$this->params;
-        }
-
-        if($this->type === 'promotion') {
-
-            return $stage->getUser()->getPromotion() === $this->params;
-        }
-
-        if($this->type === 'maxChoicesInCategory') {
-
-            return $stage->getUser()->countStagesInCategory((int)$this->getParamsArray()[0], false) < (int)$this->getParamsArray()[1];
-        }
-
-        if($this->type === 'maxStagesInCategory') {
-
-            return $stage->getUser()->countStagesInCategory((int)$this->getParamsArray()[0], true) < (int)$this->getParamsArray()[1];
-        }
-
-        return true;
-    }
-
     public function getTextType()
     {
         return self::TYPES[$this->getType()];

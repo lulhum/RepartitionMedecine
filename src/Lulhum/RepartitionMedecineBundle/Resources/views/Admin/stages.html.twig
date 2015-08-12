@@ -49,6 +49,7 @@
 			<th>Utilisateur</th>
 			<th>Période</th>
 			<th>Proposition</th>
+			<th>Contraintes</th>
 			<th>Accepté</th>
 			<th>Actions</th>
 		</tr>
@@ -58,6 +59,25 @@
 				<td>{{ stage.user.fullname }}</td>
 				<td>{{ stage.proposal.period }}</td>
 				<td>{{ stage.proposal }}</td>
+				<td>
+					{% if requirements[loop.index0]|length > 0 %}
+						<div class="btn-group">
+							<button type="button" class="btn btn-{{ requirements[loop.index0][0].level }} dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								{{ requirements[loop.index0]|length }}
+								Conflits <span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu list-group">
+								{% for requirement in requirements[loop.index0] %}
+									<li class="list-group-item-{{ requirement.level }}">
+										<a href="#">{{ requirement.message }}</a>
+									</li>
+								{% endfor %}
+							</ul>
+						</div>
+					{% else %}
+						<button class="btn btn-success" >Valide</button>
+					{% endif %}
+				</td>
 				<td>
 					{% if not stage.locked %}
 						<span class="label label-danger" >Non</span>

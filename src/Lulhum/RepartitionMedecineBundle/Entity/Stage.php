@@ -41,10 +41,14 @@ class Stage
      */     
     private $proposal;
 
+    private $checkRequirementsCache=null;
+
     public function __construct(User $user=null, StageProposal $proposal=null)
     {
-        $this->user = $user;
-        $this->proposal = $proposal;
+        if(!is_null($user) && !is_null($proposal)) {
+            $proposal->addStage($this);
+            $user->addStage($this);
+        }
     }
 
     /**
@@ -109,7 +113,7 @@ class Stage
      * @param \Lulhum\RepartitionMedecineBundle\Entity\StageProposal $proposal
      * @return Stage
      */
-    public function setProposal($proposal)
+    public function setProposal(StageProposal $proposal)
     {
         $this->proposal = $proposal;
 
@@ -124,11 +128,6 @@ class Stage
     public function getProposal()
     {
         return $this->proposal;
-    }
-
-    public function isValid()
-    {
-        return $this->proposal->isValid($this);
     }
 
     public function __toString()

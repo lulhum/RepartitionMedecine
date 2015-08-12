@@ -278,24 +278,7 @@ class StageProposal
 
     public function __toString() {
         return $this->getName();
-    }
-
-    public function isValid(Stage $stage)
-    {
-        if($this->stages->exists(function($k, $s) use (&$stage) {
-            return $s->getUser() === $stage->getUser();
-        })) {
-            return false;
-        }
-        foreach($this->requirements as $requirement) {
-            if(!$requirement->isValid($stage)) {
-                
-                return false;
-            }
-        }
-
-        return true;
-    }
+    }     
 
     public function setStages(ArrayCollection $stages)
     {
