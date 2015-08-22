@@ -63,9 +63,13 @@ class Deadline
      */
     private $callbackParams=array();
 
-    public function __construct($name, $date, $delay, $callback, $callbackParams)
+    public function __construct($name = null, $date = null, $delay = null, $callback = null, $callbackParams = array())
     {
         $this->setName($name);
+        if(is_null($date)) {
+            $date = new \DateTime();
+            $date->setTime(0, 0, 0);
+        }
         $this->setDate($date);
         $this->setDelay($delay);
         $this->setCallback($callback);

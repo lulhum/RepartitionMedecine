@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Period
  *
  * @ORM\Table()
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Lulhum\RepartitionMedecineBundle\Repository\PeriodRepository")
  */
 class Period
 {
@@ -159,6 +159,10 @@ class Period
 
     public function __toString()
     {
-        return $this->getName();
+        if(!is_null($this->getName())) {
+            return $this->getName();
+        }
+
+        return "#";
     }
 }

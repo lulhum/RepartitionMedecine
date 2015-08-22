@@ -15,7 +15,7 @@
 			<a href="{{ path('lulhum_repartitionmedecine_stages_pending') }}">Mes Demandes</a>
 		</li>
 		<li role="presentation" {% if type == 'accepted' %}class="active"{% endif %}>
-			<a href="#">Stages Acceptés</a>
+			<a href="{{ path('lulhum_repartitionmedecine_stages_accepted') }}">Stages Acceptés</a>
 		</li>
 		<li role="presentation" {% if type == 'history' %}class="active"{% endif %}>
 			<a href="#">Historique</a>
@@ -38,6 +38,8 @@
 				Aucune proposition disponible
 			{% elseif type == 'pending' %}
 				Aucune demande en cours
+			{% elseif type == 'accepted' %}
+				Aucun stage accepté
 			{% endif %}
 		</div>
 	{% else %}

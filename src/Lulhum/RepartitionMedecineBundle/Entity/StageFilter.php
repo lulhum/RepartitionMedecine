@@ -9,6 +9,8 @@ class StageFilter
 {    
     protected $stageProposals;
 
+    protected $periods;
+
     protected $categoriesOr;
 
     protected $categoriesAnd;
@@ -17,9 +19,25 @@ class StageFilter
 
     public function __construct()
     {
+        $this->periods = new ArrayCollection();
         $this->stageProposals = new ArrayCollection();
         $this->categoriesOr = new ArrayCollection();
         $this->categoriesAnd = new ArrayCollection();
+    }
+
+    public function getPeriods()
+    {
+        return $this->periods;
+    }
+
+    public function setPeriods(ArrayCollection $periods)
+    {
+        $this->periods = $periods;
+    }
+
+    public function addPeriod(Period $period)
+    {
+        $this->periods[] = $period;
     }
 
     public function getStageProposals()
@@ -32,9 +50,9 @@ class StageFilter
         $this->stageProposals = $stageProposals;        
     }
 
-    public function addStageCategory(StageCategory $stageCategory)
+    public function addStageProposal(StageProposal $stageProposal)
     {
-        $this->stageProposals[] = $stageCategory;
+        $this->stageProposals[] = $stageProposal;
     }
 
     public function getCategoriesOr()
@@ -61,6 +79,7 @@ class StageFilter
     {
         return array(   
             'stageProposals' => $this->stageProposals,
+            'periods' => $this->periods,
             'categoriesOr' => $this->categoriesOr,
             'categoriesAnd' => $this->categoriesAnd,
         );

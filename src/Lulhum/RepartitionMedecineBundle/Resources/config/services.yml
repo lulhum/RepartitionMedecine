@@ -1,7 +1,7 @@
 services:
     lulhum_repartitionmedecine_repartition:
         class: Lulhum\RepartitionMedecineBundle\Util\Repartition
-        arguments: [ @doctrine.orm.default_entity_manager ]
+        arguments: [ @doctrine.orm.default_entity_manager, @lulhum_repartitionmedecine_stagevalidator ]
     lulhum_repartitionmedecine_stagevalidator:
         class: Lulhum\RepartitionMedecineBundle\Util\StageValidator
         arguments: [ @doctrine.orm.default_entity_manager ]

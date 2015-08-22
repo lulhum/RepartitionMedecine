@@ -10,8 +10,11 @@ class Repartition
 
     private $em;
 
-    public function __construct(EntityManager $em) {
+    private $validator;
+
+    public function __construct(EntityManager $em, StageValidator $validator) {
         $this->em = $em;
+        $this->validator = $validator;
     }
 
     public function finalizeGroupRepartition($promotion, $mode=null) {
@@ -68,6 +71,24 @@ class Repartition
         foreach($users as $user) {
             $user->resetRepartitionGroup();
             $this->em->persist($user);
+        }
+    }
+
+    public function closeRepartition($deadline, $method = 'manual')
+    {
+        $proposals = $this->em->getRepository('LulhumRepartitionMedecineBundle:StageProposal')->findByDeadline($deadline);
+        foreach($proposals as $proposal) {
+            if($method === 'autovalid') {
+                foreach($proposal->getStages() as $stage) {
+                    if($this->validator->isValid($stage)) {
+                        $stage->setLocked(true);
+                        $this->em->persist($stage);
+                    }
+                }
+            }
+            $proposal->setLocked(true);
+            $proposal->setDeadline(null);
+            $this->em->persist($proposal);
         }
     }
               

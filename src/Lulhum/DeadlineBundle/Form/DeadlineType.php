@@ -17,22 +17,22 @@ class DeadlineType extends AbstractType
     
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $dt = new \DateTime();
-        $years = array($dt->format('Y'));
-        $dt->add(new \DateInterval('P1Y'));
-        $years[] = $dt->format('Y');
         $builder
             ->add('date', 'datetime', array(
-                'years' => $years,
-                'label' => 'Fin de la répartition:'
+                'label' => 'Fin de la répartition',
+                'widget' => 'single_text',
+                'input' => 'datetime',
+                'format' => 'dd/MM/yyyy HH:mm'
             ))
             ->add('delay', 'time', array(
-                'label' => 'Délais de fin:'
+                'label' => 'Délais de fin'
             ));
-        foreach($this->options as $option) {            
-            $builder->add($option['field'], $option['type'], $option['options']);            
+        if(!is_null($this->options)) {
+            foreach($this->options as $option) {            
+                $builder->add($option['field'], $option['type'], $option['options']);            
+            }
         }
-        $builder->add('Ouvrir', 'submit');
+        $builder->add('ouvrir', 'submit');
     }
     
     public function setDefaultOptions(OptionsResolverInterface $resolver)

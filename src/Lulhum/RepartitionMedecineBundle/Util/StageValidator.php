@@ -38,13 +38,23 @@ class StageValidator
 
                     return false;
                 }
-                if($requirement->getType() === 'maxChoicesInCategory' && $stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], false) > (int)$requirement->getParamsArray()[1]) {
+                if($requirement->getType() === 'group' && $stage->getUser()->getRepartitionGroup() !== $requirement->getParams()) {
 
                     return false;
                 }
-                if($requirement->getType() === 'maxStagesInCategory' && $stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], true) > (int)$requirement->getParamsArray()[1]) {
+                if($requirement->getType() === 'maxChoicesInCategory' && $stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], false) > (int)$requirement->getParamsArray()[1]) {                    
 
                     return false;
+                }
+                if($requirement->getType() === 'maxStagesInCategory') {
+                    if($stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], true) > (int)$requirement->getParamsArray()[1]) {
+
+                        return false;
+                    }
+                    if($stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], true) == (int)$requirement->getParamsArray()[1] && $stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], false) != 0) {
+
+                        return false;
+                    }
                 }
             }
         }
@@ -75,17 +85,29 @@ class StageValidator
                     'message' => 'L\'utilisateur n\'appartient pas à la promotion requise pour ce stage ('.User::PROMOTIONS[$requirement->getParams()].')',
                 );
             }
+            elseif($requirement->getType() === 'group' && $stage->getUser()->getRepartitionGroup() !== $requirement->getParams()) {
+                $conflicts[] = array(
+                    'level' => $requirement->getStrict() ? 'danger' : 'warning',
+                    'message' => 'L\'utilisateur n\'appartient pas au groupe requis pour ce stage ('.$requirement->getParams().')',
+                );
+            }
             elseif($requirement->getType() === 'maxChoicesInCategory' && $stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], false) > (int)$requirement->getParamsArray()[1]) {
                 $conflicts[] = array(
                     'level' => $requirement->getStrict() ? 'danger' : 'warning',
                     'message' => 'L\'utilisateur a déjà effectué '.$stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], false).'/'.$requirement->getParamsArray()[1].' choix dans la catégorie "'.$this->getCategories()[(int)$requirement->getParamsArray()[0]].'"',
                 );
             }
-            elseif($requirement->getType() === 'maxStagesInCategory' && $stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], true) > (int)$requirement->getParamsArray()[1]) {
-                $conflicts[] = array(
-                    'level' => $requirement->getStrict() ? 'danger' : 'warning',
-                    'message' => 'L\'utilisateur a déjà effectué '.$stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], false).'/'.$requirement->getParamsArray()[1].' stages dans la catégorie "'.$this->getCategories()[(int)$requirement->getParamsArray()[0]].'"',
-                );
+            elseif($requirement->getType() === 'maxStagesInCategory') {
+                $cond = !$stage->getLocked();
+                $cond = $cond && $stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], true) == (int)$requirement->getParamsArray()[1];
+                $cond = $cond && $stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], false) != 0;
+                $cond = $cond || $stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], true) > (int)$requirement->getParamsArray()[1];                
+                if($cond) {            
+                    $conflicts[] = array(
+                        'level' => $requirement->getStrict() ? 'danger' : 'warning',
+                        'message' => 'L\'utilisateur a déjà effectué '.$stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], true).'/'.$requirement->getParamsArray()[1].' stages dans la catégorie "'.$this->getCategories()[(int)$requirement->getParamsArray()[0]].'"',
+                    );
+                }
             }
             elseif(!array_key_exists($requirement->getType(), Requirement::TYPES)) {
                 $conflicts[] = array('level' => 'warning', 'message' => 'Le type de contrainte "'.$requirement->getType().'" n\'est pas pris en charge');

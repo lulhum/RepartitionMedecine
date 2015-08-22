@@ -18,6 +18,12 @@
 		{{ form_widget(filterForm.stageProposals, {'attr': {'class': 'form-control', 'multiple': 'true', 'size': '2'}}) }}
 	</div>
 	<div class="form-group" >
+		{{ form_label(filterForm.periods, null, {'label_attr': {'class': 'control-label'}}) }}
+		<br/>
+		{{ form_errors(filterForm.periods) }}
+		{{ form_widget(filterForm.periods, {'attr': {'class': 'form-control', 'multiple': 'true', 'size': '2'}}) }}
+	</div>
+	<div class="form-group" >
 		{{ form_label(filterForm.categoriesOr, null, {'label_attr': {'class': 'control-label'}}) }}
 		<br/>
 		{{ form_errors(filterForm.categoriesOr) }}
@@ -35,6 +41,9 @@
 			{{ form_widget(filterForm.filtrer, {'attr': {'class': 'btn btn-primary' }}) }}
 		</div>
 		<div class="form-group" >				
+			<a class="btn btn-primary" href="{{ path('lulhum_repartitionmedecine_admin_stage_stages_resetfilter') }}">Filtre par défaut</a>
+		</div>		
+		<div class="form-group" >				
 			<a class="btn btn-success" href="{{ path('lulhum_repartitionmedecine_admin_stage_stages_new') }}">Nouveau Stage</a>
 		</div>
 	</div>
@@ -43,6 +52,7 @@
 {% endblock %}
 
 {% block nobody %}
+	{{ form_start(groupActionForm, {'attr': {'class': 'form-inline'}}) }}
 	<table class="table table-hover" >
 		<tr>
 			<th><input type="checkbox" id="master-check" /></th>
@@ -53,12 +63,12 @@
 			<th>Accepté</th>
 			<th>Actions</th>
 		</tr>
-		{% for stage in stages %}
+		{% for child in groupActionForm.stages %}
 			<tr>
-				<td></td>
-				<td>{{ stage.user.fullname }}</td>
-				<td>{{ stage.proposal.period }}</td>
-				<td>{{ stage.proposal }}</td>
+				<td>{{ form_widget(child) }}</td>
+				<td>{{ stages[loop.index0].user.fullname }}</td>
+				<td>{{ stages[loop.index0].proposal.period }}</td>
+				<td>{{ stages[loop.index0].proposal }}</td>
 				<td>
 					{% if requirements[loop.index0]|length > 0 %}
 						<div class="btn-group">
@@ -79,33 +89,49 @@
 					{% endif %}
 				</td>
 				<td>
-					{% if not stage.locked %}
+					{% if not stages[loop.index0].locked %}
 						<span class="label label-danger" >Non</span>
 					{% else %}
 						<span class="label label-success" >Oui</span>
 					{% endif %}
 				</td>
 				<td>
-					<a href="">
-						<span class="glyphicon glyphicon-edit" ></span>
-					</a>
-					<a href="{{ path('lulhum_repartitionmedecine_admin_stage_stages_delete', {'id': stage.id}) }}" class="text-danger">
+					<a href="{{ path('lulhum_repartitionmedecine_admin_stage_stages_delete', {'id': stages[loop.index0].id}) }}" class="text-danger">
 						<span class="glyphicon glyphicon-remove" ></span>
 					</a>
 				</td>
 			</tr>
 		{% endfor %}			
 	</table>
+	<div class="panel-footer" >
+		<div class="form-group" >
+			{{ form_label(groupActionForm.action, null, {'label_attr': {'class': 'control-label'}}) }}
+			{{ form_errors(groupActionForm.action) }}
+			{{ form_widget(groupActionForm.action, {'attr': {'class': 'form-control'}}) }}
+		</div>
+		<div class="form-group" >
+			{{ form_widget(groupActionForm.appliquer, {'attr': {'class': 'btn btn-primary' }}) }}
+		</div>
+		{{ form_rest(groupActionForm) }}
+	</div>
+	{{ form_end(groupActionForm) }}
 {% endblock %}
 
 {% block bodyunder %}
-	<span class="text-primary" >
-		<span class="glyphicon glyphicon-edit" ></span>
-	</span>
-	Éditer le stage -
 	<span class="text-danger" >
 		<span class="glyphicon glyphicon-remove" ></span>
 	</span>
 	Supprimer le stage
 {% endblock %}
 
+{% block javascripts %}
+	{{ parent() }}
+	<script type="text/javascript" >
+	$(document).ready(function() {
+		$('input#master-check').change(function() {
+			var $checkboxes = $('form[name="lulhum_repartitionmedecine_stagegroupaction"] :checkbox');
+			$checkboxes.prop('checked', $(this).prop('checked'));
+		});
+	});
+	</script>
+{% endblock %}

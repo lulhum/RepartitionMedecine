@@ -22,7 +22,11 @@ use Lulhum\RepartitionMedecineBundle\Entity\Stage;
 use Lulhum\RepartitionMedecineBundle\Form\StageType;
 use Lulhum\RepartitionMedecineBundle\Entity\StageFilter;
 use Lulhum\RepartitionMedecineBundle\Form\StageFilterType;
+use Lulhum\RepartitionMedecineBundle\Form\StageGroupActionType;
+use Lulhum\RepartitionMedecineBundle\Entity\StageGroupAction;
 use Lulhum\UserBundle\Entity\User;
+use Lulhum\DeadlineBundle\Entity\Deadline;
+use Lulhum\DeadlineBundle\Form\DeadlineType;
 
 class AdminStagesController extends Controller
 {
@@ -95,7 +99,7 @@ class AdminStagesController extends Controller
     {
         $stageProposalFilter = new StageProposalFilter();
         $stageProposalFilter->addStageCategory($stageCategory);
-        $session = new Session();
+        $session = new Session();        
         $session->set('adminStageProposalsFilter', $stageProposalFilter);
 
         return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals'));
@@ -137,6 +141,11 @@ class AdminStagesController extends Controller
                     $session->set('adminStageProposalsGroupAction', $groupAction);
 
                     return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals_group_add_constraint'));
+                }
+                if($groupAction->getAction() === 'start') {
+                    $session->set('adminStageProposalsGroupAction', $groupAction);
+
+                    return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals_group_start'));
                 }
                 $groupAction->executeAction();
                 foreach($groupAction->getProposals() as $proposal) {
@@ -210,6 +219,69 @@ class AdminStagesController extends Controller
         ));
     }
 
+    public function stageProposalStartAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        
+        $session = new Session();
+        if($session->has('adminStageProposalsGroupAction') && $session->get('adminStageProposalsGroupAction') instanceof StageProposalGroupAction) {
+            $groupAction = $session->get('adminStageProposalsGroupAction');
+            if($groupAction->getProposals()->count() == 0) {
+
+                return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals'));
+            }
+            $groupAction->setProposals($groupAction->getProposals()->map(function($item) use (&$em) {
+                return $em->merge($item);
+            }));
+        }
+        else {
+
+            return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals'));
+        }
+
+        $deadline = new Deadline();
+        $form = $this->createForm(new DeadlineType(array(array(
+            'field' => 'autovalid',
+            'type' => 'checkbox',
+            'options' => array(
+                'mapped' => false,
+                'label' => 'Accepter automatiquement les stages valides',
+                'required' => false,
+            )))), $deadline);
+
+        $form->handleRequest($request);
+
+        if($form->isValid()) {
+
+            $args = array('this');
+            if($form->get('autovalid')->getData()) {
+                $args[] = 'autovalid';
+            }
+            $deadline->setActive(true);
+            $deadline->setCallback('lulhum_repartitionmedecine_repartition');
+            $deadline->setCallbackParams(array(
+                'method' => 'closeRepartition',
+                'args' => $args,
+            ));
+            $em->persist($deadline);
+
+            foreach($groupAction->getProposals() as $proposal) {
+                $proposal->setDeadline($deadline);
+                $proposal->setLocked(false);
+                $em->persist($proposal);
+            }
+
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals'));
+        }
+
+        return $this->render('LulhumRepartitionMedecineBundle:Admin:startstageproposal.html.twig', array(
+            'groupAction' => $groupAction,
+            'form' => $form->createView(),
+        ));
+    }
+
     public function stageProposalAddConstraintAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
@@ -278,6 +350,25 @@ class AdminStagesController extends Controller
         ));
     }
 
+    public function stagesInProposalAction(StageProposal $stageProposal, $id)
+    {        
+        $filter = new StageFilter();
+        $filter->addStageProposal($stageProposal);
+        $session = new Session();
+        $session->set('adminStagesFilter', $filter);
+
+        return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_stages'));
+    }
+
+    public function resetStagesFilterAction()
+    {
+        $session = new Session();
+        $session->remove('adminStagesFilter');
+
+        return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_stages'));
+    }
+        
+
     public function stagesAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
@@ -288,12 +379,17 @@ class AdminStagesController extends Controller
             // Merge all the filter entities into the entity manager
             foreach($stagesFilter->getCollections() as $key => $collection) {
                 call_user_func(array($stagesFilter, 'set'.ucfirst($key)), call_user_func(array($stagesFilter, 'get'.ucfirst($key)))->map(function($item) use (&$em) {
-                    return $em->merge($item);
+                    $managedItem = $em->merge($item);
+                    $em->refresh($managedItem);
+                    return $managedItem;
                 }));
             }
         }
         else {
             $stagesFilter = new StageFilter();
+            foreach($em->getRepository('LulhumRepartitionMedecineBundle:Period')->findCurrents() as $period) {
+                $stagesFilter->addPeriod($period);
+            }
         }
                                  
         $filterFormType = new StageFilterType();
@@ -301,6 +397,26 @@ class AdminStagesController extends Controller
         if($request->getMethod() === 'POST' && $request->request->has($filterFormType->getName())) {
                 $filterForm->handleRequest($request);
                 $session->set('adminStagesFilter', $stagesFilter);
+        }
+
+        $groupAction = new StageGroupAction();
+        $groupActionFormType = new StageGroupActionType(array('filter' => $stagesFilter));
+        $groupActionForm = $this->createForm($groupActionFormType, $groupAction);        
+
+        if($request->getMethod() === 'POST' && $request->request->has($groupActionFormType->getName())) {                
+            $groupActionForm->handleRequest($request);    
+            if($groupActionForm->isValid()) {
+                if($groupAction->getAction() === 'delete') {
+                    $session->set('adminStagesGroupAction', $groupAction);
+
+                    return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_stages_group_delete'));
+                }
+                $groupAction->executeAction();
+                foreach($groupAction->getStages() as $stage) {
+                    $em->persist($stage);
+                }
+                $em->flush();
+            }
         }
         
         $stages = $em->getRepository('LulhumRepartitionMedecineBundle:Stage')->filteredFind($stagesFilter);
@@ -313,6 +429,7 @@ class AdminStagesController extends Controller
         return $this->render('LulhumRepartitionMedecineBundle:Admin:stages.html.twig', array(
             'stages' => $stages,
             'filterForm' => $filterForm->createView(),
+            'groupActionForm' => $groupActionForm->createView(),
             'requirements' => $requirements,
         ));
     }
@@ -357,6 +474,51 @@ class AdminStagesController extends Controller
         return $this->render('LulhumRepartitionMedecineBundle:Admin:confirmdelete.html.twig', array(
             'form' => $form->createView(),
             'stages' => array($stage),
+            'proposals' => array(),
+            'categories' => array(),
+        ));
+    }
+
+    public function deleteStagesAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        
+        $session = new Session();
+        if($session->has('adminStagesGroupAction') && $session->get('adminStagesGroupAction') instanceof StageGroupAction) {
+            $groupAction = $session->get('adminStagesGroupAction');
+            if($groupAction->getStages()->count() == 0) {
+
+                return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_stages'));
+            }
+            $groupAction->setStages($groupAction->getStages()->map(function($item) use (&$em) {
+                return $em->merge($item);
+            }));
+        }
+        else {
+
+            return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_stages'));
+        }
+
+        $form = $this->get('form.factory')
+                     ->createBuilder('form')
+                     ->add('Confirmer', 'submit', array('attr' => array('class' => 'btn btn-danger')))
+                     ->getForm();
+
+        $form->handleRequest($request);
+
+        if($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            foreach($groupAction->getStages() as $stage) {
+                $em->remove($stage);
+            }
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_stages'));
+        }
+
+        return $this->render('LulhumRepartitionMedecineBundle:Admin:confirmdelete.html.twig', array(
+            'form' => $form->createView(),
+            'stages' => $groupAction->getStages(),
             'proposals' => array(),
             'categories' => array(),
         ));

@@ -57,6 +57,7 @@
 			<th>Période</th>
 			<th>Modèle</th>
 			<th>Contraintes</th>
+			<th>Inscrits</th>
 			<th>Active</th>
 			<th>Actions</th>
 		</tr>
@@ -100,15 +101,48 @@
 						</ul>
 					</div>
 				</td>
+				<td>	
+					{% if stageProposals[loop.index0].hasRequirementType('maxPlaces') %}
+						{% set maxPlaces = stageProposals[loop.index0].getRequirementsByType('maxPlaces')[0].params %}
+						{% set usedPlaces = stageProposals[loop.index0].stages.count %}
+						<div class="label label-{% if maxPlaces < usedPlaces %}danger{% else %}success{% endif %}" >
+							{{ usedPlaces }}
+							/						
+							{{ maxPlaces }}
+						</div>
+					{% else %}
+						<div class="label label-success" >
+							{{ stageProposals[loop.index0].stages.count }}
+							/
+							&infin;
+						</div>
+					{% endif %}
+				</td>
 				<td>
 					{% if stageProposals[loop.index0].locked %}
 						<span class="label label-danger" >Non</span>
 					{% else %}
-						<span class="label label-success" >Oui</span>
+						{% if stageProposals[loop.index0].deadline is not null %}
+							{% set deadline = stageProposals[loop.index0].deadline %}							
+							<button type="button"
+								class="btn btn-success btn-xs"
+								data-container="body"
+								data-toggle="popover"
+								data-placement="right"
+								data-trigger="click"
+								data-content="{{ deadline.date|date('d/m - H:i') }} +{{ deadline.delay|date('H:i') }}" >
+								Oui -
+								<span class="glyphicon glyphicon-time" ></span>
+							</button>
+						{% else %}
+							<span class="label label-success" >
+								Oui
+							</span>
+						{% endif %}
 					{% endif %}
 				</td>
 				<td>
-					<a href="">
+					<a href="{{ path('lulhum_repartitionmedecine_admin_stage_stages_inproposal', {'id': stageProposals[loop.index0].getId()}) }}">
 						<span class="glyphicon glyphicon-share" ></span>
 					</a>
 					<a href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals_edit', {'id': stageProposals[loop.index0].getId()}) }}">
@@ -134,7 +168,6 @@
 		{{ form_rest(groupActionForm) }}
 	</div>
 	{{ form_end(groupActionForm) }}
-	</div>
 {% endblock %}
 
 {% block bodyunder %}
@@ -162,6 +195,10 @@
 			var $checkboxes = $('form[name="lulhum_repartitionmedecine_stageproposalgroupaction"] :checkbox');
 			$checkboxes.prop('checked', $(this).prop('checked'));
 		});
+		
+		$(function () {
+			$('[data-toggle="popover"]').popover()
+		})
 	});
 	</script>
 {% endblock %}

@@ -16,6 +16,7 @@ class Requirement
     const TYPES = array(
         'maxPlaces' => 'Nombre de places maximum',
         'promotion' => 'Promotion',
+        'group' => 'Groupe',
         //'maxChoicesInPeriod' => 'Maximum de choix pour cette période',
         'maxStagesInCategory' => 'Maximum de stages dans la catégorie',
         //'maxStagesInStageCategory' => 'Maximum de stages avec ce modèle',

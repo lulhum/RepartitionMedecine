@@ -16,8 +16,12 @@ class StageRepository extends EntityRepository
             $queryBuilder->join('s.proposal', 'p', 'WITH', 'p.id IN(:ids)')
                          ->setParameter('ids', $filter->getStageProposals()->map(function($ob) {return $ob->getId();})->toArray());
         }
-        elseif(!$filter->getCategoriesOr()->isEmpty() || !$filter->getCategoriesAnd()->isEmpty()) {
+        elseif(!$filter->getCategoriesOr()->isEmpty() || !$filter->getCategoriesAnd()->isEmpty() || !$filter->getPeriods()->isEmpty()) {
             $queryBuilder->join('s.proposal', 'p');
+        }
+        if(!$filter->getPeriods()->isEmpty()) {
+            $queryBuilder->join('p.period', 't', 'WITH', 't.id IN(:ids)')
+                         ->setParameter('ids', $filter->getPeriods()->map(function($ob) {return $ob->getId();})->toArray());
         }
         if(!$filter->getCategoriesOr()->isEmpty() || !$filter->getCategoriesAnd()->isEmpty()) {
             $queryBuilder->join('p.category', 'c');

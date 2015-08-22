@@ -130,11 +130,11 @@ class StageProposal
      */
     public function getName()
     {
-        if(is_null($this->name) && !is_null($this->getCategory())) {
+        if(is_null($this->name) && !is_null($this->getCategory()) && !is_null($this->getPeriod())) {
 
             return $this->getCategory().' - '.$this->getPeriod();
-        }
-        
+        }        
+
         return $this->name;
     }
 
@@ -276,8 +276,17 @@ class StageProposal
         return $this->setPeriod($period);
     }
 
-    public function __toString() {
-        return $this->getName();
+    public function __toString()
+    {
+        try {
+            
+            return $this->getName();
+        }
+        catch(\Exception $e) {
+            echo $e->getMessage();
+            
+            return '#';
+        }
     }     
 
     public function setStages(ArrayCollection $stages)

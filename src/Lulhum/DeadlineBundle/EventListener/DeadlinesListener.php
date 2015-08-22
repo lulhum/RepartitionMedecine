@@ -26,10 +26,20 @@ class DeadlinesListener extends ContainerAware
         foreach($deadlines as $deadline) {
             if($deadline->getDateWithDelay() < new \DateTime()) {
                 if(!is_null($deadline->getCallback())) {
-                    call_user_func_array(array($this->container->get($deadline->getCallback()), $deadline->getCallbackParams()['method']), $deadline->getCallbackParams()['args']);
+                    $args = array();
+                    foreach($deadline->getCallbackParams()['args'] as $arg) {
+                        if($arg === 'this') $args[] = $deadline;
+                        else $args[] = $arg;
+                    }
+                    call_user_func_array(array($this->container->get($deadline->getCallback()), $deadline->getCallbackParams()['method']), $args);
                 }
-                $deadline->setActive(false);
-                $this->em->persist($deadline);
+                if(is_null($deadline->getName())) {
+                    $this->em->remove($deadline);
+                }
+                else {
+                    $deadline->setActive(false);
+                    $this->em->persist($deadline);
+                }
             }
         }
         $this->em->flush();

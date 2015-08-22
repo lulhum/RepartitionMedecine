@@ -23,6 +23,12 @@ class StageFilterType extends AbstractType
                 'multiple' => true,
                 'required' => false,
             ))
+            ->add('periods', 'entity', array(
+                'label' => 'Périodes',
+                'class' => 'LulhumRepartitionMedecineBundle:Period',
+                'multiple' => true,
+                'required' => false,
+            ))
             ->add('categoriesOr', 'entity', array(
                 'label' => 'Catégories (Ou)',
                 'class' => 'LulhumRepartitionMedecineBundle:Category',

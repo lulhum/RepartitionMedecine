@@ -27,6 +27,13 @@ class RequirementParamsType extends AbstractType
                     'choices' => User::PROMOTIONS,
                 ));
         }
+        elseif($paramType === 'group') {
+            $builder
+                ->add('group', 'choice', array(
+                    'label' => Requirement::TYPES[$paramType],
+                    'choices' => User::GROUPS,
+                ));
+        }
         elseif($paramType === 'maxStagesInCategory') {
             $builder
                 ->add('category', 'entity', array(

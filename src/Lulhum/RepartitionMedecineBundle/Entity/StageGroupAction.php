@@ -1,36 +1,35 @@
 <?php
-// src/Lulhum/RepartitionMedecineBundle/Entity/StageProposalGroupAction.php
+// src/Lulhum/RepartitionMedecineBundle/Entity/StageGroupAction.php
 
 namespace Lulhum\RepartitionMedecineBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
-class StageProposalGroupAction
+class StageGroupAction
 {
     const ACTIONS = array(
-        'unlock' => 'Activer',
-        'lock' => 'Désactiver',
-        'addConstraint' => 'Ajouter une Contrainte',
-        'start' => 'Démarrer la répartition',
-    );
+        'unlock' => 'Refuser',
+        'lock' => 'Accepter',
+        'delete' => 'Supprimer',
+     );
 
-    protected $proposals;
+    protected $stages;
 
     protected $action=null;
 
     public function __construct()
     {
-        $this->proposals = new ArrayCollection();
+        $this->stages = new ArrayCollection();
     }
 
-    public function getProposals()
+    public function getStages()
     {
-        return $this->proposals;
+        return $this->stages;
     }
 
-    public function setProposals(ArrayCollection $proposals)
+    public function setStages(ArrayCollection $stages)
     {
-        $this->proposals = $proposals;
+        $this->stages = $stages;
     }
 
     public function getAction()
@@ -52,15 +51,15 @@ class StageProposalGroupAction
 
     public function executeLockAction()
     {
-        foreach($this->getProposals() as $proposal) {
-            $proposal->setLocked(true);
+        foreach($this->getStages() as $stage) {
+            $stage->setLocked(true);
         }
     }
 
     public function executeUnlockAction()
     {
-        foreach($this->getProposals() as $proposal) {
-            $proposal->setLocked(false);
+        foreach($this->getStages() as $stage) {
+            $stage->setLocked(false);
         }
     }
     

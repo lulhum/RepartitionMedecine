@@ -41,8 +41,6 @@ class Stage
      */     
     private $proposal;
 
-    private $checkRequirementsCache=null;
-
     public function __construct(User $user=null, StageProposal $proposal=null)
     {
         if(!is_null($user) && !is_null($proposal)) {

@@ -63,11 +63,32 @@ class RepartitionController extends Controller
 
         $proposals = array_map(function($stage) {
             return $stage->getProposal();
-        }, $em->getRepository('LulhumRepartitionMedecineBundle:Stage')->findByUser($user));
+        }, $em->getRepository('LulhumRepartitionMedecineBundle:Stage')->findBy(array(
+            'user' => $user,
+            'locked' => false,            
+        )));
 
         return $this->render('LulhumRepartitionMedecineBundle:Repartition:stages.html.twig', array(
             'proposals' => $proposals,
             'type' => 'pending',
+        ));
+    }
+
+    public function stagesAcceptedAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        $user = $this->container->get('security.context')->getToken()->getUser();
+
+        $proposals = array_map(function($stage) {
+            return $stage->getProposal();
+        }, $em->getRepository('LulhumRepartitionMedecineBundle:Stage')->findBy(array(
+            'user' => $user,
+            'locked' => true,            
+        )));
+
+        return $this->render('LulhumRepartitionMedecineBundle:Repartition:stages.html.twig', array(
+            'proposals' => $proposals,
+            'type' => 'accepted',
         ));
     }
 

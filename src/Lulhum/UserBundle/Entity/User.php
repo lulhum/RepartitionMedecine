@@ -15,7 +15,19 @@ class User extends BaseUser
 {
 
     // /!\ Must also change the values list in the annotation field of the promotion attribute. Not very clean but no easy workaround...
-    const PROMOTIONS = array('PACES' => 'PACES', 'L2' => 'L2', 'rL2' => 'rattrapages de L2', 'L3' => 'L3', 'rL3' => 'rattrapages de L3', 'DFASM1' => 'DFASM 1', 'rDFASM1' => 'rattrapages de DFASM 1', 'DFASM2' => 'DFASM 2', 'rDCEM3' => 'rattrapages de DCEM 3', 'DCEM4' => 'DCEM 4');
+    const PROMOTIONS = array(
+        'PACES' => 'PACES',
+        'L2' => 'L2',
+        'L3' => 'L3',
+        'DFASM1' => 'DFASM 1',
+        'DFASM2' => 'DFASM 2',
+        'DFASM3' => 'DFASM 3'
+    );
+
+    const GROUPS = array(
+        'A' => 'A',
+        'B' => 'B',
+    );
     
     /**
      * @ORM\Column(name="id", type="integer")
@@ -45,7 +57,7 @@ class User extends BaseUser
     private $phone;
 
     /**
-     * @ORM\Column(name="promotion", type="string", nullable=true, columnDefinition="enum('PACES', 'L2', 'rL2', 'L3', 'rL3', 'DFASM1', 'rDFASM1', 'DFASM2', 'rDCEM3', 'DCEM4')")
+     * @ORM\Column(name="promotion", type="string", nullable=true, columnDefinition="enum('PACES', 'L2', 'L3', 'DFASM1', 'DFASM2', 'DFASM3')")
      */
     private $promotion;
 
@@ -80,12 +92,13 @@ class User extends BaseUser
     private $repartitionGroupForce = False;
 
     /**
-     * @ORM\OneToMany(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\Stage", mappedBy="user", cascade="remove")
+     * @ORM\OneToMany(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\Stage", mappedBy="user", cascade={"remove"})
      */
     private $stages;
 
     public function __construct()
     {
+        parent::__construct();
         $this->stages = new ArrayCollection();
     }
 
@@ -307,13 +320,22 @@ class User extends BaseUser
     }
 
 
-    public function countStagesInCategory($categoryId, $locked)
+    public function countStagesInCategory($categoryId, $locked = null)
     {
-        return $this->stages->filter(function($stage) use (&$categoryId, &$locked) {
-            return $stage->getLocked() === $locked && $stage->getProposal()->getCategory()->getCategories()->exists(function($key, $category) use (&$categoryId) {
-                return $category->getId() === (int)$categoryId;
-            });
-        })->count();
+        if(is_null($locked)) {
+            return $this->stages->filter(function($stage) use (&$categoryId) {
+                return $stage->getProposal()->getCategory()->getCategories()->exists(function($key, $category) use (&$categoryId) {
+                    return $category->getId() === (int)$categoryId;
+                });
+            })->count();
+        }
+        else {
+            return $this->stages->filter(function($stage) use (&$categoryId, &$locked) {
+                return $stage->getLocked() === $locked && $stage->getProposal()->getCategory()->getCategories()->exists(function($key, $category) use (&$categoryId) {
+                    return $category->getId() === (int)$categoryId;
+                });
+            })->count();
+        }        
     }
 
 }
