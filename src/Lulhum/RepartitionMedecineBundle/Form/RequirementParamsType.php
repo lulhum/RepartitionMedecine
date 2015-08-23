@@ -62,6 +62,13 @@ class RequirementParamsType extends AbstractType
                     'data' => 1,
                 ));
         }
+        elseif($paramType === 'maxStagesInStageCategory') {
+            $builder
+                ->add('maxStages', 'integer', array(
+                    'label' => false,
+                    'data' => 1,
+                ));
+        }
     }
     
     public function getName()

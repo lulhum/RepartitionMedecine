@@ -56,6 +56,16 @@ class StageValidator
                         return false;
                     }
                 }
+                if($requirement->getType() === 'maxStagesInStageCategory') {
+                    if($stage->getUser()->countStagesInStageCategory($stage->getProposal()->getCategory()->getId(), true) > (int)$requirement->getParams()) {
+
+                        return false;
+                    }
+                    if($stage->getUser()->countStagesInStageCategory($stage->getProposal()->getCategory()->getId(), true) == (int)$requirement->getParams() && $stage->getUser()->countStagesInStageCategory($stage->getProposal()->getCategory()->getId(), false) != 0) {
+
+                        return false;
+                    }
+                }
             }
         }
 
@@ -106,6 +116,18 @@ class StageValidator
                     $conflicts[] = array(
                         'level' => $requirement->getStrict() ? 'danger' : 'warning',
                         'message' => 'L\'utilisateur a déjà effectué '.$stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], true).'/'.$requirement->getParamsArray()[1].' stages dans la catégorie "'.$this->getCategories()[(int)$requirement->getParamsArray()[0]].'"',
+                    );
+                }
+            }
+            elseif($requirement->getType() === 'maxStagesInStageCategory') {
+                $cond = !$stage->getLocked();
+                $cond = $cond && $stage->getUser()->countStagesInStageCategory($stage->getProposal()->getCategory()->getId(), true) == (int)$requirement->getParams();
+                $cond = $cond && $stage->getUser()->countStagesInStageCategory($stage->getProposal()->getCategory()->getId(), false) != 0;
+                $cond = $cond || $stage->getUser()->countStagesInStageCategory($stage->getProposal()->getCategory()->getId(), true) > (int)$requirement->getParams();                
+                if($cond) {            
+                    $conflicts[] = array(
+                        'level' => $requirement->getStrict() ? 'danger' : 'warning',
+                        'message' => 'L\'utilisateur a déjà effectué '.$stage->getUser()->countStagesInStageCategory($stage->getProposal()->getCategory()->getId(), true).'/'.$requirement->getParams().' stages avec ce modèle.',
                     );
                 }
             }

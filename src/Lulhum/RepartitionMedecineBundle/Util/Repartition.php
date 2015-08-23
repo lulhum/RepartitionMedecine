@@ -78,7 +78,7 @@ class Repartition
     {
         $proposals = $this->em->getRepository('LulhumRepartitionMedecineBundle:StageProposal')->findByDeadline($deadline);
         foreach($proposals as $proposal) {
-            if($method === 'autovalid') {
+            if($method === 'autovalid' && !$proposal->getLocked()) {
                 foreach($proposal->getStages() as $stage) {
                     if($this->validator->isValid($stage)) {
                         $stage->setLocked(true);

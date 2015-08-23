@@ -120,7 +120,21 @@
 				</td>
 				<td>
 					{% if stageProposals[loop.index0].locked %}
-						<span class="label label-danger" >Non</span>
+						{% if stageProposals[loop.index0].deadline is not null %}
+							{% set deadline = stageProposals[loop.index0].deadline %}							
+							<button type="button"
+								class="btn btn-danger btn-xs"
+								data-container="body"
+								data-toggle="popover"
+								data-placement="right"
+								data-trigger="click"
+								data-content="{{ deadline.date|date('d/m - H:i') }} +{{ deadline.delay|date('H:i') }}" >
+								Non -
+								<span class="glyphicon glyphicon-time" ></span>
+							</button>
+						{% else %}
+							<span class="label label-danger" >Non</span>
+						{% endif %}
 					{% else %}
 						{% if stageProposals[loop.index0].deadline is not null %}
 							{% set deadline = stageProposals[loop.index0].deadline %}							
@@ -135,9 +149,7 @@
 								<span class="glyphicon glyphicon-time" ></span>
 							</button>
 						{% else %}
-							<span class="label label-success" >
-								Oui
-							</span>
+							<span class="label label-success" >Oui</span>
 						{% endif %}
 					{% endif %}
 				</td>

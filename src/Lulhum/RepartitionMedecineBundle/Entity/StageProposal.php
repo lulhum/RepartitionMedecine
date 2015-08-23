@@ -181,6 +181,11 @@ class StageProposal
      */
     public function getDescription()
     {
+        if(is_null($this->description) && !is_null($this->category) && !is_null($this->category->getDescription())) {
+
+            return $this->category->getDescription();
+        }
+        
         return $this->description;
     }
 
@@ -304,6 +309,17 @@ class StageProposal
     {
         return $this->stages;
     }
+
+    public function getSortedStages()
+    {
+        $iterator = $this->stages->getIterator();
+        $iterator->uasort(function($a, $b) {
+            if($a->getUser()->getFullname() === $b->getUser()->getFullname()) return 0;
+            return $a->getUser()->getFullname() < $b->getUser()->getFullname() ? -1 : 1;
+        });
+        
+        return new ArrayCollection(iterator_to_array($iterator));
+    }        
 
     public function addStage(Stage $stage)
     {

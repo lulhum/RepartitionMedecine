@@ -338,4 +338,11 @@ class User extends BaseUser
         }        
     }
 
+    public function countStagesInStageCategory($stageCategoryId, $locked)
+    {
+        return $this->stages->filter(function($stage) use (&$stageCategoryId, &$locked) {
+            return $stage->getLocked() === $locked && $stage->getProposal()->getCategory()->getId() === $stageCategoryId;
+        })->count();
+    }
+
 }

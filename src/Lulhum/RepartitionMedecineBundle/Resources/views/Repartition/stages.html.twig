@@ -45,19 +45,71 @@
 	{% else %}
 		{% for proposal in proposals %}
 			<div class="panel panel-default" >
-				<div class="panel-heading" >{{ proposal.name }}</div>
+				<div class="panel-heading" >
+					{{ proposal.name }}
+					<button class="btn btn-default" role="button" data-toggle="collapse" href="#proposal-info-{{ proposal.id }}" aria-expanded="false" aria-controls="proposal-info-{{ proposal.id }}" >
+						Détails <span class="glyphicon glyphicon-zoom-in" ></span>
+					</button>
+				</div>
 				<div class="panel-body" >
-					Période: {{ proposal.period.description }}<br/>
-					Places:
-					{% set taked = proposal.stages.count %}
-					{% if proposal.hasRequirementType('maxPlaces') %}
-						{% set max = proposal.getRequirementsByType('maxPlaces')[0].params %}
-						<span class="label label-{% if taked > max %}danger{% elseif taked == max %}warning{% else %}success{% endif %}" >
-							{{ taked  }}/{{ max }}
-						</span>
-					{% else %}
-						<span class="label label-success" >{{ taked }}/&infin;</span>
-					{% endif %}
+					<div class="row" >
+						<div class="col-md-2" >Période:</div>
+						<div class="col-md-10" >{{ proposal.period.description }}</div>
+					</div>
+					<div class="row" >
+						<div class="col-md-2" >Places:</div>
+						<div class="col-md-10" >
+							{% set taked = proposal.stages.count %}
+							{% if proposal.hasRequirementType('maxPlaces') %}
+								{% set max = proposal.getRequirementsByType('maxPlaces')[0].params %}
+								<span class="label label-{% if taked > max %}danger{% elseif taked == max %}warning{% else %}success{% endif %}" >
+									{{ taked  }}/{{ max }}
+								</span>
+							{% else %}
+								<span class="label label-success" >{{ taked }}/&infin;</span>
+							{% endif %}
+						</div>
+					</div>
+					<div class=" collapse" id="proposal-info-{{ proposal.id }}" >
+						{% if proposal.deadline is not null %}
+							<div class="row" >
+								<div class="col-md-2" >Fin des inscriptions:</div>
+								<div class="col-md-10" >{{ proposal.deadline.date|date('d/m - H:i') }}</div>
+							</div>
+						{% endif %}
+						<div class="row" >
+							<div class="col-md-2" >Lieu:</div>
+							<div class="col-md-10" >{{ proposal.category.location }}</div>
+						</div>
+						<div class="row" >
+							<div class="col-md-2" >Catégories:</div>
+							<div class="col-md-10" >
+								{% for category in proposal.category.categories %}
+									{{ category }}
+									{% if not loop.last %},{% endif %}
+								{% endfor %}
+							</div>							
+						</div>
+						{% if proposal.description is not null %}
+							<div class="row" >
+								<div class="col-md-2" >Description:</div>						
+							</div>
+							<div class="well">{{ proposal.description }}</div>							
+						{% endif %}
+						{% if proposal.stages|length > 0 %}
+							<div class="row" >
+								<div class="col-md-2" >Utilisateurs inscrits:</div>						
+							</div>
+							<ul class="list-group" >
+								{% for stage in proposal.sortedStages %}
+									<li class="list-group-item" >
+										{{ stage.user.fullname }}
+									</li>
+								{% endfor %}
+							</ul>	
+						{% endif %}
+						
+					</div>
 				</div>
 				<div class="panel-footer" >
 					{% if type == 'proposals' %}

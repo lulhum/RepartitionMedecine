@@ -18,8 +18,8 @@ class Requirement
         'promotion' => 'Promotion',
         'group' => 'Groupe',
         //'maxChoicesInPeriod' => 'Maximum de choix pour cette période',
+        'maxStagesInStageCategory' => 'Maximum de stages avec ce modèle',
         'maxStagesInCategory' => 'Maximum de stages dans la catégorie',
-        //'maxStagesInStageCategory' => 'Maximum de stages avec ce modèle',
         'maxChoicesInCategory' => 'Maximum de choix dans la catégorie',
     );
     
