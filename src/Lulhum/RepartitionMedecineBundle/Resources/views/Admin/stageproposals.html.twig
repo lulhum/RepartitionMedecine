@@ -41,6 +41,9 @@
 			{{ form_widget(filterForm.filtrer, {'attr': {'class': 'btn btn-primary' }}) }}
 		</div>
 		<div class="form-group" >				
+			<a class="btn btn-primary" href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals_resetfilter') }}">Filtre par défaut</a>
+		</div>
+		<div class="form-group" >				
 			<a class="btn btn-success" href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals_new') }}">Nouvelle proposition</a>
 		</div>
 	</div>
@@ -103,7 +106,7 @@
 				</td>
 				<td>	
 					{% if stageProposals[loop.index0].hasRequirementType('maxPlaces') %}
-						{% set maxPlaces = stageProposals[loop.index0].getRequirementsByType('maxPlaces')[0].params %}
+						{% set maxPlaces = stageProposals[loop.index0].getRequirementsByType('maxPlaces').first.params %}
 						{% set usedPlaces = stageProposals[loop.index0].stages.count %}
 						<div class="label label-{% if maxPlaces < usedPlaces %}danger{% else %}success{% endif %}" >
 							{{ usedPlaces }}

@@ -349,5 +349,15 @@ class StageProposal
             return $requirement->getType() === $type;
         });
     }
+
+    public function countPlaces()
+    {
+        if($this->hasRequirementType('maxPlaces')) {
+            
+            return $this->getStages()->count() - (int)($this->getRequirementsByType('maxPlaces')->first()->getParams());
+        }
         
+        return PHP_INT_MAX;
+    }
+            
 }

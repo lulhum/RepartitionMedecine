@@ -1,0 +1,25 @@
+{# src/Lulhum/UserBundle/Resources/views/Admin/confirm.html.twig #}
+
+{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+
+{% block title %}
+  Confirmation avant suppression - {{ parent() }}
+{% endblock %}
+
+{% block main %}
+	<div class="panel panel-danger" >
+		<div class="panel-heading" >
+			{{ message }}
+		</div>
+		<div class="panel-body" >
+			{{ user.fullname }}
+		</div>
+		<div class="panel-footer" style="background-color: #f2dede" >
+			{{ form_start(form) }}
+			{{ form_widget(form.Confirmer) }}
+			<a href="{{ path('lulhum_user_admin_userlist') }}" class="btn btn-primary" >Annuler</a>
+			{{ form_rest(form) }}
+			{{ form_end(form) }}
+		</div>
+	</div>
+{% endblock %}

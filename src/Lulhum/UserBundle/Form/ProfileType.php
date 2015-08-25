@@ -28,10 +28,10 @@ class ProfileType extends AbstractType
             ->add('studentId', null, array('label' => 'Numéro Étudiant'))
             ->add('email', 'email', array('label' => 'form.email', 'translation_domain' => 'FOSUserBundle'))
             ->add('phone', null, array('label' => 'Numéro de portable'))
-            ->add('promotion', 'choice', array(
+            /*->add('promotion', 'choice', array(
                 'label' => 'Promotion pour l\'année '.$schoolYear,
                 'choices' => \Lulhum\UserBundle\Entity\User::getPromotionChoicesValues()
-            ))
+            ))*/
             ->add('present', 'choice', array(
                 'label' => 'Présent pendant la période de répartition',
                 'choices' => array('Oui' => 'Oui', 'Non' => 'Non', 'Variable' => 'Variable')

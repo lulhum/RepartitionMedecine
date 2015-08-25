@@ -35,6 +35,11 @@ class StageProposalFilter
         $this->periods = $periods;
     }
 
+    public function addPeriod(Period $period)
+    {
+        $this->periods[] = $period;
+    }
+
     public function getStageCategories()
     {
         return $this->stageCategories;

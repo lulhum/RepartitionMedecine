@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Model\User as BaseUser;
 use Lulhum\RepartitionMedecineBundle\Entity\Stage;
+use Lulhum\RepartitionMedecineBundle\Entity\Period;
 
 /**
  * @ORM\Entity(repositoryClass="Lulhum\UserBundle\Repository\UserRepository")
@@ -319,6 +320,19 @@ class User extends BaseUser
         return $this;
     }
 
+    public function hasStageInPeriod(Period $period)
+    {
+        return $this->stages->filter(function($stage) use (&$period) {
+            return $stage->getProposal()->getPeriod()->getId() === $period->getId();
+        })->count() > 0;
+    }        
+
+    public function getStageInPeriod(Period $period)
+    {
+        return $this->stages->filter(function($stage) use (&$period) {
+            return $stage->getProposal()->getPeriod()->getId() === $period->getId();
+        })->first();
+    }        
 
     public function countStagesInCategory($categoryId, $locked = null)
     {

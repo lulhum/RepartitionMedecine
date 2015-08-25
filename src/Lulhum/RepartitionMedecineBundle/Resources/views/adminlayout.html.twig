@@ -9,22 +9,11 @@
 {% block navbarmain %}
 	<li class="dropdown">
 		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-			Utilisateurs
+			Administration
 			<span class="caret"></span>
 		</a>
 		<ul class="dropdown-menu">
-			<li><a href="{{ path('lulhum_user_admin_userlist') }}">Tous</a></li>
-			{{ render(controller("LulhumUserBundle:Admin:menuUserPromotion")) }}
-			<li role="separator" class="divider"></li>
-			<li><a href="{{ path('lulhum_user_admin_user_add') }}">Ajouter un utilisateur</a></li>
-		</ul>
-	</li>
-	<li class="dropdown">
-		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-			Répartitions
-			<span class="caret"></span>
-		</a>
-		<ul class="dropdown-menu">
+			<li><a href="{{ path('lulhum_user_admin_userlist') }}">Utilisateurs</a></li>
 			<li><a href="{{ path('lulhum_repartitionmedecine_admin_repartitiongroup_home') }}">Groupes</a></li>
 			<li role="separator" class="divider"></li>
 			<li><a href="{{ path('lulhum_repartitionmedecine_admin_stage_categories') }}">Modèles de stages</a></li>

@@ -5,51 +5,57 @@ namespace Lulhum\UserBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Lulhum\UserBundle\Form\UserType;
 use Lulhum\UserBundle\Entity\User;
+use Lulhum\UserBundle\Entity\UserFilter;
+use Lulhum\UserBundle\Form\UserFilterType;
 
 class AdminController extends Controller
 {
 
-    public function menuUserPromotionAction()
+    public function listUsersAction(Request $request)
     {
-        return $this->render('LulhumUserBundle:Admin:usermenupromotion.html.twig', array(
-            'promotions' => \Lulhum\UserBundle\Entity\User::getPromotionChoicesValues()
-        ));
-    }
-
-    public function listUsersAction(Request $request, $promotion=null,$repartitionGroup=null)
-    {
-        $filter=array();
-        if(!empty($promotion)) {
-            if(array_key_exists($promotion, \Lulhum\UserBundle\Entity\User::getPromotionChoicesValues())) {
-                $filter['promotion'] = $promotion;
-                if(!empty($repartitionGroup) && ($repartitionGroup === 'A' || $repartitionGroup === 'B')) {
-                    $filter['repartitionGroup'] = $repartitionGroup;
-                }
-            }
-            else {
-                throw $this->createNotFoundException('Cette promotion n\'existe pas.');
+        $em = $this->getDoctrine()->getManager();
+        
+        $session = new Session();
+        if($session->has('adminUsersFilter') && $session->get('adminUsersFilter') instanceof UserFilter) {
+            $userFilter = $session->get('adminUsersFilter');
+            // Merge all the filter entities into the entity manager
+            foreach($userFilter->getCollections() as $key => $collection) {
+                call_user_func(array($userFilter, 'set'.ucfirst($key)), call_user_func(array($userFilter, 'get'.ucfirst($key)))->map(function($item) use (&$em) {
+                    return $em->merge($item);
+                }));
             }
         }
-        $request->getSession()->set('listUserPromotion', $promotion);
-        $repository = $this->getDoctrine()->getManager()->getRepository('LulhumUserBundle:User');
+        else {
+            $userFilter = new UserFilter();
+        }
+
+        $filterFormType = new UserFilterType();
+        $filterForm = $this->createForm($filterFormType, $userFilter);
+        if($request->getMethod() === 'POST' && $request->request->has($filterFormType->getName())) {
+                $filterForm->handleRequest($request);
+                $session->set('adminUsersFilter', $userFilter);
+        }
+
+        $repository = $em->getRepository('LulhumUserBundle:User');
         $userList = $repository->findBy(
-            $filter,
+            $userFilter->getForFindBy(),
             array('lastname' => 'asc', 'firstname' => 'asc')            
         );
 
         return $this->render('LulhumUserBundle:Admin:listusers.html.twig', array(
             'userList' => $userList,
-            'promotion' => $promotion
+            'filterForm' => $filterForm->createView(),
+            'filter' => $userFilter,
         ));
     }
 
     public function showUserAction(Request $request, User $user, $id) {       
         return $this->render('LulhumUserBundle:Admin:user.html.twig', array(
             'user' => $user,
-            'listUserPromotion' => $request->getSession()->get('listUserPromotion')
         ));
     }
 
@@ -65,14 +71,7 @@ class AdminController extends Controller
             $userManager->updateUser($user);
             $request->getSession()->getFlashBag()->add('success', 'Utilisateur modifié.');
 
-            if(empty($request->getSession()->get('listUserPromotion'))) {
-                
-                return $this->redirect($this->generateUrl('lulhum_user_admin_userlist'));
-            }
-            else {
-
-                return $this->redirect($this->generateUrl('lulhum_user_admin_userlist_promotion', array('promotion' => $request->getSession()->get('listUserPromotion'))));
-            }
+            return $this->redirect($this->generateUrl('lulhum_user_admin_userlist'));
         }
 
         return $this->render('LulhumUserBundle:Admin:useredit.html.twig', array(
@@ -94,20 +93,74 @@ class AdminController extends Controller
         if($form->isValid()) {
             $userManager->updateUser($user);
             $request->getSession()->getFlashBag()->add('success', 'Utilisateur ajouté.');
-            
-            if(empty($request->getSession()->get('listUserPromotion'))) {
-                
-                return $this->redirect($this->generateUrl('lulhum_user_admin_userlist'));
-            }
-            else {
 
-                return $this->redirect($this->generateUrl('lulhum_user_admin_userlist_promotion', array('promotion' => $request->getSession()->get('listUserPromotion'))));
-            }
+            return $this->redirect($this->generateUrl('lulhum_user_admin_userlist'));
         }
 
         return $this->render('LulhumUserBundle:Admin:useradd.html.twig', array(
             'form' => $form->createView(),
             'user' => $user
+        ));
+    }
+
+    public function deleteUserAction(Request $request, User $user, $id)
+    {
+        $form = $this->get('form.factory')
+                     ->createBuilder('form')
+                     ->add('Confirmer', 'submit', array('attr' => array('class' => 'btn btn-danger')))
+                     ->getForm();
+
+        $form->handleRequest($request);
+
+        if($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($user);
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('lulhum_user_admin_userlist'));
+        }
+
+        return $this->render('LulhumUserBundle:Admin:confirm.html.twig', array(
+            'form' => $form->createView(),
+            'user' => $user,
+            'message' => 'Attention, vous êtes sur le point de supprimer l\'utilisateur suivant de manière définitive !',
+        ));
+    }
+
+    public function switchAdminAction(Request $request, User $user, $id)
+    {
+        $form = $this->get('form.factory')
+                     ->createBuilder('form')
+                     ->add('Confirmer', 'submit', array('attr' => array('class' => 'btn btn-danger')))
+                     ->getForm();
+
+        $form->handleRequest($request);
+
+        if($form->isValid()) {
+            if($user->hasRole('ROLE_ADMIN')) {
+                $user->removeRole('ROLE_ADMIN');
+            }
+            else {
+                $user->addRole('ROLE_ADMIN');
+            }
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('lulhum_user_admin_userlist'));
+        }
+
+        if($user->hasRole('ROLE_ADMIN')) {
+            $message = 'Attention, vous êtes sur le point de supprimer le rôle d\'administrateur de l\'utilisateur suivant !';
+        }
+        else {
+            $message = 'Attention, vous êtes sur le point de nommer administrateur l\'utilisateur suivant !';
+        }
+
+        return $this->render('LulhumUserBundle:Admin:confirm.html.twig', array(
+            'form' => $form->createView(),
+            'user' => $user,
+            'message' => $message,
         ));
     }
 

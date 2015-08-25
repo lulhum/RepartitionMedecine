@@ -21,6 +21,35 @@
 			<a href="#">Historique</a>
 		</li>
 	</ul>
+	{% if type == 'proposals' %}
+		Trier par:
+		<div class="btn-toolbar" role="toolbar" >
+			<div class="btn-group" role="group" >
+				<a class="btn btn-default" href="{{ path('lulhum_repartitionmedecine_stages_proposals_sorted', {'sort': 'title'}) }}" >
+					Intitulé
+				</a>
+				<a class="btn btn-default" href="{{ path('lulhum_repartitionmedecine_stages_proposals_sorted', {'sort': 'places'}) }}" >
+					Places
+				</a>
+				<a class="btn btn-default" href="{{ path('lulhum_repartitionmedecine_stages_proposals_sorted', {'sort': 'period'}) }}" >
+					Période
+				</a>
+			</div>
+			<div class="col-md-4" >			
+				{{ form_start(form) }}
+				<div class="input-group" >
+					{{ form_widget(form.search, {'attr': {'class': 'form-control', 'placeholder': 'Rechercher...'}}) }}
+					<span class="input-group-btn" >
+						<button class="btn btn-default" type="submit" >
+							<span class="glyphicon glyphicon-search" ></span>
+						</button>
+					</span>
+				</div>
+				{{ form_rest(form) }}
+				{{ form_end(form) }}
+			</div>
+		</div>
+	{% endif %}
 {% endblock %}
 
 {% block body %}
@@ -45,23 +74,28 @@
 	{% else %}
 		{% for proposal in proposals %}
 			<div class="panel panel-default" >
-				<div class="panel-heading" >
+				<div class="panel-heading" >					
 					{{ proposal.name }}
 					<button class="btn btn-default" role="button" data-toggle="collapse" href="#proposal-info-{{ proposal.id }}" aria-expanded="false" aria-controls="proposal-info-{{ proposal.id }}" >
 						Détails <span class="glyphicon glyphicon-zoom-in" ></span>
 					</button>
+					{% if type == 'proposals' %}
+						<a href="{{ path('lulhum_repartitionmedecine_stages_suscribe', {'id': proposal.id}) }}" class="btn btn-primary" >
+							S'inscrire au stage
+						</a>
+					{% elseif type == 'pending' and not proposal.locked() %}
+						<a href="{{ path('lulhum_repartitionmedecine_stages_unsuscribe', {'id': proposal.id}) }}" class="btn btn-danger" >
+							Annuler l'inscription
+						</a>
+					{% endif %}
 				</div>
-				<div class="panel-body" >
-					<div class="row" >
-						<div class="col-md-2" >Période:</div>
-						<div class="col-md-10" >{{ proposal.period.description }}</div>
-					</div>
+				<div class="panel-body" >	
 					<div class="row" >
 						<div class="col-md-2" >Places:</div>
 						<div class="col-md-10" >
 							{% set taked = proposal.stages.count %}
 							{% if proposal.hasRequirementType('maxPlaces') %}
-								{% set max = proposal.getRequirementsByType('maxPlaces')[0].params %}
+								{% set max = proposal.getRequirementsByType('maxPlaces').first.params %}
 								<span class="label label-{% if taked > max %}danger{% elseif taked == max %}warning{% else %}success{% endif %}" >
 									{{ taked  }}/{{ max }}
 								</span>
@@ -71,6 +105,10 @@
 						</div>
 					</div>
 					<div class=" collapse" id="proposal-info-{{ proposal.id }}" >
+						<div class="row" >
+							<div class="col-md-2" >Période:</div>
+							<div class="col-md-10" >{{ proposal.period.description }}</div>
+						</div>					
 						{% if proposal.deadline is not null %}
 							<div class="row" >
 								<div class="col-md-2" >Fin des inscriptions:</div>
@@ -79,7 +117,10 @@
 						{% endif %}
 						<div class="row" >
 							<div class="col-md-2" >Lieu:</div>
-							<div class="col-md-10" >{{ proposal.category.location }}</div>
+							<div class="col-md-10" >
+								{{ proposal.category.location }}
+								(Distance: {{ proposal.category.location.distance }}km)
+							</div>
 						</div>
 						<div class="row" >
 							<div class="col-md-2" >Catégories:</div>
@@ -110,17 +151,6 @@
 						{% endif %}
 						
 					</div>
-				</div>
-				<div class="panel-footer" >
-					{% if type == 'proposals' %}
-						<a href="{{ path('lulhum_repartitionmedecine_stages_suscribe', {'id': proposal.id}) }}" class="btn btn-primary" >
-							S'inscrire au stage
-						</a>
-					{% elseif type == 'pending' and not proposal.locked() %}
-						<a href="{{ path('lulhum_repartitionmedecine_stages_unsuscribe', {'id': proposal.id}) }}" class="btn btn-danger" >
-							Annuler l'inscription
-						</a>
-					{% endif %}
 				</div>
 			</div>
 		{% endfor %}

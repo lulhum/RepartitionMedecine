@@ -108,6 +108,11 @@ class Period
      */
     public function getDescription()
     {
+        if(is_null($this->description)) {
+
+            return $this->name;
+        }
+        
         return $this->description;
     }
 

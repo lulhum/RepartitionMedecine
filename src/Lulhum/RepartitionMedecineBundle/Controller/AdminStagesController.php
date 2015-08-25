@@ -121,6 +121,9 @@ class AdminStagesController extends Controller
         }
         else {
             $stageProposalFilter = new StageProposalFilter();
+            foreach($em->getRepository('LulhumRepartitionMedecineBundle:Period')->findCurrents() as $period) {
+                $stageProposalFilter->addPeriod($period);
+            }
         }
                                  
         $filterFormType = new StageProposalFilterType();
@@ -367,6 +370,22 @@ class AdminStagesController extends Controller
 
         return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_stages'));
     }
+
+    public function resetStageProposalsFilterAction()
+    {
+        $session = new Session();
+        $session->remove('adminStageProposalsFilter');
+
+        return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals'));
+    }
+
+    public function resetStageCategoriesFilterAction()
+    {
+        $session = new Session();
+        $session->remove('adminStageCategoriesFilter');
+
+        return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_categories'));
+    }
         
 
     public function stagesAction(Request $request)
@@ -563,7 +582,7 @@ class AdminStagesController extends Controller
             $em->remove($category);
             $em->flush();
 
-            return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals'));
+            return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_categories'));
         }
 
         $stages = array();
@@ -573,7 +592,7 @@ class AdminStagesController extends Controller
 
         return $this->render('LulhumRepartitionMedecineBundle:Admin:confirmdelete.html.twig', array(
             'form' => $form->createView(),
-            'stages' => $proposal->getStages(),
+            'stages' => $stages,
             'proposals' => $category->getProposals(),
             'categories' => array($category),
         ));

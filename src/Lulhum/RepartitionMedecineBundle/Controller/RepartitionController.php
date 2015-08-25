@@ -43,16 +43,46 @@ class RepartitionController extends Controller
         ));
     }
 
-    public function stagesProposalsAction()
+    public function stagesProposalsAction(Request $request, $sort = null)
     {
+        $session = new Session();
+        if($session->has('stagesSortOptions')) {
+            $sortOptions = $session->get('stagesSortOptions');
+        }
+        else {
+            $sortOptions = array('places', 'period', 'title');
+        }
+        if(!is_null($sort)) {
+            $sortOptions = array_filter($sortOptions, function($option) use ($sort) {
+                return ($option !== $sort);
+            });
+            array_unshift($sortOptions, $sort);
+        }
+        $session->set('stagesSortOptions', $sortOptions);
+
+        $form = $this->get('form.factory')
+                     ->createBuilder('form')
+                     ->add('search', 'text', array(
+                         'label' => false,
+                     ))
+                     ->getForm();
+        
         $em = $this->getDoctrine()->getManager();
         $user = $this->container->get('security.context')->getToken()->getUser();
 
-        $proposals = $em->getRepository('LulhumRepartitionMedecineBundle:StageProposal')->findAllValidForUser($user, $this->get('lulhum_repartitionmedecine_stagevalidator'));
+        $form->handleRequest($request);
+        
+        if($form->isValid()) {
+            $proposals = $em->getRepository('LulhumRepartitionMedecineBundle:StageProposal')->findAllValidForUser($user, $this->get('lulhum_repartitionmedecine_stagevalidator'), $sortOptions, $form->get('search')->getData());
+        }
+        else {
+            $proposals = $em->getRepository('LulhumRepartitionMedecineBundle:StageProposal')->findAllValidForUser($user, $this->get('lulhum_repartitionmedecine_stagevalidator'), $sortOptions);
+        }
 
         return $this->render('LulhumRepartitionMedecineBundle:Repartition:stages.html.twig', array(
             'proposals' => $proposals,
             'type' => 'proposals',
+            'form' => $form->createView(),
         ));
     }
 

@@ -11,10 +11,6 @@
 	{% include "FOSUserBundle:Profile:show_content.html.twig" %}
 	
 	<p><a href="{{ path('lulhum_user_admin_user_edit', {'id': user.id}) }}">Modifier le profil</a></p>
-	{% if listUserPromotion is null %}
-		<p><a href="{{ path('lulhum_user_admin_userlist') }}">Retour à la liste</a></p>
-	{% else %}
-		<p><a href="{{ path('lulhum_user_admin_userlist_promotion', {'promotion': listUserPromotion }) }}">Retour à la liste</a></p>
-	{% endif %}
+	<p><a href="{{ path('lulhum_user_admin_userlist') }}">Retour à la liste</a></p>
 	
 {% endblock %}

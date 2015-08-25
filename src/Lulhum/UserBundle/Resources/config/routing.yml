@@ -2,16 +2,6 @@ lulhum_user_admin_userlist:
     path: /admin/users
     defaults: { _controller: LulhumUserBundle:Admin:listUsers }
 
-lulhum_user_admin_userlist_promotion:
-    path: /admin/users/{promotion}
-    defaults: { _controller: LulhumUserBundle:Admin:listUsers }
-
-lulhum_user_admin_userlist_promotion_group:
-    path: /admin/users/{promotion}/{repartitionGroup}
-    defaults: { _controller: LulhumUserBundle:Admin:listUsers }
-    requirements:
-        repartitionGroup: A|B
-
 lulhum_user_admin_user:
     path: /admin/user/show/{id}
     defaults: { _controller: LulhumUserBundle:Admin:showUser }
@@ -27,3 +17,15 @@ lulhum_user_admin_user_edit:
 lulhum_user_admin_user_add:
     path: /admin/user/add
     defaults: { _controller: LulhumUserBundle:Admin:addUser }
+
+lulhum_user_admin_user_delete:
+    path: /admin/user/delete/{id}
+    defaults: { _controller: LulhumUserBundle:Admin:deleteUser }
+    requirements:
+        userId: \d+
+
+lulhum_user_admin_user_switchadmin:
+    path: /admin/user/switchadmin/{id}
+    defaults: { _controller: LulhumUserBundle:Admin:switchAdmin }
+    requirements:
+        userId: \d+

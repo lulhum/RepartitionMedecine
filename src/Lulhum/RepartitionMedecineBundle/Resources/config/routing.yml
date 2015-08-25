@@ -12,6 +12,12 @@ lulhum_repartitionmedecine_stages_proposals:
     path: /stages/proposals
     defaults: { _controller: LulhumRepartitionMedecineBundle:Repartition:stagesProposals }
 
+lulhum_repartitionmedecine_stages_proposals_sorted:
+    path: /stages/proposals/{sort}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:Repartition:stagesProposals }
+    requirements:
+        sort: title|places|period
+
 lulhum_repartitionmedecine_stages_suscribe:
     path: /stages/suscribe/{id}
     defaults: { _controller: LulhumRepartitionMedecineBundle:Repartition:stagesSuscribe }
@@ -97,6 +103,10 @@ lulhum_repartitionmedecine_admin_stage_proposals_incategory:
     defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stageProposalsInCategory }
     requirements:
         id: \d+
+
+lulhum_repartitionmedecine_admin_stage_proposals_resetfilter:
+    path: /admin/stages/proposals/resetfilter
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:resetStageProposalsFilter }
 
 lulhum_repartitionmedecine_admin_stage_proposals_new:
     path: /admin/stages/stageproposals/new

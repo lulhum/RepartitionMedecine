@@ -7,106 +7,137 @@
 {% endblock %}
 
 {% block bodytitle %}
-	<div class="panel-title" >
-		Liste des utilisateurs
-		<div class="btn-group" >
-			<button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
-				Afficher Colonne <span class="caret" ></span>
-			</button>
-			<ul class="dropdown-menu" >
-				<li>
-					<button type button class="btn btn-link" data-toggle="collapse" data-target=".email" aria-expanded="false" >
-						Adresse mail
-					</button>
-				</li>
-				<li>
-					<button type button class="btn btn-link" data-toggle="collapse" data-target=".cellnumber" aria-expanded="false" >
-						Numéro de Portable
-					</button>
-				</li>
-				<li>
-					<button type button class="btn btn-link" data-toggle="collapse" data-target=".student-id" aria-expanded="false" >
-						Numéro étudiant
-					</button>
-				</li>
-				<li>
-					<button type button class="btn btn-link" data-toggle="collapse" data-target=".repartition-group" aria-expanded="false" >
-						Groupe
-					</button>
-				</li>
-				<li>
-					<button type button class="btn btn-link" data-toggle="collapse" data-target=".repartition-group-force" aria-expanded="false" >
-						Forcer le Groupe
-					</button>
-				</li>
-				<li>
-					<button type button class="btn btn-link" data-toggle="collapse" data-target=".repartition-presence" aria-expanded="false" >
-						Présent pendant la répartition
-					</button>
-				</li>
-				<li>
-					<button type button class="btn btn-link" data-toggle="collapse" data-target=".internet-access" aria-expanded="false" >
-						Accès Internet pendant la répartition
-					</button>
-				</li>
-				<li>
-					<button type button class="btn btn-link" data-toggle="collapse" data-target=".proxy-user" aria-expanded="false" >
-						Procuration
-					</button>
-				</li>
-			</ul>
+	<h3>Liste des utilisateurs</h3>
+	<hr/>
+	{{ form_start(filterForm, {'attr': {'class': 'form-inline'}}) }}
+	{{ form_errors(filterForm) }}
+	<div class="form-group" >
+		{{ form_label(filterForm.promotions, null, {'label_attr': {'class': 'control-label'}}) }}
+		<br/>
+		{{ form_errors(filterForm.promotions) }}
+		{{ form_widget(filterForm.promotions, {'attr': {'class': 'form-control', 'multiple': 'true', 'size': '2'}}) }}
+	</div>
+	<div class="form-group" >
+		{{ form_label(filterForm.group, null, {'label_attr': {'class': 'control-label'}}) }}
+		<br/>
+		{{ form_errors(filterForm.group) }}
+		{{ form_widget(filterForm.group, {'attr': {'class': 'form-control', 'size': '2'}}) }}
+	</div>
+	<div class="form-group" >
+		{{ form_label(filterForm.periods, null, {'label_attr': {'class': 'control-label'}}) }}
+		<br/>
+		{{ form_errors(filterForm.periods) }}
+		{{ form_widget(filterForm.periods, {'attr': {'class': 'form-control', 'multiple': 'true', 'size': '2'}}) }}
+	</div>
+	<div class="form-group" >
+		{{ form_label(filterForm.categories, null, {'label_attr': {'class': 'control-label'}}) }}
+		<br/>
+		{{ form_errors(filterForm.categories) }}
+		{{ form_widget(filterForm.categories, {'attr': {'class': 'form-control', 'multiple': 'true', 'size': '2'}}) }}
+	</div>
+	<br/>
+	<div style="margin-top:10px" >
+		<div class="form-group" >
+			{{ form_widget(filterForm.filtrer, {'attr': {'class': 'btn btn-primary' }}) }}
+		</div>
+		<div class="form-group" >
+			<a class="btn btn-success" href="{{ path('lulhum_user_admin_user_add') }}" >Nouvel Utilisateur</a>
 		</div>
 	</div>
+	{{ form_rest(filterForm) }}
+	{{ form_end(filterForm) }}
 {% endblock %}
 
 {% block nobody %}
 
-	{% for key, messages in app.session.flashbag.all() %}
-		{% for message in messages %}
-			<div class="alert alert-{{ key }}">
-				{{ message }}
-			</div>
-		{% endfor %}
-	{% endfor %}
-	
-	
-	
-
+	{% if app.session.flashbag.all()|length > 0 %}
+		<div class="panel-body" >
+			{% for key, messages in app.session.flashbag.all() %}
+				{% for message in messages %}
+					<div class="alert alert-{{ key }}">
+						{{ message }}
+					</div>
+				{% endfor %}
+			{% endfor %}
+		</div>
+	{% endif %}
 				
-	<table class="table table-striped table-hover">
+	<table class="table table-hover">
 		<tr>
 			<th>Nom</th>
 			<th>Prénom</th>
-			<th><span class="collapse email">Adresse mail</span></th>
-			<th><span class="collapse cellnumber">Numéro de Portable</span></th>
-			<th><span class="collapse student-id">Numéro étudiant</span></th>
 			<th>Promotion</th>
-			<th><span class="collapse repartition-group">Groupe</span></th>
-			<th><span class="collapse repartition-group-force" >Forcer le Groupe</span></th>
-			<th><span class="collapse repartition-presence" >Présent pendant la répartition</span></th>
-			<th><span class="collapse internet-access" >Accès Internet pendant la répartition</span></th>
-			<th><span class="collapse proxy-user" >Procuration</span></th>
-			<th></th>
+			<th>Groupe</th>
+			{% for period in filter.periods %}
+				<th>{{ period }}</th>
+			{% endfor %}
+			{% for category in filter.categories %}
+				<th>{{ category }}</th>
+			{% endfor %}
+			<th>Actions</th>
 		</tr>
 		{% for u in userList %}
 			<tr>
 				<td><a href="{{ path('lulhum_user_admin_user', {'id': u.id}) }}">{{ u.lastname }}</a></td>
 				<td>{{ u.firstname }}</td>
-				<td><span class="collapse email">{{ u.email }}</span></td>
-				<td><span class="collapse cellnumber">{{ u.phone }}</span></td>
-				<td><span class="collapse student-id">{{ u.studentId }}</span></td>
 				<td>{{ u.textPromotion }}</td>
-				<td><span class="collapse repartition-group">{{ u.repartitionGroup }}</span></td>
-				<td><span class="collapse repartition-group-force" >{% if u.repartitionGroupForce %}Oui{% else %}Non{% endif %}</span></td>
-				<td><span class="collapse repartition-presence">{{ u.present }}</span></td>
-				<td><span class="collapse internet-access">{{ u.internetAccess }}</span></td>
-				<td><span class="collapse proxy-user">{% if u.proxy is null %}Aucun{% else %}{{ u.proxy.fullname }}{% endif %}</span></td>
-				<td>
-					<a href="{{ path('lulhum_user_admin_user_edit', {'id': u.id}) }}">
+				<td>{{ u.repartitionGroup }}</td>
+
+				{% for period in filter.periods %}
+					<td>
+						{% if u.hasStageInPeriod(period) and u.getStageInPeriod(period).locked %}
+							<span class="label label-success" >Oui</span>
+						{% else %}
+							<span class="label label-danger" >Non</span>
+						{% endif %}
+					</td>
+				{% endfor %}
+				{% for category in filter.categories %}
+					<td>
+						{% if u.countStagesInCategory(category.id, true) %}
+							<span class="label label-success" >Oui</span>
+						{% else %}
+							<span class="label label-danger" >Non</span>
+						{% endif %}
+					</td>
+				{% endfor %}
+				<td>					
+					<a href="{{ path('lulhum_user_admin_user_edit', {'id': u.id}) }}" >
 						<span class="glyphicon glyphicon-edit" ></span>
+					</a>
+					<a href="" >
+						{% if u.hasRole('ROLE_ADMIN') %}
+							<a href="{{ path('lulhum_user_admin_user_switchadmin', {'id': u.id}) }}" class="text-success" >
+								<span class="glyphicon glyphicon-eye-open" ></span>
+							</a>
+						{% else %}
+							<a href="{{ path('lulhum_user_admin_user_switchadmin', {'id': u.id}) }}" class="text-danger" >
+								<span class="glyphicon glyphicon-eye-close" ></span>
+							</a>
+						{% endif %}
+					</a>
+					<a href="{{ path('lulhum_user_admin_user_delete', {'id': u.id}) }}" class="text-danger" >
+						<span class="glyphicon glyphicon-remove" ></span>
 					</a>
 				</td>
 			</tr>
 		{% endfor %}
 	</table>
+{% endblock %}
+
+{% block bodyunder %}
+	<div>
+		<span class="text-success" >
+			<span class="glyphicon glyphicon-eye-open" ></span>
+		</span>
+		Administrateur -
+		<span class="text-primary" >
+			<span class="glyphicon glyphicon-edit" ></span>
+		</span>
+		Éditer l'utilisateur -
+		<span class="text-danger" >
+			<span class="glyphicon glyphicon-remove" ></span>
+		</span>
+		Supprimer l'utilisateur
+	</div>
 {% endblock %}

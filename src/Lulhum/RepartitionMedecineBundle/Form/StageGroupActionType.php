@@ -26,6 +26,7 @@ class StageGroupActionType extends AbstractType
                 },
                 'expanded' => true,
                 'multiple' => true,
+                'label' => false,
             ))
             ->add('action', 'choice', array(
                 'label' => 'Action groupée',
