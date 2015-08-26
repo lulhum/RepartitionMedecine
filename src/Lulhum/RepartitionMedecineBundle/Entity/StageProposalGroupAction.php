@@ -12,6 +12,7 @@ class StageProposalGroupAction
         'lock' => 'Désactiver',
         'addConstraint' => 'Ajouter une Contrainte',
         'start' => 'Démarrer la répartition',
+        'clone' => 'Cloner pour les périodes',
     );
 
     protected $proposals;

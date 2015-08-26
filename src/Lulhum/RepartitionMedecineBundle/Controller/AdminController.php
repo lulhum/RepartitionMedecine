@@ -23,6 +23,7 @@ class AdminController extends Controller
 
         $parameters = new ParameterBag();
         $parameters->getParameters()->add($parameterRepository->findOneByName('groupRepartitionMode'));
+        $parameters->getParameters()->add($parameterRepository->findOneByName('pagination'));
         
         $form = $this->createForm(new ParameterBagType(), $parameters);
 

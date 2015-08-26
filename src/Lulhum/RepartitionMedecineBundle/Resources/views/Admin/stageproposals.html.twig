@@ -172,6 +172,8 @@
 	</div>
 	</table>
 	<div class="panel-footer" >
+		{% set paginatedUrl = 'lulhum_repartitionmedecine_admin_stage_proposals_page' %}
+		{% include "LulhumRepartitionMedecineBundle:Admin:pagination.html.twig" %}
 		<div class="form-group" >
 			{{ form_label(groupActionForm.action, null, {'label_attr': {'class': 'control-label'}}) }}
 			{{ form_errors(groupActionForm.action) }}

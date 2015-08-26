@@ -1,0 +1,96 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/startstageproposal.html.twig #}
+
+{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+
+{% block title %}
+  Propositions de stage - Cloner pour les périodes - {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.0/css/bootstrap-datepicker.min.css" />	
+{% endblock %}
+
+{% block bodytitle %}
+	<h3>Propositions de stage - Cloner pour les périodes</h3>
+{% endblock %}
+
+{% block nobody %}
+	<ul class="list-group" >
+		<li class="list-group-item" >
+			<h4 class="list-group-item-heading" >
+				Propositions de stage affectées: {{ groupAction.proposals|length }}
+			</h4>
+		</li>
+		{% for proposal in groupAction.proposals %}
+			<li class="list-group-item" >
+				{{ proposal.name }}
+			</li>
+		{% endfor %}
+	</ul>
+{% endblock %}
+
+{% block bodyfooter %}
+	<div class="panel-footer" >
+		{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+		<div class="form-group" >
+			{{ form_label(form.periods, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+			{{ form_errors(form.periods) }}
+			<div class="col-md-10" >
+				{{ form_widget(form.periods, {'attr': {'class': 'form-control', 'multiple': 'true', 'size': '2'}}) }}
+			</div>
+		</div>
+		<div>
+			<div id="form_new_periods_custom" data-prototype="
+									  {% filter escape %}
+									  {{ include('LulhumRepartitionMedecineBundle:Admin:period_prototype.html.twig', {'form': form.new_periods.vars.prototype}) }}
+									  {% endfilter %}"></div>
+		</div>
+		<button class="btn btn-primary" type="submit" style="margin-top:10px" >Cloner</button>
+		{{ form_rest(form) }}
+		{{ form_end(form) }}
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.0/js/bootstrap-datepicker.min.js"></script> 
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.0/locales/bootstrap-datepicker.fr.min.js"></script>
+	<script type="text/javascript" >
+	$(document).ready(function() {
+
+		var index = 0;
+
+		var $container = $('div#form_new_periods_custom');
+
+		var $addPeriodLink = $('<a href="#" id="add_period" class="btn btn-success" style="margin-right:10px">Ajouter une période</a>');
+		$container.parent().append($addPeriodLink);
+
+		$addPeriodLink.click(function(e) {
+			addPeriod($container);
+			e.preventDefault();
+			return false;
+		});
+
+		function addPeriod($container) {
+			var $prototype = $($container.attr('data-prototype').replace(/__name__label__/g, 'Période n°' + (index+1))
+				.replace(/__name__/g, index));
+			addDeleteLink($prototype);			
+			$container.append($prototype);
+			$('#form_new_periods_'+(index)+'_start').datepicker({format: 'dd/mm/yyyy', weekStart: 1, language: "fr"});
+			$('#form_new_periods_'+(index)+'_stop').datepicker({format: 'dd/mm/yyyy', weekStart: 1, language: "fr"});
+			index++;
+		}
+
+		function addDeleteLink($prototype) {
+			$deleteLink = $('<a href="#" class="btn btn-danger">Supprimer</a>');
+			$prototype.find('div.panel-footer').append($deleteLink);
+			$deleteLink.click(function(e) {
+				$prototype.remove();
+				e.preventDefault();
+				return false;
+			});
+		}    
+	});
+	</script>		
+{% endblock %}

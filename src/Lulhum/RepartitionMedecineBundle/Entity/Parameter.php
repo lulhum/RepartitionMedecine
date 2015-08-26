@@ -21,7 +21,25 @@ class Parameter
                 'manual' => 'Répartition manuelle',
                 'last' => 'Automatique (priorité aux premiers inscrits)',
                 'random' => 'Automatique (aléatoire)'
-            )));
+            )
+        ),
+        'pagination' => array(
+            'description' => 'Nombre de résultats par page',
+            'default' => '20',
+            'values' => array(
+                '10' => '10',
+                '20' => '20',
+                '30' => '30',
+                '40' => '40',
+                '50' => '50',
+                '60' => '60',
+                '70' => '70',
+                '80' => '80',
+                '90' => '90',
+                '100' => '100',
+            )
+        )
+    );
 
     /**
      * @var integer

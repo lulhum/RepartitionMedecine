@@ -37,7 +37,7 @@ class UserFilterType extends AbstractType
                 'required' => false,
             ))
             ->add('categories', 'entity', array(
-                'label' => 'Périodes de stages',
+                'label' => 'Catégories de stages',
                 'class' => 'LulhumRepartitionMedecineBundle:Category',
                 'multiple' => true,
                 'required' => false,

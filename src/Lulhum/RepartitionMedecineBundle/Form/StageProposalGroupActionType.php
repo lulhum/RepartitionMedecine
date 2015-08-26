@@ -18,11 +18,13 @@ class StageProposalGroupActionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $filter = $this->options['filter'];
+        $max = $this->options['max'];
+        $offset = $this->options['offset'];
         $builder
             ->add('proposals', 'entity', array(
                 'class' => 'LulhumRepartitionMedecineBundle:StageProposal',
-                'query_builder' => function($repository) use (&$filter) {
-                    return $repository->filteredFindQB($filter);
+                'query_builder' => function($repository) use (&$filter, &$max, &$offset) {
+                    return $repository->filteredFindQB($filter, $max, $offset);
                 },
                 'expanded' => true,
                 'multiple' => true,

@@ -87,6 +87,11 @@ class StageProposal
         return $this->id;
     }
 
+    private function setId($id)
+    {
+        $this->id = $id;
+    }
+
     /**
      * Set period
      *
@@ -358,6 +363,20 @@ class StageProposal
         }
         
         return PHP_INT_MAX;
+    }
+
+    public function __clone()
+    {
+        if($this->id) {
+            $this->setId(null);
+            $requirements = $this->getRequirements();
+            $this->requirements = new ArrayCollection();
+            foreach($requirements as $requirement) {
+                $cloneRequirement = clone $requirement;
+                $this->requirements->add($cloneRequirement);
+                $cloneRequirement->setProposal($this);
+            }
+        }
     }
             
 }

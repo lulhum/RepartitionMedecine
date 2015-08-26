@@ -1,0 +1,31 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/pagination.html.twig #}
+
+<nav>			
+	<ul class="pagination" >
+		<li {% if not pagination.previous %}class="disabled"{% endif %} >
+			<a href="{% if not pagination.previous %}#{% else %}{{ path(paginatedUrl, {'page': pagination.previous}) }}{% endif %}" aria-label="Previous" >
+				<span class="glyphicon glyphicon-step-backward" aria-hidden="true" ></span>
+			</a>
+		</li>
+		<li>
+			<a href="{{ path(paginatedUrl, {'page': pagination.first}) }}" aria-label="First" >
+				<span class="glyphicon glyphicon-fast-backward" aria-hidden="true" ></span>
+			</a>
+		</li>
+		{% for i in pagination.neighbors %}
+			<li {% if i == pagination.page %}class="active"{% endif %} >
+				<a href="{{ path(paginatedUrl, {'page': i}) }}">{{ i }}</a>
+			</li>
+		{% endfor %}
+		<li>
+			<a href="{{ path(paginatedUrl, {'page': pagination.last}) }}" aria-label="Last" >
+				<span class="glyphicon glyphicon-fast-forward" aria-hidden="true" ></span>
+			</a>
+		</li>
+		<li {% if not pagination.next %}class="disabled"{% endif %} >
+			<a href="{% if not pagination.next %}#{% else %}{{ path(paginatedUrl, {'page': pagination.next}) }}{% endif %}" aria-label="Next" >
+				<span class="glyphicon glyphicon-step-forward" aria-hidden="true" ></span>
+			</a>
+		</li>
+	</ul>
+</nav>

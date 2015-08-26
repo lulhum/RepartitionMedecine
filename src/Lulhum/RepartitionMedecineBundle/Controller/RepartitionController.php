@@ -175,12 +175,12 @@ class RepartitionController extends Controller
             throw new AccessDeniedException();
         }
 
-        $em = $this->getDoctrine()->getManager();
-        $userListGroups = $em->getRepository('LulhumUserBundle:User')->getRepartitionGroupsByPromotion($user->getPromotion());
+        $em = $this->getDoctrine()->getManager();        
         $deadline = $em->getRepository('LulhumDeadlineBundle:Deadline')->findOneByName('repartitionGroup'.$user->getPromotion());
         
         if(!$deadline->getActive()) {
-
+            $userListGroups = $em->getRepository('LulhumUserBundle:User')->getRepartitionGroupsByPromotion($user->getPromotion());
+            
             return $this->render('LulhumRepartitionMedecineBundle:Repartition:groupes.html.twig', array(
                 'userListGroups' => $userListGroups,
                 'promotion' => $user->getPromotion(),
@@ -193,19 +193,22 @@ class RepartitionController extends Controller
             ->add('repartitionGroup', 'choice', array(
                 'label' => 'Groupe désiré',
                 'choices' => array('A' => 'A', 'B' => 'B')
-            ))
-            ->add('Valider', 'submit');
+            ));
         $form = $formBuilder->getForm();
 
         $form->handleRequest($request);
 
         if($form->isValid()) {
+            $userListGroups = $em->getRepository('LulhumUserBundle:User')->getRepartitionGroupsByPromotion($user->getPromotion());
             $userManager = $this->get('fos_user.user_manager');
             $userManager->updateUser($user);
             $request->getSession()->getFlashBag()->add('success', 'Choix de groupe enregistré');
             if(count($userListGroups[$user->getRepartitionGroup()]) > $userListGroups['limit']) {
                 $request->getSession()->getFlashBag()->add('warning', 'Attention, le groupe a atteint sa limite. Vous risquez d\'être automatiquement changé de groupe.');
             }
+        }
+        else {
+            $userListGroups = $em->getRepository('LulhumUserBundle:User')->getRepartitionGroupsByPromotion($user->getPromotion());
         }
         
         return $this->render('LulhumRepartitionMedecineBundle:Repartition:groupes.html.twig', array(

@@ -9,9 +9,15 @@
 {% block bodytitle %}
 	<h3>Répartition des groupes - {{ app.user.textPromotion }}</h3>
 	{% if deadline.active %}
-		<div class="col-md-3">
-			{{ form(form) }}
+		{{ form_start(form, {'attr': {'class': 'form-inline'}}) }}
+		<div class="form-group" >
+			{{ form_label(form.repartitionGroup, null, {'label_attr': {'class': 'control-label'}}) }}
+			{{ form_errors(form.repartitionGroup) }}
+			{{ form_widget(form.repartitionGroup, {'attr': {'class': 'form-control'}}) }}
 		</div>
+		<button class="btn btn-success" type="submit" >Valider</button>
+		{{ form_rest(form) }}
+		{{ form_end(form) }}
 		<div class="label label-primary">
 			Répartition ouverte jusqu'au {{ deadline.date|date('d/m - H:i') }}
 			<span class="glyphicon glyphicon-time" ></span>

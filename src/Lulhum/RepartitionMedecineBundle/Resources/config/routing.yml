@@ -72,6 +72,12 @@ lulhum_repartitionmedecine_admin_stage_categories:
     path: /admin/stages/stagecategories
     defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stageCategories }
 
+lulhum_repartitionmedecine_admin_stage_categories_page:
+    path: /admin/stages/stagecategories/page/{page}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stageCategories }
+    requirements:
+        page: \d+
+
 lulhum_repartitionmedecine_admin_stage_categories_new:
     path: /admin/stages/stagecategories/new
     defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:newStageCategory }
@@ -97,6 +103,12 @@ lulhum_repartitionmedecine_admin_stage_categories_show:
 lulhum_repartitionmedecine_admin_stage_proposals:
     path: /admin/stages/stageproposals
     defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stageProposals }
+
+lulhum_repartitionmedecine_admin_stage_proposals_page:
+    path: /admin/stages/stageproposals/page/{page}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stageProposals }
+    requirements:
+        page: \d+
 
 lulhum_repartitionmedecine_admin_stage_proposals_incategory:
     path: /admin/stages/stageproposals/category/{id}
@@ -125,6 +137,10 @@ lulhum_repartitionmedecine_admin_stage_proposals_group_add_constraint:
 lulhum_repartitionmedecine_admin_stage_proposals_group_start:
     path: /admin/stages/stageproposals/group/start
     defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stageProposalStart }
+
+lulhum_repartitionmedecine_admin_stage_proposals_group_clone:
+    path: /admin/stages/stageproposals/group/clone
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stageProposalClone }
 
 lulhum_repartitionmedecine_admin_requirements_getform:
     path: /admin/requirements/getform
