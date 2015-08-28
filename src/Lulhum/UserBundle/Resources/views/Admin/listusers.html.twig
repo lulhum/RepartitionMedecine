@@ -41,6 +41,9 @@
 			{{ form_widget(filterForm.filtrer, {'attr': {'class': 'btn btn-primary' }}) }}
 		</div>
 		<div class="form-group" >
+			<a class="btn btn-primary" href="{{ path('lulhum_user_admin_userlist_resetfilter') }}" >Filtre par défaut</a>
+		</div>
+		<div class="form-group" >
 			<a class="btn btn-success" href="{{ path('lulhum_user_admin_user_add') }}" >Nouvel Utilisateur</a>
 		</div>
 	</div>

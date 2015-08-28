@@ -1,0 +1,40 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/editperiod.html.twig #}
+
+{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+
+{% block title %}
+Période - {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.0/css/bootstrap-datepicker.min.css" />	
+{% endblock %}
+
+{% block bodytitle %}
+	<h3>Éditer la période</h3>
+{% endblock %}
+
+{% block nobody %}
+	{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+	<div class="panel-body" >
+		{% include('LulhumRepartitionMedecineBundle:Admin:period_type.html.twig') %}
+	</div>
+	<div class="panel-footer" >
+		<button class="btn btn-success" type="submit" >Éditer</button>
+	</div>		
+	{{ form_rest(form) }}
+	{{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.0/js/bootstrap-datepicker.min.js"></script> 
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.0/locales/bootstrap-datepicker.fr.min.js"></script>
+	<script type="text/javascript" >
+	$(document).ready(function() {
+		$('#lulhum_repartitionmedecine_period_start').datepicker({format: 'dd/mm/yyyy', weekStart: 1, language: "fr"});
+		$('#lulhum_repartitionmedecine_period_stop').datepicker({format: 'dd/mm/yyyy', weekStart: 1, language: "fr"});
+	});
+	</script>
+{% endblock %}

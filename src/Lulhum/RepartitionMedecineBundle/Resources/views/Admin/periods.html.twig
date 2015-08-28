@@ -1,0 +1,58 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/periods.html.twig #}
+{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+{% block title %}
+	Périodes - {{ parent() }}
+{% endblock %}
+
+{% block bodytitle %}
+	<h3>Gestion des périodes</h3>				
+{% endblock %}
+
+{% block nobody %}
+	<table class="table table-hover" >
+		<tr>
+			<th>Nom</th>
+			<th>Description</th>
+			<th>Début</th>
+			<th>Fin</th>
+			<th>Utilisations</th>
+			<th>Actions</th>
+		</tr>
+		{% for period in periods %}
+			<tr>
+				<td>{{ period.name }}</td>
+				<td>{{ period.description }}</td>
+				<td>{{ period.start|date('d/m/Y') }}</td>
+				<td>{{ period.stop|date('d/m/Y') }}</td>
+				<td>
+					<a href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals_inperiod', {'id': period.id}) }}" >
+						{{ period.proposals|length }} Propositions
+					</a>
+				</td>
+				<td>
+					<a href="{{ path('lulhum_repartitionmedecine_admin_periods_edit', {'id': period.id}) }}">
+						<span class="glyphicon glyphicon-edit" ></span>
+					</a>
+					{% if period.proposals|length == 0 %}
+						<a href="{{ path('lulhum_repartitionmedecine_admin_periods_delete', {'id': period.id}) }}" class="text-danger">
+							<span class="glyphicon glyphicon-remove" ></span>
+						</a>
+					{% else %}
+						<span class="glyphicon glyphicon-remove" ></span>
+					{% endif %}
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
+{% endblock %}
+
+{% block bodyunder %}
+	<span class="text-primary" >
+		<span class="glyphicon glyphicon-edit" ></span>
+	</span>
+	Éditer la période -
+	<span class="text-danger" >
+		<span class="glyphicon glyphicon-remove" ></span>
+	</span>
+	Supprimer la période
+{% endblock %}

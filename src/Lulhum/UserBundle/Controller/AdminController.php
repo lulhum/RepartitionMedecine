@@ -53,6 +53,14 @@ class AdminController extends Controller
         ));
     }
 
+    public function resetUserFilterAction()
+    {
+        $session = new Session();
+        $session->remove('adminUsersFilter');
+
+        return $this->redirect($this->generateUrl('lulhum_user_admin_userlist'));
+    }
+
     public function showUserAction(Request $request, User $user, $id) {       
         return $this->render('LulhumUserBundle:Admin:user.html.twig', array(
             'user' => $user,

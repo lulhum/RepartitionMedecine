@@ -38,7 +38,15 @@ class Parameter
                 '90' => '90',
                 '100' => '100',
             )
-        )
+        ),
+        'allowUserRegistrations' => array(
+            'description' => 'Autoriser les utilisateurs à s\'inscrire',
+            'default' => 'true',
+            'values' => array(
+                'true' => 'Oui',
+                'false' => 'Non',
+            )
+        ),
     );
 
     /**

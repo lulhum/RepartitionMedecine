@@ -40,6 +40,11 @@ class StageCategoryFilter
         $this->categoriesOr = $categoriesOr;
     }
 
+    public function addCategoryOr(Category $category)
+    {
+        $this->categoriesOr[] = $category;
+    }
+
     public function getCategoriesAnd()
     {
         return $this->categoriesAnd;
@@ -48,5 +53,14 @@ class StageCategoryFilter
     public function setCategoriesAnd(ArrayCollection $categoriesAnd)
     {
         $this->categoriesAnd = $categoriesAnd;
+    }
+
+    public function getCollections()
+    {
+        return array(   
+            'locations' => $this->locations,
+            'categoriesOr' => $this->categoriesOr,
+            'categoriesAnd' => $this->categoriesAnd,
+        );
     }
 }

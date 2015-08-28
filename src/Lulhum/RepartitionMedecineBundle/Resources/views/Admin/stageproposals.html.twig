@@ -44,11 +44,23 @@
 			<a class="btn btn-primary" href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals_resetfilter') }}">Filtre par défaut</a>
 		</div>
 		<div class="form-group" >				
+			<a class="btn btn-primary" href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals_nofilter') }}">Aucun filtre</a>
+		</div>
+		<div class="form-group" >				
 			<a class="btn btn-success" href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals_new') }}">Nouvelle proposition</a>
 		</div>
 	</div>
 	{{ form_rest(filterForm) }}
-	{{ form_end(filterForm) }}	
+	{{ form_end(filterForm) }}
+	{% for key, messages in app.session.flashbag.all() %}
+		{% if loop.first %}<hr/>{% endif %}
+		{% for message in messages %}
+			<div class="alert alert-{{ key }} alert-dismissible">
+				{{ message }}
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			</div>
+		{% endfor %}
+	{% endfor %}
 {% endblock %}
 
 {% block nobody %}

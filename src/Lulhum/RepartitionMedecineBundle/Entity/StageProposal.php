@@ -23,7 +23,7 @@ class StageProposal
     private $id;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\Period", cascade={"persist", "merge"})
+     * @ORM\ManyToOne(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\Period", inversedBy="proposals", cascade={"persist", "merge"})
      * @ORM\JoinColumn(nullable=false)
      */   
     private $period;

@@ -1,0 +1,50 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/categories.html.twig #}
+{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+{% block title %}
+	Catégories - {{ parent() }}
+{% endblock %}
+
+{% block bodytitle %}
+	<h3>Gestion des catégories</h3>				
+{% endblock %}
+
+{% block nobody %}
+	<table class="table table-hover" >
+		<tr>
+			<th>Nom</th>
+			<th>Description</th>
+			<th>Utilisations</th>
+			<th>Actions</th>
+		</tr>
+		{% for category in categories %}
+			<tr>
+				<td>{{ category.name }}</td>
+				<td>{{ category.description }}</td>
+				<td>
+					<a href="{{ path('lulhum_repartitionmedecine_admin_stage_categories_incategory', {'id': category.id}) }}" >
+						{{ category.stageCategories|length }} Modèles
+					</a>
+				</td>
+				<td>
+					<a href="{{ path('lulhum_repartitionmedecine_admin_categories_edit', {'id': category.id}) }}">
+						<span class="glyphicon glyphicon-edit" ></span>
+					</a>
+					<a href="{{ path('lulhum_repartitionmedecine_admin_categories_delete', {'id': category.id}) }}" class="text-danger">
+						<span class="glyphicon glyphicon-remove" ></span>
+					</a>
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
+{% endblock %}
+
+{% block bodyunder %}
+	<span class="text-primary" >
+		<span class="glyphicon glyphicon-edit" ></span>
+	</span>
+	Éditer la catégorie -
+	<span class="text-danger" >
+		<span class="glyphicon glyphicon-remove" ></span>
+	</span>
+	Supprimer la catégorie
+{% endblock %}

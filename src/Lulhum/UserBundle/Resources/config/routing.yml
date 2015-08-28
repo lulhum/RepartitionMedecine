@@ -2,6 +2,10 @@ lulhum_user_admin_userlist:
     path: /admin/users
     defaults: { _controller: LulhumUserBundle:Admin:listUsers }
 
+lulhum_user_admin_userlist_resetfilter:
+    path: /admin/users/resetfilter
+    defaults: { _controller: LulhumUserBundle:Admin:resetUserFilter }
+
 lulhum_user_admin_user:
     path: /admin/user/show/{id}
     defaults: { _controller: LulhumUserBundle:Admin:showUser }

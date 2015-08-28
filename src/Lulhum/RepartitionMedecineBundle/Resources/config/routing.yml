@@ -100,6 +100,16 @@ lulhum_repartitionmedecine_admin_stage_categories_show:
     requirements:
         id: \d+
 
+lulhum_repartitionmedecine_admin_stage_categories_incategory:
+    path: /admin/stages/stagecategories/category/{id}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stageCategoriesInCategory }
+    requirements:
+        id: \d+
+
+lulhum_repartitionmedecine_admin_stage_categories_resetfilter:
+    path: /admin/stages/stagecategories/filter/reset
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:resetStageCategoryFilter }
+
 lulhum_repartitionmedecine_admin_stage_proposals:
     path: /admin/stages/stageproposals
     defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stageProposals }
@@ -116,9 +126,20 @@ lulhum_repartitionmedecine_admin_stage_proposals_incategory:
     requirements:
         id: \d+
 
+
+lulhum_repartitionmedecine_admin_stage_proposals_inperiod:
+    path: /admin/stages/stageproposals/period/{id}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stageProposalsInPeriod }
+    requirements:
+        id: \d+
+
 lulhum_repartitionmedecine_admin_stage_proposals_resetfilter:
-    path: /admin/stages/proposals/resetfilter
+    path: /admin/stages/stageproposals/resetfilter
     defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:resetStageProposalsFilter }
+
+lulhum_repartitionmedecine_admin_stage_proposals_nofilter:
+    path: /admin/stages/stageproposals/nofilter
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:noStageProposalsFilter }
 
 lulhum_repartitionmedecine_admin_stage_proposals_new:
     path: /admin/stages/stageproposals/new
@@ -166,6 +187,10 @@ lulhum_repartitionmedecine_admin_stage_stages_resetfilter:
     path: /admin/stages/stages/resetfilter
     defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:resetStagesFilter }
 
+lulhum_repartitionmedecine_admin_stage_stages_nofilter:
+    path: /admin/stages/stages/nofilter
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:noStagesFilter }
+
 lulhum_repartitionmedecine_admin_stage_stages_new:
     path: /admin/stages/stages/new
     defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:newStage }
@@ -179,3 +204,35 @@ lulhum_repartitionmedecine_admin_stage_stages_delete:
 lulhum_repartitionmedecine_admin_stage_stages_group_delete:
     path: /admin/stages/stages/group/delete
     defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:deleteStages }
+
+lulhum_repartitionmedecine_admin_categories:
+    path: /admin/categories
+    defaults: { _controller: LulhumRepartitionMedecineBundle:Admin:categories }
+
+lulhum_repartitionmedecine_admin_categories_edit:
+    path: /admin/categories/edit/{id}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:Admin:editCategory }
+    requirements:
+        id: \d+
+
+lulhum_repartitionmedecine_admin_categories_delete:
+    path: /admin/categories/delete/{id}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:Admin:deleteCategory }
+    requirements:
+        id: \d+
+
+lulhum_repartitionmedecine_admin_periods:
+    path: /admin/periods
+    defaults: { _controller: LulhumRepartitionMedecineBundle:Admin:periods }
+
+lulhum_repartitionmedecine_admin_periods_edit:
+    path: /admin/periods/edit/{id}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:Admin:editPeriod }
+    requirements:
+        id: \d+
+
+lulhum_repartitionmedecine_admin_periods_delete:
+    path: /admin/periods/delete/{id}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:Admin:deletePeriod }
+    requirements:
+        id: \d+

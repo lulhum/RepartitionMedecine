@@ -3,6 +3,7 @@
 namespace Lulhum\RepartitionMedecineBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Period
@@ -49,10 +50,16 @@ class Period
      */
     private $stop;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\StageProposal", mappedBy="period")
+     */  
+    private $proposals;
+
     public function __construct()
     {
         $this->start = new \DateTime();
         $this->stop = new \DateTime();
+        $this->proposals = new ArrayCollection();
     }
 
     /**
@@ -169,5 +176,10 @@ class Period
         }
 
         return "#";
+    }
+
+    public function getProposals()
+    {
+        return $this->proposals;
     }
 }

@@ -1,4 +1,4 @@
-{# src/Lulhum/UserBundle/Resources/views/Admin/confirm.html.twig #}
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/confirm.html.twig #}
 
 {% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
 
@@ -9,15 +9,15 @@
 {% block main %}
 	<div class="panel panel-danger" >
 		<div class="panel-heading" >
-			{{ message }}
+			Confirmation
 		</div>
 		<div class="panel-body" >
-			{{ user.fullname }}
+			{{ message }}
 		</div>
 		<div class="panel-footer" style="background-color: #f2dede" >
 			{{ form_start(form) }}
 			{{ form_widget(form.Confirmer) }}
-			<a href="{{ path('lulhum_user_admin_userlist') }}" class="btn btn-primary" >Annuler</a>
+			<a href="{{ app.request.headers.get('referer') }}" class="btn btn-primary" >Annuler</a>
 			{{ form_rest(form) }}
 			{{ form_end(form) }}
 		</div>
