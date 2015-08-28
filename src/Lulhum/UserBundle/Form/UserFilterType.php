@@ -24,7 +24,7 @@ class UserFilterType extends AbstractType
                 'multiple' => true,
             ))
             ->add('group', 'choice', array(
-                'choices' => array('A' => 'A', 'B' => 'B'),
+                'choices' => \Lulhum\UserBundle\Entity\User::GROUPS,
                 'label' => 'Groupe',
                 'empty_value' => 'Indifférent',
                 'required' => false,

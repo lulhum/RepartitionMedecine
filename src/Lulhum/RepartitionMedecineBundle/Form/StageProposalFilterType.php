@@ -6,6 +6,7 @@ namespace Lulhum\RepartitionMedecineBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Lulhum\UserBundle\Entity\User;
 
 class StageProposalFilterType extends AbstractType
 {
@@ -15,33 +16,49 @@ class StageProposalFilterType extends AbstractType
     }
     
     public function buildForm(FormBuilderInterface $builder, array $options)
-    {        
+    {
+        $periodsOptions = array(
+            'label' => 'Périodes',
+            'class' => 'LulhumRepartitionMedecineBundle:Period',
+            'multiple' => true,
+            'required' => false,
+        );
+        if(isset($this->options['user']) && $this->options['user']) {
+            $promotion = $this->options['promotion'];
+            $periodsOptions['query_builder'] = function($repository) use ($promotion) {
+                return $repository->findForCalendar($promotion);
+            };
+        }
         $builder
-            ->add('periods', 'entity', array(
-                'label' => 'Périodes',
-                'class' => 'LulhumRepartitionMedecineBundle:Period',
-                'multiple' => true,
-                'required' => false,
-            ))
+            ->add('periods', 'entity', $periodsOptions)
             ->add('stageCategories', 'entity', array(
                 'label' => 'Modèles',
                 'class' => 'LulhumRepartitionMedecineBundle:StageCategory',
                 'multiple' => true,
                 'required' => false,
-            ))
-            ->add('categoriesOr', 'entity', array(
-                'label' => 'Catégories (Ou)',
-                'class' => 'LulhumRepartitionMedecineBundle:Category',
-                'multiple' => true,
-                'required' => false,
-            ))
-            ->add('categoriesAnd', 'entity', array(
-                'label' => 'Catégories (Et)',
-                'class' => 'LulhumRepartitionMedecineBundle:Category',
-                'multiple' => true,
-                'required' => false,
-            ))
-            ->add('filtrer', 'submit');
+            ));
+            if(!isset($this->options['user'])) {
+                $builder
+                    ->add('categoriesOr', 'entity', array(
+                        'label' => 'Catégories (Ou)',
+                        'class' => 'LulhumRepartitionMedecineBundle:Category',
+                        'multiple' => true,
+                        'required' => false,
+                    ))
+                    ->add('categoriesAnd', 'entity', array(
+                        'label' => 'Catégories (Et)',
+                        'class' => 'LulhumRepartitionMedecineBundle:Category',
+                        'multiple' => true,
+                        'required' => false,
+                    ))
+                    ->add('promotions', 'choice', array(
+                        'choices' => USER::PROMOTIONS,
+                        'label' => 'Promotions',
+                        'multiple' => true,
+                        'required' => false,
+                    ));
+            }                    
+            $builder->add('filtrer', 'submit');
     }
     
     public function setDefaultOptions(OptionsResolverInterface $resolver)

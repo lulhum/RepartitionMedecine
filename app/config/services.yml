@@ -4,6 +4,10 @@ parameters:
 #    parameter_name: value
 
 services:
+    twig.extension.intl:
+        class: Twig_Extensions_Extension_Intl
+        tags:
+            - { name: twig.extension }
     lulhum_user.form.registration:
         class: Lulhum\UserBundle\Form\RegistrationType
         arguments: [%fos_user.model.user.class%, @service_container]

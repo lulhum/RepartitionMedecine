@@ -8,6 +8,9 @@
 
 {% block bodytitle %}
 	<ul class="nav nav-tabs">
+		<li role="presentation" >
+			<a href="{{ path('lulhum_repartitionmedecine_stages_calendar') }}">Calendrier</a>
+		</li>
 		<li role="presentation" {% if type == 'proposals' %}class="active"{% endif %}>
 			<a href="{{ path('lulhum_repartitionmedecine_stages_proposals') }}">Propositions</a>
 		</li>
@@ -16,9 +19,6 @@
 		</li>
 		<li role="presentation" {% if type == 'accepted' %}class="active"{% endif %}>
 			<a href="{{ path('lulhum_repartitionmedecine_stages_accepted') }}">Stages Acceptés</a>
-		</li>
-		<li role="presentation" {% if type == 'history' %}class="active"{% endif %}>
-			<a href="#">Historique</a>
 		</li>
 	</ul>
 	{% if type == 'proposals' %}

@@ -33,5 +33,5 @@ class UserRepository extends EntityRepository
 
         return $userListGroups;
     }
-
+    
 }

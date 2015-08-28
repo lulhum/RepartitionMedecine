@@ -1,0 +1,65 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Repartition/proposalinfo.html.twig #}
+
+<div class="row" >
+	<div class="col-md-2" >Places:</div>
+	<div class="col-md-10" >
+		{% set taked = proposal.stages.count %}
+		{% if proposal.hasRequirementType('maxPlaces') %}
+			{% set max = proposal.getRequirementsByType('maxPlaces').first.params %}
+			<span class="label label-{% if taked > max %}danger{% elseif taked == max %}warning{% else %}success{% endif %}" >
+				{{ taked  }}/{{ max }}
+			</span>
+		{% else %}
+			<span class="label label-success" >{{ taked }}/&infin;</span>
+		{% endif %}
+	</div>
+</div>
+<div class="row" >
+	<div class="col-md-2" >Période:</div>
+	<div class="col-md-10" >{{ proposal.period.description }}</div>
+</div>					
+{% if proposal.deadline is not null %}
+	<div class="row" >
+		<div class="col-md-2" >Fin des inscriptions:</div>
+		<div class="col-md-10" >{{ proposal.deadline.date|date('d/m - H:i') }}</div>
+	</div>
+{% endif %}
+<div class="row" >
+	<div class="col-md-2" >Lieu:</div>
+	<div class="col-md-10" >
+		{{ proposal.category.location }}
+		(Distance: {{ proposal.category.location.distance }}km)
+	</div>
+</div>
+<div class="row" >
+	<div class="col-md-2" >Catégories:</div>
+	<div class="col-md-10" >
+		{% for category in proposal.category.categories %}
+			{{ category }}
+			{% if not loop.last %},{% endif %}
+		{% endfor %}
+	</div>							
+</div>
+{% if proposal.description is not null %}
+	<div class="row" >
+		<div class="col-md-2" >Description:</div>						
+	</div>
+	<div class="well">{{ proposal.description }}</div>							
+{% endif %}
+{% if proposal.stages|length > 0 %}
+	<div class="row" >
+		<div class="col-md-2" >Utilisateurs inscrits:</div>						
+	</div>
+	<ul class="list-group" >
+		{% for stage in proposal.sortedStages %}
+			<li class="list-group-item" >
+				{{ stage.user.fullname }}
+			</li>
+		{% endfor %}
+	</ul>	
+{% endif %}
+{% if valid %}
+	<a href="{{ path('lulhum_repartitionmedecine_stages_suscribe', {'id': proposal.id}) }}" class="btn btn-primary" style="margin-top:10px">
+		S'inscrire au stage
+	</a>
+{% endif %}

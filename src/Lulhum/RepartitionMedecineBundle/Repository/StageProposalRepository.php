@@ -4,7 +4,6 @@
 namespace Lulhum\RepartitionMedecineBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use Lulhum\RepartitionMedecineBundle\Entity\StageProposalFilter;
 use Lulhum\RepartitionMedecineBundle\Entity\Stage;
 use Lulhum\RepartitionMedecineBundle\Util\StageValidator;
 use Lulhum\UserBundle\Entity\User;
@@ -38,6 +37,10 @@ class StageProposalRepository extends EntityRepository
                 $queryBuilder->andWhere('cat.id = :catsand')
                              ->setParameter('catsand', $category->getId());
             }
+        }
+        if(count($filter->getPromotions()) != 0) {
+            $queryBuilder->join('s.requirements', 'r', 'WITH', 'r.type = \'promotion\' AND r.params IN(:proms)')
+                         ->setParameter('proms', $filter->getPromotions());
         }
         if(!is_null($max)) {
             $queryBuilder->setMaxResults($max);
@@ -129,6 +132,34 @@ class StageProposalRepository extends EntityRepository
             else continue;
             $queryBuilder->setParameter('val', $value);
         }
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
+    public function forCalendar($promotion, $periods, $search=null)
+    {
+        $queryBuilder = $this->createQueryBuilder('s');
+        $queryBuilder->leftjoin('s.category', 'c')
+                     ->join('s.requirements', 'r', 'WITH', 'r.type = \'promotion\' AND r.params = :prom')
+                     ->leftjoin('s.stages', 'st')
+                     ->leftjoin('st.user', 'u')
+                     ->leftjoin('c.categories', 'cat')
+                     ->leftjoin('c.location', 'l')
+                     ->setParameter('prom', $promotion)
+                     ->where('s.period IN(:periods)')
+                     ->setParameter('periods', $periods)
+                     ->andWhere('s.name LIKE :search')
+                     ->orWhere('s.description LIKE :search')
+                     ->orWhere('c.name LIKE :search')
+                     ->orWhere('c.description LIKE :search')
+                     ->orWhere('cat.name LIKE :search')
+                     ->orWhere('cat.description LIKE :search')
+                     ->orWhere('u.firstname LIKE :search')
+                     ->orWhere('u.lastname LIKE :search')
+                     ->orWhere('l.name LIKE :search')
+                     ->orWhere('l.name LIKE :search')
+                     ->orderBy('c.name')
+                     ->setParameter('search', "%$search%");
 
         return $queryBuilder->getQuery()->getResult();
     }

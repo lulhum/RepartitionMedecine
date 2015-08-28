@@ -1,0 +1,141 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Repartition/stagecalendar.html.twig #}
+
+{% extends "LulhumRepartitionMedecineBundle::layout.html.twig" %}
+
+{% block title %}
+  Calendrier des stages - {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<style>
+	.popover {
+		max-width: 100%;
+		min-width: 500px;
+	}
+	</style>
+{% endblock %}
+
+{% block bodytitle %}
+	<ul class="nav nav-tabs">
+		<li role="presentation" class="active" >
+			<a href="{{ path('lulhum_repartitionmedecine_stages_calendar') }}">Calendrier</a>
+		</li>
+		<li role="presentation" >
+			<a href="{{ path('lulhum_repartitionmedecine_stages_proposals') }}">Propositions</a>
+		</li>
+		<li role="presentation" >
+			<a href="{{ path('lulhum_repartitionmedecine_stages_pending') }}">Mes Demandes</a>
+		</li>
+		<li role="presentation" >
+			<a href="{{ path('lulhum_repartitionmedecine_stages_accepted') }}">Stages Acceptés</a>
+		</li>
+	</ul>
+	<div class="row" style="margin-top:10px" >
+		<div class="col-md-4" >			
+			{{ form_start(form) }}
+			<div class="input-group" >
+				{{ form_widget(form.search, {'attr': {'class': 'form-control', 'placeholder': 'Rechercher...'}}) }}
+				<span class="input-group-btn" >
+					<button class="btn btn-default" type="submit" >
+						<span class="glyphicon glyphicon-search" ></span>
+					</button>
+				</span>
+			</div>
+			{{ form_rest(form) }}
+			{{ form_end(form) }}
+		</div>
+	</div>
+{% endblock %}
+
+{% block nobody %}
+	{% if app.session.flashbag.peekAll()|length > 0 %}
+		<div class="panel-body" >
+			{% for key, messages in app.session.flashbag.all() %}
+				{% for message in messages %}
+					<div class="alert alert-{{ key }} alert-dismissible">
+						{{ message }}
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+					</div>
+				{% endfor %}
+			{% endfor %}
+		</div>
+	{% endif %}
+	<table class="table table-condensed" style="table-layout: fixed">
+		<tr>
+			{% for month in 1..12 %}
+				<th class="col-md-1">{{ date('2000-'~((month + 8) % 12 + 1)~'-01')|localizeddate('none', 'none', 'fr', null, 'MMMM')|capitalize }}</th>
+			{% endfor %}
+		</tr>
+		{% for category in calendar.categoriesId %}
+			<tr>
+				{% for month in 0..11 %}
+					{% set response = calendar.month(category, month) %}
+					{% if response is not null %}
+						<td colspan="{{ response.colspan }}" >
+							{% if response.val is not null %}
+								{% set p = calendar.proposal(response.val) %}
+								{% if p.hasUser(app.user) %}
+									{% if p.stagesByUser(app.user).first.locked %}
+										{% set color = 'primary' %}
+									{% else %}
+										{% set color = 'info' %}
+									{% endif %}
+								{% elseif p.isValidForUser(app.user, validator) and not p.locked %}
+									{% if p.countPlaces > 0 %}
+										{% set color = 'success' %}
+									{% else %}
+										{% set color = 'warning' %}
+									{% endif %}
+								{% else %}
+									{% set color = 'default' %}
+								{% endif %}
+								<button class="btn btn-{{ color }} btn-xs col-md-12"
+									type="button"
+									data-toggle="popover"
+									data-placement="top"
+									data-html="true"
+									data-container="body"
+									data-title="{{ p }}"
+									data-proposal="{{ p.id }}"
+									style="overflow:hidden;text-overflow:ellipsis;" >
+									{{ p.category }}
+								</button>
+							{% endif %}
+						</td>
+					{% endif %}
+				{% endfor %}
+			</tr>
+		{% endfor %}
+		<tr>
+			{% for month in 1..12 %}
+				<th class="col-md-1">{{ date('2000-'~((month + 8) % 12 + 1)~'-01')|localizeddate('none', 'none', 'fr', null, 'MMMM')|capitalize }}</th>
+			{% endfor %}
+		</tr>
+	</table>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script type="text/javascript">
+	$(document).ready(function() {
+		$('[data-toggle="popover"]').popover();
+		$('[data-toggle="popover"]').on('show.bs.popover', function() {
+			$('[data-toggle="popover"]').not(this).popover('hide');
+			var $button = $( this );			
+			if(!$button.attr('data-content')) {
+				$button.attr('data-content', 'Chargement...');
+				$.ajax({
+					type: "POST",
+					url: '{{ path('lulhum_repartitionmedecine_stages_proposal_info_noid') }}'+$button.attr('data-proposal'),					
+					cache: false,
+					success: function(data) {
+						$button.attr('data-content', data);
+						$button.popover('show');
+					}
+				});
+			}
+		});
+	});
+	</script>
+{% endblock %}

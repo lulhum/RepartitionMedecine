@@ -17,12 +17,17 @@ class StageFilter
 
     protected $locked=null;
 
+    protected $promotions;
+
+    protected $group=null;
+
     public function __construct()
     {
         $this->periods = new ArrayCollection();
         $this->stageProposals = new ArrayCollection();
         $this->categoriesOr = new ArrayCollection();
         $this->categoriesAnd = new ArrayCollection();
+        $this->promotions = array();
     }
 
     public function getPeriods()
@@ -73,6 +78,26 @@ class StageFilter
     public function setCategoriesAnd(ArrayCollection $categoriesAnd)
     {
         $this->categoriesAnd = $categoriesAnd;
+    }
+
+    public function getPromotions()
+    {
+        return $this->promotions;
+    }
+
+    public function setPromotions($promotions)
+    {
+        $this->promotions = $promotions;
+    }
+
+    public function getGroup()
+    {
+        return $this->group;
+    }
+
+    public function setGroup($group)
+    {
+        $this->group = $group;
     }
 
     public function getCollections()

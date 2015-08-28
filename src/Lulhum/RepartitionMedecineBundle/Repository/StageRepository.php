@@ -16,7 +16,7 @@ class StageRepository extends EntityRepository
             $queryBuilder->join('s.proposal', 'p', 'WITH', 'p.id IN(:props)')
                          ->setParameter('props', $filter->getStageProposals()->map(function($ob) {return $ob->getId();})->toArray());
         }
-        elseif(!$filter->getCategoriesOr()->isEmpty() || !$filter->getCategoriesAnd()->isEmpty() || !$filter->getPeriods()->isEmpty()) {
+        elseif(!$filter->getCategoriesOr()->isEmpty() || !$filter->getCategoriesAnd()->isEmpty() || !$filter->getPeriods()->isEmpty() || count($filter->getPromotions()) != 0) {
             $queryBuilder->join('s.proposal', 'p');
         }
         if(!$filter->getPeriods()->isEmpty()) {
@@ -36,6 +36,14 @@ class StageRepository extends EntityRepository
                                  ->setParameter('catsand', $category->getId());
                 }
             }
+        }
+        if(count($filter->getPromotions()) != 0) {
+            $queryBuilder->join('p.requirements', 'r', 'WITH', 'r.type = \'promotion\' AND r.params IN(:proms)')
+                         ->setParameter('proms', $filter->getPromotions());
+        }
+        if(!is_null($filter->getGroup())) {
+            $queryBuilder->join('p.requirements', 'r', 'WITH', 'r.type = \'group\' AND r.params = :group')
+                         ->setParameter('group', $filter->getGroup());
         }
         
         return $queryBuilder;

@@ -12,6 +12,20 @@ lulhum_repartitionmedecine_stages_proposals:
     path: /stages/proposals
     defaults: { _controller: LulhumRepartitionMedecineBundle:Repartition:stagesProposals }
 
+lulhum_repartitionmedecine_stages_calendar:
+    path: /stages/calendar
+    defaults: { _controller: LulhumRepartitionMedecineBundle:Repartition:stageCalendar }
+
+lulhum_repartitionmedecine_stages_proposal_info:
+    path: /stages/info/proposal/{id}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:Repartition:getProposalInfo }
+    requirements:
+        id: \d+
+
+lulhum_repartitionmedecine_stages_proposal_info_noid:
+    path: /stages/info/proposal/
+    defaults: { _controller: LulhumRepartitionMedecineBundle:Repartition:getProposalInfo }
+
 lulhum_repartitionmedecine_stages_proposals_sorted:
     path: /stages/proposals/{sort}
     defaults: { _controller: LulhumRepartitionMedecineBundle:Repartition:stagesProposals }

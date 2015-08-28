@@ -6,6 +6,7 @@ namespace Lulhum\RepartitionMedecineBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Lulhum\UserBundle\Entity\User;
 
 class StageFilterType extends AbstractType
 {
@@ -40,6 +41,18 @@ class StageFilterType extends AbstractType
                 'class' => 'LulhumRepartitionMedecineBundle:Category',
                 'multiple' => true,
                 'required' => false,
+            ))
+            ->add('promotions', 'choice', array(
+                'choices' => User::PROMOTIONS,
+                'label' => 'Promotions',
+                'multiple' => true,
+                'required' => false,
+            ))
+            ->add('group', 'choice', array(
+                'choices' => User::GROUPS,
+                'label' => 'Groupe',
+                'required' => false,
+                'empty_value' => 'Indifférent',
             ))
             ->add('filtrer', 'submit');
     }

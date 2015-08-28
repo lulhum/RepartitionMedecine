@@ -4,6 +4,7 @@ namespace Lulhum\RepartitionMedecineBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
+use Lulhum\UserBundle\Entity\User;
 
 /**
  * StageProposal
@@ -359,10 +360,34 @@ class StageProposal
     {
         if($this->hasRequirementType('maxPlaces')) {
             
-            return $this->getStages()->count() - (int)($this->getRequirementsByType('maxPlaces')->first()->getParams());
+            return (int)($this->getRequirementsByType('maxPlaces')->first()->getParams()) - $this->getStages()->count();
         }
         
         return PHP_INT_MAX;
+    }
+
+    public function hasUser(User $user)
+    {
+        return $this->stages->exists(function($key, $stage) use (&$user) {
+            return $stage->getUser()->getId() === $user->getId();
+        });
+    }
+
+    public function getStagesByUser(User $user)
+    {
+        return $this->stages->filter(function($stage) use (&$user) {
+            return $stage->getUser()->getId() === $user->getId();
+        });
+    }
+
+    public function isValidForUser(User $user, \Lulhum\RepartitionMedecineBundle\Util\StageValidator $validator)
+    {
+        $stage = new Stage($user, $this);
+        $valid = $validator->isValid($stage);
+        $this->removeStage($stage);
+        $user->removeStage($stage);
+
+        return $valid;
     }
 
     public function __clone()

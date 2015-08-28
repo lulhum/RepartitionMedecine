@@ -9,6 +9,9 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Lulhum\RepartitionMedecineBundle\Entity\StageProposal;
 use Lulhum\RepartitionMedecineBundle\Entity\Stage;
+use Lulhum\RepartitionMedecineBundle\Entity\StageProposalFilter;
+use Lulhum\RepartitionMedecineBundle\Form\StageProposalFilterType;
+use Lulhum\RepartitionMedecineBundle\Util\Calendar;
 
 class RepartitionController extends Controller
 {
@@ -64,6 +67,7 @@ class RepartitionController extends Controller
                      ->createBuilder('form')
                      ->add('search', 'text', array(
                          'label' => false,
+                         'required' => false,
                      ))
                      ->getForm();
         
@@ -137,7 +141,7 @@ class RepartitionController extends Controller
             $session->getFlashBag()->add('danger', 'Vous n\'avez pas pu être inscrit au stage "'.$proposal->getName().'".');
         }
 
-        return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_stages_proposals'));
+        return $this->redirect($this->getRequest()->headers->get('referer'));
     }
 
     public function stagesUnsuscribeAction(Request $request, StageProposal $proposal, $id)
@@ -218,4 +222,52 @@ class RepartitionController extends Controller
             'deadline' => $deadline,
         ));
     }
+
+    public function stageCalendarAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();        
+        $user = $this->container->get('security.context')->getToken()->getUser();
+
+        $form = $this->get('form.factory')
+                     ->createBuilder('form')
+                     ->add('search', 'text', array(
+                         'label' => false,
+                         'required' => false,
+                     ))
+                     ->getForm();
+
+        $form->handleRequest($request);
+
+        if($form->isValid()) {
+            $search = $form->get('search')->getData();
+        }
+        else {
+            $search = null;
+        }
+
+        $periods = $em->getRepository('LulhumRepartitionMedecineBundle:Period')->findCurrents();
+
+        $proposals = $em->getRepository('LulhumRepartitionMedecineBundle:StageProposal')->forCalendar($user->getPromotion(), $periods, $search);
+
+        return $this->render('LulhumRepartitionMedecineBundle:Repartition:stagecalendar.html.twig', array(
+            'periods' => $periods,
+            'calendar' => new Calendar($proposals),
+            'validator' => $this->get('lulhum_repartitionmedecine_stagevalidator'),
+            'form' => $form->createView(),
+        ));
+    }
+
+    public function getProposalInfoAction(StageProposal $proposal, $id)
+    { 
+        $user = $this->container->get('security.context')->getToken()->getUser();        
+        $stage = new Stage($user, $proposal);
+        $valid = (!$proposal->getLocked() && $this->get('lulhum_repartitionmedecine_stagevalidator')->isValid($stage));
+        $proposal->removeStage($stage);
+
+        return $this->render('LulhumRepartitionMedecineBundle:Repartition:proposalinfo.html.twig', array(
+            'proposal' => $proposal,
+            'valid' => $valid,
+        ));
+    }
+        
 } 
