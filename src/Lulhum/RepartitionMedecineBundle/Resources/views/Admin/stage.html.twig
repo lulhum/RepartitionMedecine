@@ -16,15 +16,37 @@ Stage - {{ parent() }}
 		<div class="form-group" >
 			{{ form_label(form.user, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
 			{{ form_errors(form.user) }}
-			<div class="col-md-10" >
+			<div class="col-md-9 input-group" >
 				{{ form_widget(form.user, {'attr': {'class': 'form-control'}}) }}
+				<span class="input-group-btn" >
+					<button class="btn btn-default"
+						type="button"
+						data-container="body"
+						data-toggle="popover"
+						data-placement="left"
+						data-title="Rechercher un utilisateur" >
+						<span class="glyphicon glyphicon-search" ></span>
+					</button>
+				</span>
 			</div>
 		</div>
 		<div class="form-group" >
 			{{ form_label(form.proposal, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
 			{{ form_errors(form.proposal) }}
-			<div class="col-md-10" >
+			<div class="col-md-9 input-group" >
 				{{ form_widget(form.proposal, {'attr': {'class': 'form-control'}}) }}
+				<span class="input-group-btn" >
+					<button class="btn btn-default"
+						type="button"
+						data-toggle="popover"
+						data-placement="left"
+						data-title="Rechercher un stage"
+						data-html="true"
+						data-container="body" 
+						data-content="<input id='stage_filter_search' type='text' placeholder='Rechercher...' />" >
+						<span class="glyphicon glyphicon-search" ></span>
+					</button>
+				</span>
 			</div>
 		</div>
 		<div class="form-group" >
@@ -46,4 +68,22 @@ Stage - {{ parent() }}
 	</div>
 	{{ form_rest(form) }}
 	{{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script type="text/javascript">
+	$(document).ready(function() {
+		$('[data-toggle="popover"]').popover();
+		$('[data-toggle="popover"]').on('shown.bs.popover', function() {
+			var $search = $('input#stage_filter_search');
+			$search.keyup(function() {
+				$('#lulhum_repartitionmedecine_stage_proposal option:selected').prop('selected', false);
+				$('#lulhum_repartitionmedecine_stage_proposal option:contains('+$search.val()+'):first').prop('selected', true);
+			});
+		});
+		
+			
+	});
+	</script>
 {% endblock %}

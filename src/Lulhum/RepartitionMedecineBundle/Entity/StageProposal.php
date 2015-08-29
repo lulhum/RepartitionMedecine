@@ -356,6 +356,15 @@ class StageProposal
         });
     }
 
+    public function getPromotion()
+    {
+        if(!$this->hasRequirementType('promotion')) {
+            return null;
+        }
+
+        return $this->getRequirementsByType('promotion')->first()->getParams();
+    }
+
     public function countPlaces()
     {
         if($this->hasRequirementType('maxPlaces')) {

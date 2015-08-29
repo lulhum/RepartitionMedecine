@@ -22,10 +22,24 @@ class StageType extends AbstractType
             ->add('user', 'entity', array(
                 'label' => 'Utilisateur',
                 'class' => 'LulhumUserBundle:User',
+                'query_builder' => function($repository) {
+                    return $repository->createQueryBuilder('u')
+                                      ->addOrderBy('u.lastname')
+                                      ->addOrderBy('u.firstname');
+                }
             ))
             ->add('proposal', 'entity', array(
                 'label' => 'Proposition de stage',
                 'class' => 'LulhumRepartitionMedecineBundle:StageProposal',
+                'query_builder' => function($repository) {
+                    return $repository->createQueryBuilder('s')
+                                      ->join('s.category', 'c')
+                                      ->leftjoin('s.requirements', 'r', 'WITH', 'r.type = \'promotion\'')
+                                      ->addOrderBy('r.params')
+                                      ->addOrderBy('s.name')
+                                      ->addOrderBy('c.name');
+                },
+                'group_by' => 'promotion',
             ))
             ->add('locked', 'choice', array(
                 'label' => 'Accepté',
