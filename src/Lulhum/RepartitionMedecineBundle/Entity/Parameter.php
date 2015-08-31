@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Parameter
  *
  * @ORM\Table()
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Lulhum\RepartitionMedecineBundle\Repository\ParameterRepository")
  */
 class Parameter
 {
@@ -46,6 +46,11 @@ class Parameter
                 'true' => 'Oui',
                 'false' => 'Non',
             )
+        ),
+        'siteTitle' => array(
+            'description' => 'Titre du site',
+            'default' => 'Répartition des stages de médecine',
+            'values' => null,
         ),
     );
 

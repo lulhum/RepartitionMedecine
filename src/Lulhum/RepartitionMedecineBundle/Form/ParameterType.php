@@ -24,12 +24,19 @@ class ParameterType extends AbstractType
             function(FormEvent $event) {
                 $form = $event->getForm();
                 $name = $event->getData()->getName();
-                $form->add('value', 'choice', array(
-                    'label' => Parameter::PARAMETERS[$name]['description'],
-                    'choices' => Parameter::PARAMETERS[$name]['values'],
-                    'expanded' => true,
-                    'multiple' => false,
-                ));
+                if(is_null(Parameter::PARAMETERS[$name]['values'])) {
+                    $form->add('value', 'text', array(
+                        'label' => Parameter::PARAMETERS[$name]['description'],
+                    ));
+                }
+                else {
+                    $form->add('value', 'choice', array(
+                        'label' => Parameter::PARAMETERS[$name]['description'],
+                        'choices' => Parameter::PARAMETERS[$name]['values'],
+                        'expanded' => true,
+                        'multiple' => false,
+                    ));
+                }
             }
         );
     }

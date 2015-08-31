@@ -5,3 +5,8 @@ services:
     lulhum_repartitionmedecine_stagevalidator:
         class: Lulhum\RepartitionMedecineBundle\Util\StageValidator
         arguments: [ @doctrine.orm.default_entity_manager ]
+    lulhum_parameters_repository:
+        class: Lulhum\RepartitionMedecineBundle\Repository\ParameterRepository
+        factory_service: doctrine.orm.default_entity_manager
+        factory_method: getRepository
+        arguments: ['LulhumRepartitionMedecineBundle:Parameter']

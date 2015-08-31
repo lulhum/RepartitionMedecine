@@ -169,7 +169,7 @@ class RepartitionController extends Controller
             $session->getFlashBag()->add('danger', 'Votre inscription au stage "'.$proposal->getName().'" n\'a pas pu être annulée.');
         }
 
-        return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_stages_pending'));
+        return $this->redirect($this->getRequest()->headers->get('referer'));
     }
 
     public function groupesAction(Request $request)
@@ -261,12 +261,15 @@ class RepartitionController extends Controller
     { 
         $user = $this->container->get('security.context')->getToken()->getUser();        
         $stage = new Stage($user, $proposal);
-        $valid = (!$proposal->getLocked() && $this->get('lulhum_repartitionmedecine_stagevalidator')->isValid($stage));
+        $validator = $this->get('lulhum_repartitionmedecine_stagevalidator');
+        $valid = (!$proposal->getLocked() && $validator->isValid($stage));
         $proposal->removeStage($stage);
 
         return $this->render('LulhumRepartitionMedecineBundle:Repartition:proposalinfo.html.twig', array(
             'proposal' => $proposal,
             'valid' => $valid,
+            'validator' => $validator,
+            'admin' => false,
         ));
     }
         

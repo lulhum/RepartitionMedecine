@@ -352,6 +352,20 @@ class User extends BaseUser
         }        
     }
 
+    public function countStagesInPeriod(Period $period, $locked = null)
+    {
+        if(is_null($locked)) {
+            return $this->stages->filter(function($stage) use (&$period) {                
+                return $stage->getPeriod()->getId() === $period->getId();
+            })->count();
+        }
+        else {
+            return $this->stages->filter(function($stage) use (&$period) {
+                return $stage->getLocked() === $locked &&  $stage->getPeriod()->getId() === $period->getId();
+            })->count();
+        }        
+    }
+
     public function countStagesInStageCategory($stageCategoryId, $locked)
     {
         return $this->stages->filter(function($stage) use (&$stageCategoryId, &$locked) {

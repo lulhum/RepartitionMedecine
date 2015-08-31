@@ -21,8 +21,7 @@ class ParameterBagType extends AbstractType
                 'type' => new ParameterType(),
                 'label' => false,
                 'options' => array('label' => false),
-            ))
-            ->add('Modifier', 'submit');
+            ));
     }
     
     public function setDefaultOptions(OptionsResolverInterface $resolver)

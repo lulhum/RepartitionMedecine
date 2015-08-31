@@ -37,6 +37,7 @@ twig:
     strict_variables: "%kernel.debug%"
     globals:
         lulhum_toolbox: "@lulhum_toolbox"
+        lulhum_parameters: "@lulhum_parameters_repository"
 
 # Assetic Configuration
 assetic:

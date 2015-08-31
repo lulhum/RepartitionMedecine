@@ -52,10 +52,6 @@ lulhum_repartitionmedecine_stages_accepted:
     path: /stages/accepted
     defaults: { _controller: LulhumRepartitionMedecineBundle:Repartition:stagesAccepted }
 
-lulhum_repartitionmedecine_admin_home:
-    path: /admin/home
-    defaults: { _controller: LulhumRepartitionMedecineBundle:Admin:index }
-
 lulhum_repartitionmedecine_admin_repartitiongroup_home:
     path: /admin/group/home
     defaults: { _controller: LulhumRepartitionMedecineBundle:AdminRepartitionGroup:index }
@@ -117,6 +113,12 @@ lulhum_repartitionmedecine_admin_stage_categories_show:
 lulhum_repartitionmedecine_admin_stage_categories_incategory:
     path: /admin/stages/stagecategories/category/{id}
     defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stageCategoriesInCategory }
+    requirements:
+        id: \d+
+
+lulhum_repartitionmedecine_admin_stage_categories_inlocation:
+    path: /admin/stages/stagecategories/location/{id}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stageCategoriesInLocation }
     requirements:
         id: \d+
 
@@ -187,9 +189,21 @@ lulhum_repartitionmedecine_admin_stage_proposals_edit:
     requirements:
         id: \d+
 
+lulhum_repartitionmedecine_admin_stage_proposals_show:
+    path: /admin/stages/stageproposals/show/{id}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stageProposal }
+    requirements:
+        id: \d+
+
 lulhum_repartitionmedecine_admin_stage_stages:
     path: /admin/stages/stages
     defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stages }
+
+lulhum_repartitionmedecine_admin_stage_stages_page:
+    path: /admin/stages/stages/page/{page}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stages }
+    requirements:
+        page: \d+
 
 lulhum_repartitionmedecine_admin_stage_stages_inproposal:
     path: /admin/stages/stages/proposal/{id}
@@ -250,3 +264,23 @@ lulhum_repartitionmedecine_admin_periods_delete:
     defaults: { _controller: LulhumRepartitionMedecineBundle:Admin:deletePeriod }
     requirements:
         id: \d+
+
+lulhum_repartitionmedecine_admin_locations:
+    path: /admin/locations
+    defaults: { _controller: LulhumRepartitionMedecineBundle:Admin:locations }
+
+lulhum_repartitionmedecine_admin_locations_edit:
+    path: /admin/locations/edit/{id}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:Admin:editLocation }
+    requirements:
+        id: \d+
+
+lulhum_repartitionmedecine_admin_locations_delete:
+    path: /admin/locations/delete/{id}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:Admin:deleteLocation }
+    requirements:
+        id: \d+
+
+lulhum_repartitionmedecine_admin_pages:
+    path: /admin/pages
+    defaults: { _controller: LulhumRepartitionMedecineBundle:Admin:pages }

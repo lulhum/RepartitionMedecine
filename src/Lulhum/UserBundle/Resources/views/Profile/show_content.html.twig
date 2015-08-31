@@ -1,23 +1,92 @@
 {% trans_default_domain 'FOSUserBundle' %}
 
 <div class="fos_user_user_show">
-	<p>Nom: {{ user.fullname }}</p>
-	<p>{{ 'profile.show.email'|trans }}: {{ user.email }}</p>
-	<p>Numéro étudiant: {{ user.studentId }}</p>
-	<p>Numéro de portable: {{ user.phone }}</p>
-	<p>Promotion pour l'année {{ lulhum_toolbox.getCurrentSchoolYear() }}: {{ user.textPromotion }}</p>
+	<div class="row top-buffer" >
+		<div class="col-md-3" >
+			<strong>Nom:</strong>
+		</div>
+		<div class="col-md-9" >
+			{{ user.firstname }} {{ user.lastname }}
+		</div>
+	</div>
+	<div class="row top-buffer" >
+		<div class="col-md-3" >
+			<strong>{{ 'profile.show.email'|trans }}:</strong>
+		</div>
+		<div class="col-md-9" >
+			{{ user.email }}
+		</div>
+	</div>
+	<div class="row top-buffer" >
+		<div class="col-md-3" >
+			<strong>Numéro étudiant:</strong>
+		</div>
+		<div class="col-md-9" >
+			{{ user.studentId }}
+		</div>
+	</div>
+	<div class="row top-buffer" >
+		<div class="col-md-3" >
+			<strong>Numéro de portable:</strong>
+		</div>
+		<div class="col-md-9" >
+			{{ user.phone }}
+		</div>
+	</div>
+	<div class="row top-buffer" >
+		<div class="col-md-3" >
+			<strong>Promotion pour l'année {{ lulhum_toolbox.getCurrentSchoolYear() }}:</strong>
+		</div>
+		<div class="col-md-9" >
+			{{ user.textPromotion }}
+		</div>
+	</div>
 	{% if not user.repartitionGroup is null %}
-		<p>Groupe de répartition: {{ user.repartitionGroup }}</p>
-		<p>Forcer le groupe de répartition: {% if user.repartitionGroupForce %}Oui{% else %}Non{% endif %}</p>
-	{% endif %}
-	<p>Présence pendant la période de répartition: {{ user.present }}</p>
-	<p>Accès internet pendant la période de répartition: {{ user.internetAccess }}</p>
-	<p>
-		Personne de confiance ayant procuration en cas d'absence:
-		{% if user.proxy is null %}
-			Non Renseigné
-		{% else %}
-			{{ user.proxy.fullname }}
+		<div class="row top-buffer" >
+			<div class="col-md-3" >
+				<strong>Groupe de répartition:</strong>
+			</div>
+			<div class="col-md-9" >
+				{{ user.repartitionGroup }}
+			</div>
+		</div>
+		{% if is_granted('ROLE_ADMIN') %}
+			<div class="row top-buffer" >
+				<div class="col-md-3" >
+					<strong>Forcer le groupe de répartition:</strong>
+				</div>
+				<div class="col-md-9" >
+					{% if user.repartitionGroupForce %}Oui{% else %}Non{% endif %}
+				</div>
+			</div>
 		{% endif %}
-	</p>
+	{% endif %}
+	<div class="row top-buffer" >
+		<div class="col-md-3" >
+			<strong>Présence pendant la période de répartition:</strong>
+		</div>
+		<div class="col-md-9" >
+			{{ user.present }}
+		</div>
+	</div>
+	<div class="row top-buffer" >
+		<div class="col-md-3" >
+			<strong>Accès internet pendant la période de répartition:</strong>
+		</div>
+		<div class="col-md-9" >
+			{{ user.internetAccess }}
+		</div>
+	</div>
+	<div class="row top-buffer" >
+		<div class="col-md-3" >
+			<strong>Personne de confiance ayant procuration en cas d'absence:</strong>
+		</div>
+		<div class="col-md-9" >
+			{% if user.proxy is null %}
+				Non Renseigné
+			{% else %}
+				{{ user.proxy.fullname }}
+			{% endif %}
+		</div>
+	</div>
 </div>

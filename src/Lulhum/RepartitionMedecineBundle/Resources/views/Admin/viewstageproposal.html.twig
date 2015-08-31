@@ -1,0 +1,23 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/viewstageproposal.html.twig #}
+{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+{% block title %}
+	Proposition de stage - {{ proposal.name }} - {{ parent() }}
+{% endblock %}
+
+{% block bodytitle %}
+	<h3 class="panel-title" >Proposition de stage - {{ proposal.name }}</h3>
+{% endblock %}
+
+{% block body %}
+	{{ include('LulhumRepartitionMedecineBundle:Repartition:proposalinfo.html.twig') }}
+	<div class="row top-buffer" >
+		<div class="col-md-12" >
+			<a class="btn btn-primary" href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals_edit', {'id': proposal.id}) }}">
+				Modifier
+			</a>
+			<a class="btn btn-primary" href="{{ app.request.headers.get('referer') }}">
+				Retour à la liste
+			</a>
+		</div>
+	</div>
+{% endblock %}

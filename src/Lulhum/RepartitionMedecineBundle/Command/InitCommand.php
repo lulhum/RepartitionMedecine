@@ -23,7 +23,9 @@ class InitCommand extends ContainerAwareCommand
             ->addArgument('allDefaults', InputArgument::OPTIONAL, 'Initialiser tous les paramètres à leurs valeurs par défaut') 
             ;
         foreach(Parameter::PARAMETERS as $key => $param) {
-            $this->addArgument($key, InputArgument::OPTIONAL, $param['description']);
+            if(!is_null($param['values'])) {
+                $this->addArgument($key, InputArgument::OPTIONAL, $param['description']);
+            }
         }
     }
 
@@ -37,7 +39,7 @@ class InitCommand extends ContainerAwareCommand
             $parameterRepository = $em->getRepository('LulhumRepartitionMedecineBundle:Parameter');
             foreach(Parameter::PARAMETERS as $key => $param) {                
                 if(!$parameterRepository->findOneByName($key)) {
-                    if($input->getArgument('allDefaults') === 'Oui') {
+                    if($input->getArgument('allDefaults') === 'Oui' && is_null($param['values'])) {
                         $em->persist(new Parameter($key));
                     }
                     else {
@@ -88,14 +90,16 @@ class InitCommand extends ContainerAwareCommand
 
             if($choice == 1) {
                 foreach(Parameter::PARAMETERS as $key => $param) {
-                    $answers = $param['values'];
-                    $choice = $this->getHelper('dialog')->select(
-                        $output,
-                        $param['description'].' ('.$param['default'].'):',
-                        $answers,
-                        $param['default']
-                    );
-                    $input->setArgument($key, $choice);
+                    if(!is_null($param['values'])) {
+                        $answers = $param['values'];
+                        $choice = $this->getHelper('dialog')->select(
+                            $output,
+                            $param['description'].' ('.$param['default'].'):',
+                            $answers,
+                            $param['default']
+                        );
+                        $input->setArgument($key, $choice);
+                    }
                 }
             }
         }

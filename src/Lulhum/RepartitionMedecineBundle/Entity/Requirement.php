@@ -17,7 +17,8 @@ class Requirement
         'maxPlaces' => 'Nombre de places maximum',
         'promotion' => 'Promotion',
         'group' => 'Groupe',
-        //'maxChoicesInPeriod' => 'Maximum de choix pour cette période',
+        'maxChoicesInPeriod' => 'Maximum de choix pour cette période',
+        'maxStagesInPeriod' => 'Maximum de stages pour cette période',
         'maxStagesInStageCategory' => 'Maximum de stages avec ce modèle',
         'maxStagesInCategory' => 'Maximum de stages dans la catégorie',
         'maxChoicesInCategory' => 'Maximum de choix dans la catégorie',
@@ -170,6 +171,22 @@ class Requirement
     public function getTextType()
     {
         return self::TYPES[$this->getType()];
+    }
+
+    public function text($categories = array())
+    {
+        $response = self::TYPES[$this->getType()];
+        if($this->getType() === 'promotion') {
+            $response .= ': '.\Lulhum\UserBundle\Entity\User::PROMOTIONS[$this->getParams()];
+        }
+        elseif($this->getType() === 'maxStagesInCategory' || $this->getType() === 'maxChoicesInCategory') {
+            $response .= ' "'.$categories[$this->getParamsArray()[0]].'": '.$this->getParamsArray()[1];
+        }
+        else {
+            $response .= ': '.$this->getParams();
+        }
+
+        return $response;
     }
 
     public function getParamsArray()

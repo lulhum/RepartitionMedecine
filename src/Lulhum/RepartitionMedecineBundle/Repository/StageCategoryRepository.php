@@ -27,6 +27,7 @@ class StageCategoryRepository extends EntityRepository
                              ->setParameter('catsand', $category->getId());
             }
         }
+        $queryBuilder->orderBy('s.name');
         if(!is_null($max)) {
             $queryBuilder->setMaxResults($max);
             if(!is_null($offset)) {

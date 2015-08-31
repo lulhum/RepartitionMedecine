@@ -85,7 +85,11 @@
 		{% for child in groupActionForm.proposals %}
 			<tr>
 				<td>{{ form_widget(child) }}</td>
-				<td>{{ stageProposals[loop.index0].name }}</td>
+				<td>
+					<a href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals_show', {'id': stageProposals[loop.index0].id}) }}" >
+						{{ stageProposals[loop.index0].name }}
+					</a>
+				</td>
 				<td>
 					{% if stageProposals[loop.index0].period.description is not null %}
 						{{ stageProposals[loop.index0].period.description }}

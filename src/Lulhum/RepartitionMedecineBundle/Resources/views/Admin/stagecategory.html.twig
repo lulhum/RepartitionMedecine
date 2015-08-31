@@ -11,7 +11,51 @@
 {% endblock %}
 
 {% block body %}
-	{{ form(form) }}
+	{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+	<div class="form-group" >
+		{{ form_label(form.name, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+		{{ form_errors(form.name) }}
+		<div class="col-md-10" >
+			{{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+		</div>
+	</div>
+	<div class="form-group" >
+		{{ form_label(form.description, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+		{{ form_errors(form.description) }}
+		<div class="col-md-10" >
+			{{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+		</div>
+	</div>
+	<div class="form-group" >
+		{{ form_label(form.location, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+		{{ form_errors(form.location) }}
+		<div class="col-md-10" >
+			{{ form_widget(form.location, {'attr': {'class': 'form-control', 'style': 'resize: vertical'}}) }}
+		</div>
+	</div>
+	<div id="lulhum_repartitionmedecine_stagecategory_new_location" class="panel panel-default" >
+		<div class="panel-heading" >
+			<a href="#" id="add_location" class="btn btn-success" data-activated="false">Créer un nouveau lieu</a>
+		</div>
+		<div class="panel-body" >
+			{{ include('LulhumRepartitionMedecineBundle:Admin:location_type.html.twig', {'form': form.new_location}) }}
+		</div>
+	</div>
+	<div class="form-group" >
+		{{ form_label(form.categories, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+		{{ form_errors(form.categories) }}
+		<div class="col-md-10" >
+			{{ form_widget(form.categories, {'attr': {'class': 'form-control', 'size': '2', 'multiple': 'multiple'}}) }}
+		</div>
+	</div>
+	<div id="lulhum_repartitionmedecine_stagecategory_my_new_categories" data-prototype="
+											{% filter escape %}
+											{{ include('LulhumRepartitionMedecineBundle:Admin:category_prototype.html.twig', {'form': form.new_categories.vars.prototype}) }}
+											{% endfilter %}">
+	</div>
+	{{ form_widget(form.valider, {'attr': {'class': 'btn btn-primary'}}) }}
+	{{ form_rest(form) }}
+	{{ form_end(form) }}
 {% endblock %}
 
 {% block javascripts %}
@@ -19,58 +63,51 @@
 	<script type="text/javascript">
 	$(document).ready(function() {
 		
-		var $categoryContainer = $('div#lulhum_repartitionmedecine_stagecategory_new_categories');
-		var $locationContainer = $('div#lulhum_repartitionmedecine_stagecategory_new_location');
-
-		var $addCategoryLink = $('<a href="#" id="add_category" class="btn btn-default">Créer une nouvelle catégorie</a>');
-		$categoryContainer.append($addCategoryLink);
+		var $locationContainer = $('div#lulhum_repartitionmedecine_stagecategory_new_location');		
 		
-		var $addLocationLink = $('<a href="#" id="add_location" class="btn btn-default" data-activated="false">Créer un nouveau lieu</a>');
-		var $locationPrototype = $locationContainer.html();
-		$locationContainer.html('');
-		$locationContainer.append($addLocationLink);
-		$locationContainer.append($('<div id="add_location_container"></div>'));
+		var $addLocationLink = $locationContainer.children('div.panel-heading').children('a');
+		var $locationPrototype = $locationContainer.children('div.panel-body').html();
+		$locationContainer.children('div.panel-body').html('');		
+
+		$addLocationLink.click(function(e) {
+			if($addLocationLink.attr('data-activated') === 'false') {				
+				$locationContainer.children('div.panel-body').append($locationPrototype);
+				$addLocationLink.attr('data-activated', 'true');
+				$addLocationLink.attr('class', 'btn btn-danger');
+				$addLocationLink.html('Annuler');
+			}
+			else {
+				$addLocationLink.attr('data-activated', 'false');
+				$addLocationLink.attr('class', 'btn btn-success');
+				$addLocationLink.html('Créer un nouveau lieu');
+				$locationContainer.children('div.panel-body').html('');
+			}
+			e.preventDefault();
+			return false;
+		});
+
+		var index = 0;
+		var $categoryContainer = $('div#lulhum_repartitionmedecine_stagecategory_my_new_categories');
+		var $addCategoryLink = $('<a href="#" id="add_category" class="btn btn-success" style="margin-right:10px">Créer une nouvelle catégorie</a>');
+		$addCategoryLink.insertBefore($('button[type="submit"]'));
 
 		$addCategoryLink.click(function(e) {
 			addCategory($categoryContainer);
 			e.preventDefault();
 			return false;
-		});
-
-		$addLocationLink.click(function(e) {
-			if($addLocationLink.attr('data-activated') === 'false') {
-				$('div#add_location_container').append($locationPrototype);
-				$addLocationLink.attr('data-activated', 'true');
-				$addLocationLink.html('Annuler');
-			}
-			else {
-				$addLocationLink.attr('data-activated', 'false');
-				$('div#add_location_container').html('');
-				$addLocationLink.html('Créer un nouveau lieu');
-			}
-			e.preventDefault();
-			return false;
-		});
+		});		
 		
-		var index = $categoryContainer.find(':input').length;
-		if (index == 0) {
-			{# addCategory($categoryContainer); #}
-		} else {
-			$categoryContainer.children('div').each(function() {
-				addDeleteLink($(this));
-			});
-		}
 
 		function addCategory($categoryContainer) {
 			var $prototype = $($categoryContainer.attr('data-prototype').replace(/__name__label__/g, 'Catégorie n°' + (index+1)).replace(/__name__/g, index));
 			addDeleteLink($prototype);
-			$categoryContainer.append($prototype);
+			$prototype.insertBefore($addCategoryLink);
 			index++;
 		}
 
 		function addDeleteLink($prototype) {
 			$deleteLink = $('<a href="#" class="btn btn-danger">Supprimer</a>');
-			$prototype.append($deleteLink);
+			$prototype.children('div.panel-footer').append($deleteLink);
 			$deleteLink.click(function(e) {
 				$prototype.remove();
 				e.preventDefault();

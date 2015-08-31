@@ -10,7 +10,11 @@
 	
 	{% include "FOSUserBundle:Profile:show_content.html.twig" %}
 	
-	<p><a href="{{ path('lulhum_user_admin_user_edit', {'id': user.id}) }}">Modifier le profil</a></p>
-	<p><a href="{{ path('lulhum_user_admin_userlist') }}">Retour à la liste</a></p>
+	<div class="row top-buffer" >
+		<div class="col-md-12" >
+			<p><a href="{{ path('lulhum_user_admin_user_edit', {'id': user.id}) }}">Modifier le profil</a></p>
+			<p><a href="{{ path('lulhum_user_admin_userlist') }}">Retour à la liste</a></p>
+		</div>
+	</div>
 	
 {% endblock %}

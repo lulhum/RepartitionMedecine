@@ -5,6 +5,7 @@ namespace Lulhum\RepartitionMedecineBundle\Repository;
 
 use Doctrine\ORM\EntityRepository;
 use Lulhum\RepartitionMedecineBundle\Entity\Stage;
+use Lulhum\RepartitionMedecineBundle\Entity\StageProposalFilter;
 use Lulhum\RepartitionMedecineBundle\Util\StageValidator;
 use Lulhum\UserBundle\Entity\User;
 
@@ -22,7 +23,7 @@ class StageProposalRepository extends EntityRepository
             $queryBuilder->join('s.category', 'c', 'WITH', 'c.id IN(:stagecats)')
                          ->setParameter('stagecats', $filter->getStageCategories()->map(function($ob) {return $ob->getId();})->toArray());
         }
-        elseif(!$filter->getCategoriesOr()->isEmpty() || !$filter->getCategoriesAnd()->isEmpty()) {
+        else {
             $queryBuilder->join('s.category', 'c');
         }
         if(!$filter->getCategoriesOr()->isEmpty() || !$filter->getCategoriesAnd()->isEmpty()) {
@@ -42,6 +43,10 @@ class StageProposalRepository extends EntityRepository
             $queryBuilder->join('s.requirements', 'r', 'WITH', 'r.type = \'promotion\' AND r.params IN(:proms)')
                          ->setParameter('proms', $filter->getPromotions());
         }
+        $queryBuilder->addOrderBy('s.name')
+                     ->addOrderBy('c.name')
+                     ->addOrderBy('p.start')
+                     ->addOrderBy('p.stop');
         if(!is_null($max)) {
             $queryBuilder->setMaxResults($max);
             if(!is_null($offset)) {
@@ -93,7 +98,7 @@ class StageProposalRepository extends EntityRepository
                         return $a->getPeriod()->getStart() < $b->getPeriod()->getStart() ? -1 : 1;
                     }
                     if($s === 'places' && $a->countPlaces() != $b->countPlaces()) {
-                        return $a->countPlaces() < $b->countPlaces() ? -1 : 1;
+                        return $a->countPlaces() > $b->countPlaces() ? -1 : 1;
                     }
                 }
                 return 0;            

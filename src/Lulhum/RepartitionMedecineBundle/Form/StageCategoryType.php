@@ -26,6 +26,10 @@ class StageCategoryType extends AbstractType
             ))
             ->add('location', 'entity', array(
                 'label' => 'Lieu',
+                'query_builder' => function($repository) {
+                    return $repository->createQueryBuilder('l')
+                                      ->orderBy('l.name');
+                },
                 'class' => 'LulhumRepartitionMedecineBundle:Location',
             ))
             ->add('new_location', new LocationType(), array(

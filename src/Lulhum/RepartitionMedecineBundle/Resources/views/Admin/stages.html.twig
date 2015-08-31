@@ -83,7 +83,11 @@
 				<td>{{ form_widget(child) }}</td>
 				<td>{{ stages[loop.index0].user.fullname }}</td>
 				<td>{{ stages[loop.index0].proposal.period }}</td>
-				<td>{{ stages[loop.index0].proposal }}</td>
+				<td>
+					<a href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals_show', {'id': stages[loop.index0].proposal.id}) }}" >
+						{{ stages[loop.index0].proposal }}
+					</a>
+				</td>
 				<td>
 					{% if requirements[loop.index0]|length > 0 %}
 						<div class="btn-group">
@@ -119,6 +123,8 @@
 		{% endfor %}			
 	</table>
 	<div class="panel-footer" >
+		{% set paginatedUrl = 'lulhum_repartitionmedecine_admin_stage_stages_page' %}
+		{% include "LulhumRepartitionMedecineBundle:Admin:pagination.html.twig" %}
 		<div class="form-group" >
 			{{ form_label(groupActionForm.action, null, {'label_attr': {'class': 'control-label'}}) }}
 			{{ form_errors(groupActionForm.action) }}

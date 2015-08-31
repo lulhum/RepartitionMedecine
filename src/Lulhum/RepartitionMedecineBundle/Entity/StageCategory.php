@@ -38,7 +38,7 @@ class StageCategory
     private $description;
 
     /**
-     * @ORM\ManyToOne(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\Location", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\Location", inversedBy="categories", cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */   
     private $location;

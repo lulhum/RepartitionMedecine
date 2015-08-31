@@ -6,19 +6,16 @@ namespace Lulhum\RepartitionMedecineBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Lulhum\RepartitionMedecineBundle\Entity\Category;
+use Lulhum\RepartitionMedecineBundle\Entity\Location;
 use Lulhum\RepartitionMedecineBundle\Entity\ParameterBag;
 use Lulhum\RepartitionMedecineBundle\Entity\Period;
 use Lulhum\RepartitionMedecineBundle\Form\CategoryType;
+use Lulhum\RepartitionMedecineBundle\Form\LocationType;
 use Lulhum\RepartitionMedecineBundle\Form\ParameterBagType;
 use Lulhum\RepartitionMedecineBundle\Form\PeriodType;
 
 class AdminController extends Controller
 {
-
-    public function indexAction()
-    {
-        return $this->render('LulhumRepartitionMedecineBundle:Admin:index.html.twig');
-    }
 
     public function repartitionParametersAction(Request $request) {
 
@@ -29,6 +26,7 @@ class AdminController extends Controller
         $parameters->getParameters()->add($parameterRepository->findOneByName('groupRepartitionMode'));
         $parameters->getParameters()->add($parameterRepository->findOneByName('pagination'));
         $parameters->getParameters()->add($parameterRepository->findOneByName('allowUserRegistrations'));
+        $parameters->getParameters()->add($parameterRepository->findOneByName('siteTitle'));
         
         $form = $this->createForm(new ParameterBagType(), $parameters);
 
@@ -43,7 +41,6 @@ class AdminController extends Controller
 
         return $this->render('LulhumRepartitionMedecineBundle:Admin:parameters.html.twig', array(
             'form' => $form->createView(),
-            'parameterGroup' => 'Répartition',
         ));            
     }
 
@@ -51,7 +48,7 @@ class AdminController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $categories = $em->getRepository('LulhumRepartitionMedecineBundle:Category')->findAll();
+        $categories = $em->getRepository('LulhumRepartitionMedecineBundle:Category')->findBy(array(), array('name' => 'ASC'));
 
         return $this->render('LulhumRepartitionMedecineBundle:Admin:categories.html.twig', array(
             'categories' => $categories,
@@ -109,7 +106,7 @@ class AdminController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $periods = $em->getRepository('LulhumRepartitionMedecineBundle:Period')->findAll();
+        $periods = $em->getRepository('LulhumRepartitionMedecineBundle:Period')->findBy(array(), array('start' => 'ASC', 'stop' => 'ASC'));
 
         return $this->render('LulhumRepartitionMedecineBundle:Admin:periods.html.twig', array(
             'periods' => $periods,
@@ -157,6 +154,68 @@ class AdminController extends Controller
         return $this->render('LulhumRepartitionMedecineBundle:Admin:confirm.html.twig', array(
             'form' => $form->createView(),
             'message' => $message,
+        ));
+    }
+
+    public function locationsAction()
+    {
+
+        $em = $this->getDoctrine()->getManager();
+
+        $locations = $em->getRepository('LulhumRepartitionMedecineBundle:Location')->findBy(array(), array('name' => 'ASC'));
+
+        return $this->render('LulhumRepartitionMedecineBundle:Admin:locations.html.twig', array(
+            'locations' => $locations,
+        ));
+    }
+
+    public function editLocationAction(Request $request, Location $location, $id)
+    {
+        $form = $this->createForm(new LocationType(), $location);
+
+        $form->handleRequest($request);
+
+        if($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($location);
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_locations'));
+        }
+
+        return $this->render('LulhumRepartitionMedecineBundle:Admin:editlocation.html.twig', array(
+            'form' => $form->createView(),
+        ));
+    }
+
+    public function deleteLocationAction(Request $request, Location $location, $id)
+    {
+        $form = $this->get('form.factory')
+                     ->createBuilder('form')
+                     ->add('Confirmer', 'submit', array('attr' => array('class' => 'btn btn-danger')))
+                     ->getForm();
+
+        $form->handleRequest($request);
+
+        if($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($location);
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_locations'));
+        }
+
+        $message = 'Vous êtes sur le point de supprimer le lieu "'.$location.'"';
+
+        return $this->render('LulhumRepartitionMedecineBundle:Admin:confirm.html.twig', array(
+            'form' => $form->createView(),
+            'message' => $message,
+        ));
+    }
+
+    public function pagesAction()
+    {
+        return $this->render('LulhumRepartitionMedecineBundle:Admin:pages.html.twig', array(
         ));
     }
 

@@ -1,0 +1,56 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/locations.html.twig #}
+{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+{% block title %}
+	Lieux - {{ parent() }}
+{% endblock %}
+
+{% block bodytitle %}
+	<h3>Gestion des Lieux</h3>				
+{% endblock %}
+
+{% block nobody %}
+	<table class="table table-hover" >
+		<tr>
+			<th>Nom</th>
+			<th>Description</th>
+			<th>Distance</th>
+			<th>Utilisations</th>
+			<th>Actions</th>
+		</tr>
+		{% for location in locations %}
+			<tr>
+				<td>{{ location.name }}</td>
+				<td>{{ location.description }}</td>
+				<td>{{ location.distance }}km</td>
+				<td>
+					<a href="{{ path('lulhum_repartitionmedecine_admin_stage_categories_inlocation', {'id': location.id}) }}" >
+						{{ location.categories|length }} Propositions
+					</a>
+				</td>
+				<td>
+					<a href="{{ path('lulhum_repartitionmedecine_admin_locations_edit', {'id': location.id}) }}">
+						<span class="glyphicon glyphicon-edit" ></span>
+					</a>
+					{% if location.categories|length == 0 %}
+						<a href="{{ path('lulhum_repartitionmedecine_admin_locations_delete', {'id': location.id}) }}" class="text-danger">
+							<span class="glyphicon glyphicon-remove" ></span>
+						</a>
+					{% else %}
+						<span class="glyphicon glyphicon-remove" ></span>
+					{% endif %}
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
+{% endblock %}
+
+{% block bodyunder %}
+	<span class="text-primary" >
+		<span class="glyphicon glyphicon-edit" ></span>
+	</span>
+	Éditer le lieu -
+	<span class="text-danger" >
+		<span class="glyphicon glyphicon-remove" ></span>
+	</span>
+	Supprimer le lieu
+{% endblock %}

@@ -3,6 +3,7 @@
 namespace Lulhum\RepartitionMedecineBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Location
@@ -43,6 +44,15 @@ class Location
      */
     private $distance=0;
 
+    /**
+     * @ORM\OneToMany(targetEntity="Lulhum\RepartitionMedecineBundle\Entity\StageCategory", mappedBy="location")
+     */  
+    private $categories;
+
+    public function construct()
+    {
+        $this->categories = new ArrayCollection();
+    }
 
     /**
      * Get id
@@ -126,5 +136,10 @@ class Location
     public function __toString()
     {
         return $this->getName();
+    }
+
+    public function getCategories()
+    {
+        return $this->categories;
     }
 }

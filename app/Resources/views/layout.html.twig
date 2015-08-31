@@ -6,10 +6,16 @@
 			<meta charset="utf-8">
 			<meta name="viewport" content="width=device-width, initial-scale=1">
 	  
-		<title>{% block title %}Répartition des stages de médecine Amiens{% endblock %}</title>
+			<title>
+				{% set siteTitle = lulhum_parameters.findOneByName('siteTitle').value %}
+				{% block title %}
+					{{ siteTitle }}
+				{% endblock %}
+			</title>
 
 		{% block stylesheets %}
 			<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
+			<link rel="stylesheet" href="{{ asset('bundles/lulhumrepartitionmedecine/css/mytweaks.css') }}" />
 		{% endblock %}
 	</head>
 	
@@ -17,7 +23,7 @@
 		<div class="container">
 			
 			<div id="header" class="jumbotron">
-				<h2>Répartition des stages de médecine Amiens</h2>
+				<h2>{{ siteTitle }}</h2>
 
 			</div>
 			
@@ -41,7 +47,27 @@
 								{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
 									<li><a href="{{ path('fos_user_profile_show') }}">Profil</a></li>
 									{% if is_granted('ROLE_ADMIN') %}
-										<li><a href="{{ path('lulhum_repartitionmedecine_admin_home') }}">Administration</a></li>
+										<li class="dropdown">
+											<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+												Administration
+												<span class="caret"></span>
+											</a>
+											<ul class="dropdown-menu">
+												<li><a href="{{ path('lulhum_user_admin_userlist') }}">Utilisateurs</a></li>
+												<li><a href="{{ path('lulhum_repartitionmedecine_admin_repartitiongroup_home') }}">Groupes</a></li>
+												<li role="separator" class="divider"></li>
+												<li><a href="{{ path('lulhum_repartitionmedecine_admin_stage_categories') }}">Modèles de stages</a></li>
+												<li><a href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals') }}">Propositions de stages</a></li>
+												<li><a href="{{ path('lulhum_repartitionmedecine_admin_stage_stages') }}">Stages</a></li>
+												<li role="separator" class="divider"></li>
+												<li><a href="{{ path('lulhum_repartitionmedecine_admin_categories') }}">Catégories</a></li>
+												<li><a href="{{ path('lulhum_repartitionmedecine_admin_periods') }}">Périodes</a></li>
+												<li><a href="{{ path('lulhum_repartitionmedecine_admin_locations') }}">Lieux</a></li>
+												<li><a href="{{ path('lulhum_repartitionmedecine_admin_pages') }}">Pages</a></li>
+												<li role="separator" class="divider"></li>
+												<li><a href="{{ path('lulhum_repartitionmedecine_admin_repartition_parameters') }}">Paramètres</a></li>
+											</ul>
+										</li>
 									{% endif %}
 									<li><a href="{{ path('fos_user_security_logout') }}">Déconnexion</a></li>
 								{% else %}

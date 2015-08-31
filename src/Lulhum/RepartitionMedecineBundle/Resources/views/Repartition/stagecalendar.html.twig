@@ -98,6 +98,7 @@
 									data-container="body"
 									data-title="{{ p }}"
 									data-proposal="{{ p.id }}"
+									data-showed="false"
 									style="overflow:hidden;text-overflow:ellipsis;" >
 									{{ p.category }}
 								</button>
@@ -123,15 +124,17 @@
 		$('[data-toggle="popover"]').on('show.bs.popover', function() {
 			$('[data-toggle="popover"]').not(this).popover('hide');
 			var $button = $( this );			
-			if(!$button.attr('data-content')) {
+			if($button.attr('data-showed') === 'false') {
+				$button.attr('data-showed', 'true');
 				$button.attr('data-content', 'Chargement...');
 				$.ajax({
 					type: "POST",
-					url: '{{ path('lulhum_repartitionmedecine_stages_proposal_info_noid') }}'+$button.attr('data-proposal'),					
+					url: '{{ path('lulhum_repartitionmedecine_stages_proposal_info_noid') }}'+$button.attr('data-proposal'),
 					cache: false,
 					success: function(data) {
 						$button.attr('data-content', data);
 						$button.popover('show');
+						$button.attr('data-showed', 'false');
 					}
 				});
 			}

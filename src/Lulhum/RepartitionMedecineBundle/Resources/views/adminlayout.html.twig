@@ -5,24 +5,3 @@
 {% block title %}
   Administration - {{ parent() }}
 {% endblock %}
-
-{% block navbarmain %}
-	<li class="dropdown">
-		<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-			Administration
-			<span class="caret"></span>
-		</a>
-		<ul class="dropdown-menu">
-			<li><a href="{{ path('lulhum_user_admin_userlist') }}">Utilisateurs</a></li>
-			<li><a href="{{ path('lulhum_repartitionmedecine_admin_repartitiongroup_home') }}">Groupes</a></li>
-			<li role="separator" class="divider"></li>
-			<li><a href="{{ path('lulhum_repartitionmedecine_admin_stage_categories') }}">Modèles de stages</a></li>
-			<li><a href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals') }}">Propositions de stages</a></li>
-			<li><a href="{{ path('lulhum_repartitionmedecine_admin_stage_stages') }}">Stages</a></li>
-			<li role="separator" class="divider"></li>
-			<li><a href="{{ path('lulhum_repartitionmedecine_admin_categories') }}">Catégories</a></li>
-			<li><a href="{{ path('lulhum_repartitionmedecine_admin_periods') }}">Périodes</a></li>
-			<li><a href="{{ path('lulhum_repartitionmedecine_admin_repartition_parameters') }}">Paramètres</a></li>
-		</ul>
-	</li>
-{% endblock %}

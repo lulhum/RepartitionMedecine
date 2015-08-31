@@ -21,10 +21,13 @@ Stage - {{ parent() }}
 				<span class="input-group-btn" >
 					<button class="btn btn-default"
 						type="button"
+						id="lulhum-user-search" 
 						data-container="body"
 						data-toggle="popover"
 						data-placement="left"
-						data-title="Rechercher un utilisateur" >
+						data-title="Rechercher un utilisateur"
+						data-html="true"
+						data-container="body" >
 						<span class="glyphicon glyphicon-search" ></span>
 					</button>
 				</span>
@@ -38,12 +41,12 @@ Stage - {{ parent() }}
 				<span class="input-group-btn" >
 					<button class="btn btn-default"
 						type="button"
+						id="lulhum-stage-search" 
 						data-toggle="popover"
 						data-placement="left"
 						data-title="Rechercher un stage"
 						data-html="true"
-						data-container="body" 
-						data-content="<input id='stage_filter_search' type='text' placeholder='Rechercher...' />" >
+						data-container="body" >
 						<span class="glyphicon glyphicon-search" ></span>
 					</button>
 				</span>
@@ -65,25 +68,16 @@ Stage - {{ parent() }}
 	<div class="panel-footer" >
 		{{ form_widget(form.valider, {'attr': {'class': 'btn btn-primary'}}) }}
 	</div>		
-	</div>
 	{{ form_rest(form) }}
 	{{ form_end(form) }}
 {% endblock %}
 
 {% block javascripts %}
 	{{ parent() }}
+	<script type="text/javascript" src="{{ asset('bundles/lulhumrepartitionmedecine/js/search-select-popover.js') }}"></script>
 	<script type="text/javascript">
 	$(document).ready(function() {
-		$('[data-toggle="popover"]').popover();
-		$('[data-toggle="popover"]').on('shown.bs.popover', function() {
-			var $search = $('input#stage_filter_search');
-			$search.keyup(function() {
-				$('#lulhum_repartitionmedecine_stage_proposal option:selected').prop('selected', false);
-				$('#lulhum_repartitionmedecine_stage_proposal option:contains('+$search.val()+'):first').prop('selected', true);
-			});
-		});
-		
-			
+		activateSearchSelectPopover();
 	});
 	</script>
 {% endblock %}

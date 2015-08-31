@@ -56,6 +56,20 @@ class StageValidator
                         return false;
                     }
                 }
+                if($requirement->getType() === 'maxChoicesInPeriod' && $stage->getUser()->countStagesInPeriod($stage->getProposal()->getPeriod(), false) > (int)$requirement->getParams()) {                    
+
+                    return false;
+                }
+                if($requirement->getType() === 'maxStagesInPeriod') {
+                    if($stage->getUser()->countStagesInPeriod($stage->getProposal()->getPeriod(), true) > (int)$requirement->getParams()) {
+
+                        return false;
+                    }
+                    if($stage->getUser()->countStagesInPeriod($stage->getProposal()->getPeriod(), true) == (int)$requirement->getParams() && $stage->getUser()->countStagesInPeriod($stage->getProposal()->getPeriod(), false) != 0) {
+
+                        return false;
+                    }
+                }
                 if($requirement->getType() === 'maxStagesInStageCategory') {
                     if($stage->getUser()->countStagesInStageCategory($stage->getProposal()->getCategory()->getId(), true) > (int)$requirement->getParams()) {
 
@@ -116,6 +130,24 @@ class StageValidator
                     $conflicts[] = array(
                         'level' => $requirement->getStrict() ? 'danger' : 'warning',
                         'message' => 'L\'utilisateur a déjà effectué '.$stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], true).'/'.$requirement->getParamsArray()[1].' stages dans la catégorie "'.$this->getCategories()[(int)$requirement->getParamsArray()[0]].'"',
+                    );
+                }
+            }
+            elseif($requirement->getType() === 'maxChoicesInPeriod' && $stage->getUser()->countStagesInPeriod($stage->getProposal()->getPeriod(), false) > (int)$requirement->getParams()) {
+                $conflicts[] = array(
+                    'level' => $requirement->getStrict() ? 'danger' : 'warning',
+                    'message' => 'L\'utilisateur a déjà effectué '.$stage->getUser()->countStagesInPeriod($stage->getProposal()->getPeriod(), false).'/'.$requirement->getParams().' choix dans la période "'.$stage->getProposal()->getPeriod().'"',
+                );
+            }
+            elseif($requirement->getType() === 'maxStagesInPeriod') {
+                $cond = !$stage->getLocked();
+                $cond = $cond && $stage->getUser()->countStagesInPeriod($stage->getProposal()->getPeriod(), true) == (int)$requirement->getParams();
+                $cond = $cond && $stage->getUser()->countStagesInPeriod($stage->getProposal()->getPeriod(), false) != 0;
+                $cond = $cond || $stage->getUser()->countStagesInPeriod($stage->getProposal()->getPeriod(), true) > (int)$requirement->getParams();                
+                if($cond) {            
+                    $conflicts[] = array(
+                        'level' => $requirement->getStrict() ? 'danger' : 'warning',
+                        'message' => 'L\'utilisateur a déjà effectué '.$stage->getUser()->countStagesInPeriod($stage->getProposal()->getPeriod(), true).'/'.$requirement->getParams().' stages dans la période "'.$stage->getProposal()->getPeriod().'"',
                     );
                 }
             }

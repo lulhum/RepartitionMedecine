@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Lulhum\DeadlineBundle\Entity\Deadline;
 use Lulhum\DeadlineBundle\Form\DeadlineType;
 use Lulhum\RepartitionMedecineBundle\Entity\Category;
+use Lulhum\RepartitionMedecineBundle\Entity\Location;
 use Lulhum\RepartitionMedecineBundle\Entity\Stage;
 use Lulhum\RepartitionMedecineBundle\Entity\StageCategory;
 use Lulhum\RepartitionMedecineBundle\Entity\StageCategoryFilter;
@@ -83,6 +84,17 @@ class AdminStagesController extends Controller
 
         return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_categories'));
     }
+
+    public function stageCategoriesInLocationAction(Location $location, $id)
+    {
+        $filter = new StageCategoryFilter();
+        $filter->addLocation($location);
+        $session = new Session();
+        $session->set('adminStageCategoriesFilter', $filter);
+        
+        return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_categories'));
+    }
+
 
     public function resetStageCategoryFilterAction()
     {
@@ -234,6 +246,21 @@ class AdminStagesController extends Controller
             'categories' => $categories,
             'promotions' => User::PROMOTIONS,
             'pagination' => $pagination,
+        ));
+    }
+
+    public function stageProposalAction(StageProposal $proposal, $id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $categories = array();
+        foreach($em->getRepository('LulhumRepartitionMedecineBundle:Category')->findAll() as $category) {
+            $categories[$category->getId()] = $category;
+        }
+        
+        return $this->render('LulhumRepartitionMedecineBundle:Admin:viewstageproposal.html.twig', array(
+            'proposal' => $proposal,
+            'admin' => true,
+            'categories' => $categories,
         ));
     }
 
@@ -518,7 +545,7 @@ class AdminStagesController extends Controller
         return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals'));
     }
 
-    public function stagesAction(Request $request)
+    public function stagesAction(Request $request, $page = 1)
     {
         $em = $this->getDoctrine()->getManager();
 
@@ -548,6 +575,10 @@ class AdminStagesController extends Controller
                 $session->set('adminStagesFilter', $stagesFilter);
         }
 
+        $stageRepository = $em->getRepository('LulhumRepartitionMedecineBundle:Stage');
+        
+        $pagination = new Paginator($em->getRepository('LulhumRepartitionMedecineBundle:Parameter')->findOneByName('pagination')->getValue(), $stageRepository->filteredFindCount($stagesFilter), $page);
+
         $groupAction = new StageGroupAction();
         $groupActionFormType = new StageGroupActionType(array('filter' => $stagesFilter));
         $groupActionForm = $this->createForm($groupActionFormType, $groupAction);        
@@ -568,7 +599,7 @@ class AdminStagesController extends Controller
             }
         }
         
-        $stages = $em->getRepository('LulhumRepartitionMedecineBundle:Stage')->filteredFind($stagesFilter);
+        $stages = $stageRepository->filteredFind($stagesFilter, $pagination->getMax(), $pagination->getOffset());
 
         $requirements = array();
         foreach($stages as $stage) {
@@ -580,6 +611,7 @@ class AdminStagesController extends Controller
             'filterForm' => $filterForm->createView(),
             'groupActionForm' => $groupActionForm->createView(),
             'requirements' => $requirements,
+            'pagination' => $pagination,
         ));
     }
 

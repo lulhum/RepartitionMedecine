@@ -2,14 +2,30 @@
 
 {% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
 
+{% form_theme form _self %}
+
+{% block text_widget %}
+	{{ form_widget(form, {'attr': {'class': 'form-control'}}) }}
+{% endblock %}
+
 {% block title %}
-	Modifier les paramètres - {{ parameterGroup }} - {{ parent() }}
+	Modifier les paramètres - {{ parent() }}
 {% endblock %}
 
 {% block bodytitle %}
-	<h3>Modifier les paramètres - {{ parameterGroup }}</h3>
+	<h3>Modifier les paramètres</h3>
 {% endblock %}
 
 {% block body %}	
-	{{ form(form) }}	
+	{{ form_start(form) }}
+	{% for parameter in form.parameters %}
+		<div class="form-group" >
+			{{ form_label(parameter) }}
+			{{ form_errors(parameter) }}
+			{{ form_widget(parameter) }}
+		</div>
+	{% endfor %}
+	<button type="submit" class="btn btn-primary" >Modifier</button>
+	{{ form_rest(form) }}
+	{{ form_end(form) }}
 {% endblock %}

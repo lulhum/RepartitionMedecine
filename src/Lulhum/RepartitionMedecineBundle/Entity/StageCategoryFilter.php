@@ -30,6 +30,11 @@ class StageCategoryFilter
         $this->locations = $locations;
     }
 
+    public function addLocation(Location $location)
+    {
+        $this->locations[] = $location;
+    }
+
     public function getCategoriesOr()
     {
         return $this->categoriesOr;

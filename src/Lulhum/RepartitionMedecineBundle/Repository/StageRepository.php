@@ -9,7 +9,7 @@ use Lulhum\RepartitionMedecineBundle\Entity\StageFilter;
 class StageRepository extends EntityRepository
 {
 
-    public function filteredFindQB(StageFilter $filter)
+    public function filteredFindQB(StageFilter $filter, $max = null, $offset = null)
     {        
         $queryBuilder = $this->createQueryBuilder('s');
         if(!$filter->getStageProposals()->isEmpty()) {
@@ -45,13 +45,31 @@ class StageRepository extends EntityRepository
             $queryBuilder->join('p.requirements', 'r', 'WITH', 'r.type = \'group\' AND r.params = :group')
                          ->setParameter('group', $filter->getGroup());
         }
+
+        $queryBuilder->join('s.user', 'u');
+        $queryBuilder->addOrderBy('u.lastname')
+                     ->addOrderBy('u.firstname');
+        if(!is_null($max)) {
+            $queryBuilder->setMaxResults($max);
+            if(!is_null($offset)) {
+                $queryBuilder->setFirstResult($offset);
+            }
+        }
         
         return $queryBuilder;
     }
 
-    public function filteredFind(StageFilter $filter)
+    public function filteredFind(StageFilter $filter, $max = null, $offset = null)
     {
         return $this->filteredFindQB($filter)->getQuery()->getResult();
+    }
+
+    public function filteredFindCount(StageFilter $filter)
+    {
+        return $this->filteredFindQB($filter)
+                    ->select('COUNT(s)')
+                    ->getQuery()
+                    ->getSingleScalarResult();
     }
 
 }

@@ -58,8 +58,27 @@
 		{% endfor %}
 	</ul>	
 {% endif %}
-{% if valid %}
-	<a href="{{ path('lulhum_repartitionmedecine_stages_suscribe', {'id': proposal.id}) }}" class="btn btn-primary" style="margin-top:10px">
-		S'inscrire au stage
-	</a>
+{% if not admin %}
+	{% if valid %}
+		<a href="{{ path('lulhum_repartitionmedecine_stages_suscribe', {'id': proposal.id}) }}" class="btn btn-primary" style="margin-top:10px">
+			S'inscrire au stage
+		</a>
+	{% elseif proposal.hasUser(app.user, validator) and not proposal.locked and not proposal.stagesByUser(app.user).first.locked %}
+		<a href="{{ path('lulhum_repartitionmedecine_stages_unsuscribe', {'id': proposal.id}) }}" class="btn btn-danger" style="margin-top:10px">
+			Annuler l'inscription
+		</a>
+	{% endif %}
+{% else %}
+	{% if proposal.requirements|length > 0 %}
+	<div class="row" >
+		<div class="col-md-2" >Contraintes:</div>						
+	</div>
+	<ul class="list-group" >
+		{% for requirement in proposal.requirements %}
+			<li class="list-group-item" >
+				{{ requirement.text(categories) }}
+			</li>
+		{% endfor %}
+	</ul>	
+{% endif %}
 {% endif %}
