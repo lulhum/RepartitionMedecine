@@ -1,0 +1,4 @@
+services:
+#    lulhum_cms.example:
+#        class: Lulhum\CMSBundle\Example
+#        arguments: [@service_id, "plain_value", %parameter%]

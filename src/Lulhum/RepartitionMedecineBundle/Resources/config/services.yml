@@ -10,3 +10,8 @@ services:
         factory_service: doctrine.orm.default_entity_manager
         factory_method: getRepository
         arguments: ['LulhumRepartitionMedecineBundle:Parameter']
+    lulhum_parameter_type:
+        class: Lulhum\RepartitionMedecineBundle\Form\ParameterType
+        tags:
+            - { name: form.type, alias: lulhum_parameter_type }
+        arguments: [@doctrine]

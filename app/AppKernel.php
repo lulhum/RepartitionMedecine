@@ -20,6 +20,7 @@ class AppKernel extends Kernel
             new FOS\UserBundle\FOSUserBundle(),
             new Lulhum\UserBundle\LulhumUserBundle(),
             new Lulhum\DeadlineBundle\LulhumDeadlineBundle(),
+            new Lulhum\CMSBundle\LulhumCMSBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

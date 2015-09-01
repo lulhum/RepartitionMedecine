@@ -44,6 +44,7 @@
 						<ul class="nav navbar-nav">
 							{% block navbarmain %}
 								{{ render(controller("LulhumRepartitionMedecineBundle:Repartition:menu")) }}
+								{{ render(controller("LulhumCMSBundle:Page:menu")) }}
 								{% if is_granted("IS_AUTHENTICATED_REMEMBERED") %}
 									<li><a href="{{ path('fos_user_profile_show') }}">Profil</a></li>
 									{% if is_granted('ROLE_ADMIN') %}
@@ -63,7 +64,7 @@
 												<li><a href="{{ path('lulhum_repartitionmedecine_admin_categories') }}">Catégories</a></li>
 												<li><a href="{{ path('lulhum_repartitionmedecine_admin_periods') }}">Périodes</a></li>
 												<li><a href="{{ path('lulhum_repartitionmedecine_admin_locations') }}">Lieux</a></li>
-												<li><a href="{{ path('lulhum_repartitionmedecine_admin_pages') }}">Pages</a></li>
+												<li><a href="{{ path('lulhum_cms_admin_pages') }}">Pages</a></li>
 												<li role="separator" class="divider"></li>
 												<li><a href="{{ path('lulhum_repartitionmedecine_admin_repartition_parameters') }}">Paramètres</a></li>
 											</ul>

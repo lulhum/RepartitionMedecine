@@ -21,7 +21,8 @@ class Parameter
                 'manual' => 'Répartition manuelle',
                 'last' => 'Automatique (priorité aux premiers inscrits)',
                 'random' => 'Automatique (aléatoire)'
-            )
+            ),
+            'entity' => false,
         ),
         'pagination' => array(
             'description' => 'Nombre de résultats par page',
@@ -37,7 +38,8 @@ class Parameter
                 '80' => '80',
                 '90' => '90',
                 '100' => '100',
-            )
+            ),
+            'entity' => false,
         ),
         'allowUserRegistrations' => array(
             'description' => 'Autoriser les utilisateurs à s\'inscrire',
@@ -45,12 +47,20 @@ class Parameter
             'values' => array(
                 'true' => 'Oui',
                 'false' => 'Non',
-            )
+            ),
+            'entity' => false,
         ),
         'siteTitle' => array(
             'description' => 'Titre du site',
             'default' => 'Répartition des stages de médecine',
             'values' => null,
+            'entity' => false,
+        ),
+        'siteHomepage' => array(
+            'description' => 'Page d\'accueil du site',
+            'default' => '',
+            'values' => null,
+            'entity' => 'LulhumCMSBundle:Page',
         ),
     );
 
@@ -140,5 +150,17 @@ class Parameter
     public function getValue()
     {
         return $this->value;
+    }
+
+    public function getIntValue()
+    {
+        try{
+            
+            return (int)$this->value;
+        }
+        catch(\Exception $e) {
+            
+            return null;
+        }
     }
 }

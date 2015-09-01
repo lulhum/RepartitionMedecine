@@ -1,0 +1,58 @@
+{# src/Lulhum/CMSBundle/Resources/views/Admin/pages.html.twig #}
+{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+{% block title %}
+	Pages additionnelles - {{ parent() }}
+{% endblock %}
+
+{% block bodytitle %}
+	<h3>Gestion des page additionnelles</h3>
+	<hr/>
+	<a class="btn btn-success" href="{{ path('lulhum_cms_admin_pages_new') }}" >
+		Nouvelle page
+	</a>
+{% endblock %}
+
+{% block nobody %}
+	<table class="table table-hover" >
+		<tr>
+			<th>Titre</th>
+			<th>Visibilité</th>
+			<th>Menu</th>
+			<th>Actions</th>
+		</tr>
+		{% for page in pages %}
+			<tr>
+				<td>
+					<a href="{{ path('lulhum_cms_page', {'id': page.id}) }}" >
+						{{ page.title }}
+					</a>
+				</td>
+				<td>{{ page.textVisibility }}</td>
+				<td>{{ page.menu }}</td>
+				<td>
+					<a href="{{ path('lulhum_cms_admin_pages_edit', {'id': page.id}) }}">
+						<span class="glyphicon glyphicon-edit" ></span>
+					</a>
+					{% if lulhum_parameters.findOneByName('siteHomepage').intValue != page.id %}
+						<a href="{{ path('lulhum_cms_admin_pages_delete', {'id': page.id}) }}" class="text-danger">
+							<span class="glyphicon glyphicon-remove" ></span>
+						</a>
+					{% else %}
+						<span class="glyphicon glyphicon-remove" ></span>
+					{% endif %}
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
+{% endblock %}
+
+{% block bodyunder %}
+	<span class="text-primary" >
+		<span class="glyphicon glyphicon-edit" ></span>
+	</span>
+	Éditer la page -
+	<span class="text-danger" >
+		<span class="glyphicon glyphicon-remove" ></span>
+	</span>
+	Supprimer la page
+{% endblock %}

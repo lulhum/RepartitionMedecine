@@ -1,3 +1,7 @@
+lulhum_cms:
+    resource: "@LulhumCMSBundle/Resources/config/routing.yml"
+    prefix:   /
+
 lulhum_deadline:
     resource: "@LulhumDeadlineBundle/Resources/config/routing.yml"
     prefix:   /

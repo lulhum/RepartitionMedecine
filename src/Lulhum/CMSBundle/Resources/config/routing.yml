@@ -1,0 +1,25 @@
+lulhum_cms_admin_pages:
+    path: /admin/pages
+    defaults: { _controller: LulhumCMSBundle:Admin:pages }
+
+lulhum_cms_admin_pages_new:
+    path: /admin/pages/new
+    defaults: { _controller: LulhumCMSBundle:Admin:newPage }
+
+lulhum_cms_admin_pages_edit:
+    path: /admin/pages/edit/{id}
+    defaults: { _controller: LulhumCMSBundle:Admin:editPage }
+    requirements:
+        id: \d+
+
+lulhum_cms_admin_pages_delete:
+    path: /admin/pages/delete/{id}
+    defaults: { _controller: LulhumCMSBundle:Admin:deletePage }
+    requirements:
+        id: \d+
+
+lulhum_cms_page:
+    path: /page/{id}
+    defaults: { _controller: LulhumCMSBundle:Page:Page }
+    requirements:
+        id: \d+

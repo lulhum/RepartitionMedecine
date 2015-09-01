@@ -27,6 +27,7 @@ class AdminController extends Controller
         $parameters->getParameters()->add($parameterRepository->findOneByName('pagination'));
         $parameters->getParameters()->add($parameterRepository->findOneByName('allowUserRegistrations'));
         $parameters->getParameters()->add($parameterRepository->findOneByName('siteTitle'));
+        $parameters->getParameters()->add($parameterRepository->findOneByName('siteHomepage'));
         
         $form = $this->createForm(new ParameterBagType(), $parameters);
 
@@ -210,12 +211,6 @@ class AdminController extends Controller
         return $this->render('LulhumRepartitionMedecineBundle:Admin:confirm.html.twig', array(
             'form' => $form->createView(),
             'message' => $message,
-        ));
-    }
-
-    public function pagesAction()
-    {
-        return $this->render('LulhumRepartitionMedecineBundle:Admin:pages.html.twig', array(
         ));
     }
 

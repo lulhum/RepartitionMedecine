@@ -280,7 +280,3 @@ lulhum_repartitionmedecine_admin_locations_delete:
     defaults: { _controller: LulhumRepartitionMedecineBundle:Admin:deleteLocation }
     requirements:
         id: \d+
-
-lulhum_repartitionmedecine_admin_pages:
-    path: /admin/pages
-    defaults: { _controller: LulhumRepartitionMedecineBundle:Admin:pages }

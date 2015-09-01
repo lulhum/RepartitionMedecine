@@ -17,7 +17,20 @@ class RepartitionController extends Controller
 {
     public function indexAction()
     {
-        return $this->render('LulhumRepartitionMedecineBundle:Repartition:index.html.twig'); 
+        $em = $this->getDoctrine()->getManager();
+        $homepage = $em->getRepository('LulhumRepartitionMedecineBundle:Parameter')->findOneByName('siteHomepage');
+
+        if($homepage->getValue() === '') {
+            
+            return $this->render('LulhumRepartitionMedecineBundle:Repartition:index.html.twig');
+        }
+        else {
+            $page = $em->getRepository('LulhumCMSBundle:Page')->find((int)$homepage->getValue());
+
+            return $this->render('LulhumCMSBundle:Page:page.html.twig', array(
+                'page' => $page,
+            ));
+        }
     }
 
     public function menuAction()

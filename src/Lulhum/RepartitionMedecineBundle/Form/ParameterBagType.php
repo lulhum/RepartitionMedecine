@@ -18,7 +18,7 @@ class ParameterBagType extends AbstractType
     {        
         $builder
             ->add('parameters', 'collection', array(
-                'type' => new ParameterType(),
+                'type' => 'lulhum_parameter_type',
                 'label' => false,
                 'options' => array('label' => false),
             ));

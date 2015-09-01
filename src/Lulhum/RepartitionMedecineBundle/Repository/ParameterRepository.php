@@ -7,5 +7,5 @@ use Doctrine\ORM\EntityRepository;
 
 class ParameterRepository extends EntityRepository
 {
-    
+
 }
