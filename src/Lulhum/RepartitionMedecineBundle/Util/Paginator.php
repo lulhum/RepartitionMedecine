@@ -17,8 +17,11 @@ class Paginator
     
     protected $pages;
 
-    public function __construct($max, $count, $page = 1)
+    protected $url;
+
+    public function __construct($max, $count, $page = 1, $url)
     {
+        $this->url = $url;
         $this->max = $max;
         $this->count = $count;
         $this->pages = max(1, ceil($count / $max));
@@ -30,6 +33,11 @@ class Paginator
             $this->page = 1;
         }        
         $this->offset = ($this->page - 1) * $max;        
+    }
+
+    public function getUrl()
+    {
+        return $this->url;
     }
 
     public function getMax()

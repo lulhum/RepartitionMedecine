@@ -1,33 +1,10 @@
-{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/startstageproposal.html.twig #}
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/stageproposalstart.html.twig #}
 
-{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
-
-{% block title %}
-  Propositions de stage - Démarrer la répartition - {{ parent() }}
-{% endblock %}
+{% extends "LulhumRepartitionMedecineBundle:Admin:stageproposalgroupaction.html.twig" %}
 
 {% block stylesheets %}
 	{{ parent() }}
 	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.15.35/css/bootstrap-datetimepicker.min.css" />
-{% endblock %}
-
-{% block bodytitle %}
-	<h3>Propositions de stage - Démarrer la répartition</h3>
-{% endblock %}
-
-{% block nobody %}
-	<ul class="list-group" >
-		<li class="list-group-item" >
-			<h4 class="list-group-item-heading" >
-				Propositions de stage affectées: {{ groupAction.proposals|length }}
-			</h4>
-		</li>
-		{% for proposal in groupAction.proposals %}
-			<li class="list-group-item" >
-				{{ proposal.name }}
-			</li>
-		{% endfor %}
-	</ul>
 {% endblock %}
 
 {% block bodyfooter %}

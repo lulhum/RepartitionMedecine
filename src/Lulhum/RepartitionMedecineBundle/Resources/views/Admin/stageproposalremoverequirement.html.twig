@@ -1,0 +1,27 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/stageproposalremoverequirement.html.twig #}
+
+{% extends "LulhumRepartitionMedecineBundle:Admin:groupaction.html.twig" %}
+
+{% block title %}
+  Propositions de stage - Suppression de contrainte - {{ parent() }}
+{% endblock %}
+
+{% block bodytitle %}
+	<h3>Propositions de stage - Suppression de contrainte</h3>
+{% endblock %}
+
+{% block bodyfooter %}
+	<div class="panel-footer" >
+		{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+		<div class="form-group" >
+			{{ form_label(form.requirements, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+			{{ form_errors(form.requirements) }}
+			<div class="col-md-10" >
+				{{ form_widget(form.requirements, {'attr': {'class': 'form-control', 'size': '2'}}) }}
+			</div>
+		</div>
+		{{ form_widget(form.valider, {'attr': {'class': 'btn btn-primary'}}) }}
+		{{ form_rest(form) }}
+		{{ form_end(form) }}
+	</div>
+{% endblock %}

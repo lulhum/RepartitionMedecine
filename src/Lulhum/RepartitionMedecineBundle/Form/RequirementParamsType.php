@@ -25,6 +25,7 @@ class RequirementParamsType extends AbstractType
                 ->add('promotion', 'choice', array(
                     'label' => Requirement::TYPES[$paramType],
                     'choices' => User::PROMOTIONS,
+                    'attr' => array('class' => 'form-control bottom-buffer'),
                 ));
         }
         elseif($paramType === 'group') {
@@ -32,41 +33,31 @@ class RequirementParamsType extends AbstractType
                 ->add('group', 'choice', array(
                     'label' => Requirement::TYPES[$paramType],
                     'choices' => User::GROUPS,
+                    'attr' => array('class' => 'form-control bottom-buffer'),
                 ));
         }
-        elseif($paramType === 'maxStagesInCategory') {
+        elseif(preg_match('/InCategory/', $paramType)) {
             $builder
                 ->add('category', 'entity', array(
                     'class' =>  'Lulhum\RepartitionMedecineBundle\Entity\Category',
                     'label' => Requirement::TYPES[$paramType],
                     'query_builder' => function($repository) use (&$proposal){
                         return $repository->findByProposalIdQB($proposal);
-                    }
+                    },
+                    'attr' => array('class' => 'form-control bottom-buffer'),
                 ))
                 ->add('maxStages', 'integer', array(
                     'label' => false,
                     'data' => 1,
+                    'attr' => array('class' => 'form-control bottom-buffer'),
                 ));
         }
-        elseif($paramType === 'maxChoicesInCategory') {
-            $builder
-                ->add('category', 'entity', array(
-                    'class' =>  'Lulhum\RepartitionMedecineBundle\Entity\Category',
-                    'label' => Requirement::TYPES[$paramType],
-                    'query_builder' => function($repository) use (&$proposal){
-                        return $repository->findByProposalIdQB($proposal);
-                    }
-                ))
-                ->add('maxChoices', 'integer', array(
-                    'label' => false,
-                    'data' => 1,
-                ));
-        }
-        elseif($paramType === 'maxStagesInStageCategory') {
+        else {
             $builder
                 ->add('maxStages', 'integer', array(
                     'label' => false,
                     'data' => 1,
+                    'attr' => array('class' => 'form-control bottom-buffer'),
                 ));
         }
     }

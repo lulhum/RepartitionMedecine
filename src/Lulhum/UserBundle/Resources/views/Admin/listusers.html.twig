@@ -1,6 +1,6 @@
 {# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/listusers.html.twig #}
 
-{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+{% extends "LulhumRepartitionMedecineBundle:Admin:groupactionlist.html.twig" %}
 
 {% block title %}
   Utilisateurs - {{ parent() }}
@@ -51,81 +51,65 @@
 	{{ form_end(filterForm) }}
 {% endblock %}
 
-{% block nobody %}
+{% block groupactionlisthead %}
+	<th>Nom</th>
+	<th>Prénom</th>
+	<th>Promotion</th>
+	<th>Groupe</th>
+	{% for period in filter.periods %}
+		<th>{{ period }}</th>
+	{% endfor %}
+	{% for category in filter.categories %}
+		<th>{{ category }}</th>
+	{% endfor %}
+	<th>Actions</th>
+{% endblock %}
 
-	{% if app.session.flashbag.all()|length > 0 %}
-		<div class="panel-body" >
-			{% for key, messages in app.session.flashbag.all() %}
-				{% for message in messages %}
-					<div class="alert alert-{{ key }}">
-						{{ message }}
-					</div>
-				{% endfor %}
-			{% endfor %}
-		</div>
-	{% endif %}
-				
-	<table class="table table-hover">
-		<tr>
-			<th>Nom</th>
-			<th>Prénom</th>
-			<th>Promotion</th>
-			<th>Groupe</th>
-			{% for period in filter.periods %}
-				<th>{{ period }}</th>
-			{% endfor %}
-			{% for category in filter.categories %}
-				<th>{{ category }}</th>
-			{% endfor %}
-			<th>Actions</th>
-		</tr>
-		{% for u in userList %}
-			<tr>
-				<td><a href="{{ path('lulhum_user_admin_user', {'id': u.id}) }}">{{ u.lastname }}</a></td>
-				<td>{{ u.firstname }}</td>
-				<td>{{ u.textPromotion }}</td>
-				<td>{{ u.repartitionGroup }}</td>
+{% block groupactionlistbody %}
+	{% set u = userList[loop.index0] %}
+	<td><a href="{{ path('lulhum_user_admin_user', {'id': u.id}) }}">{{ u.lastname }}</a></td>
+	<td>{{ u.firstname }}</td>
+	<td>{{ u.textPromotion }}</td>
+	<td>{{ u.repartitionGroup }}</td>
 
-				{% for period in filter.periods %}
-					<td>
-						{% if u.hasStageInPeriod(period) and u.getStageInPeriod(period).locked %}
-							<span class="label label-success" >Oui</span>
-						{% else %}
-							<span class="label label-danger" >Non</span>
-						{% endif %}
-					</td>
-				{% endfor %}
-				{% for category in filter.categories %}
-					<td>
-						{% if u.countStagesInCategory(category.id, true) %}
-							<span class="label label-success" >Oui</span>
-						{% else %}
-							<span class="label label-danger" >Non</span>
-						{% endif %}
-					</td>
-				{% endfor %}
-				<td>					
-					<a href="{{ path('lulhum_user_admin_user_edit', {'id': u.id}) }}" >
-						<span class="glyphicon glyphicon-edit" ></span>
-					</a>
-					<a href="" >
-						{% if u.hasRole('ROLE_ADMIN') %}
-							<a href="{{ path('lulhum_user_admin_user_switchadmin', {'id': u.id}) }}" class="text-success" >
-								<span class="glyphicon glyphicon-eye-open" ></span>
-							</a>
-						{% else %}
-							<a href="{{ path('lulhum_user_admin_user_switchadmin', {'id': u.id}) }}" class="text-danger" >
-								<span class="glyphicon glyphicon-eye-close" ></span>
-							</a>
-						{% endif %}
-					</a>
-					<a href="{{ path('lulhum_user_admin_user_delete', {'id': u.id}) }}" class="text-danger" >
-						<span class="glyphicon glyphicon-remove" ></span>
-					</a>
-				</td>
-			</tr>
-		{% endfor %}
-	</table>
+	{% for period in filter.periods %}
+		<td>
+			{% if u.hasStageInPeriod(period) and u.getStageInPeriod(period).locked %}
+				<span class="label label-success" >Oui</span>
+			{% else %}
+				<span class="label label-danger" >Non</span>
+			{% endif %}
+		</td>
+	{% endfor %}
+	{% for category in filter.categories %}
+		<td>
+			{% if u.countStagesInCategory(category.id, true) %}
+				<span class="label label-success" >Oui</span>
+			{% else %}
+				<span class="label label-danger" >Non</span>
+			{% endif %}
+		</td>
+	{% endfor %}
+
+	<td>					
+		<a href="{{ path('lulhum_user_admin_user_edit', {'id': u.id}) }}" >
+			<span class="glyphicon glyphicon-edit" ></span>
+		</a>
+		<a href="" >
+			{% if u.hasRole('ROLE_ADMIN') %}
+				<a href="{{ path('lulhum_user_admin_user_switchadmin', {'id': u.id}) }}" class="text-success" >
+					<span class="glyphicon glyphicon-eye-open" ></span>
+				</a>
+			{% else %}
+				<a href="{{ path('lulhum_user_admin_user_switchadmin', {'id': u.id}) }}" class="text-danger" >
+					<span class="glyphicon glyphicon-eye-close" ></span>
+				</a>
+			{% endif %}
+		</a>
+		<a href="{{ path('lulhum_user_admin_user_delete', {'id': u.id}) }}" class="text-danger" >
+			<span class="glyphicon glyphicon-remove" ></span>
+		</a>
+	</td>
 {% endblock %}
 
 {% block bodyunder %}

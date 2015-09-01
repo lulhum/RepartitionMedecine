@@ -1,28 +1,22 @@
-{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/stageproposaladdconstraint.html.twig #}
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/stageproposaladdrequirement.html.twig #}
 
-{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+{% extends "LulhumRepartitionMedecineBundle:Admin:stageproposalgroupaction.html.twig" %}
 
 {% block title %}
   Propositions de stage - Ajout de contrainte - {{ parent() }}
 {% endblock %}
 
-{% block bodytitle %}
-	<h3>Propositions de stage - Ajout de contrainte</h3>
+{% block stylesheets %}
+	{{ parent() }}
+	<style>
+	.popover {
+		max-width: 100%;
+	}
+	</style>
 {% endblock %}
 
-{% block nobody %}
-	<ul class="list-group" >
-		<li class="list-group-item" >
-			<h4 class="list-group-item-heading" >
-				Propositions de stage affectées: {{ groupAction.proposals|length }}
-			</h4>
-		</li>
-		{% for proposal in groupAction.proposals %}
-			<li class="list-group-item" >
-				{{ proposal.name }}
-			</li>
-		{% endfor %}
-	</ul>
+{% block bodytitle %}
+	<h3>Propositions de stage - Ajout de contrainte</h3>
 {% endblock %}
 
 {% block bodyfooter %}

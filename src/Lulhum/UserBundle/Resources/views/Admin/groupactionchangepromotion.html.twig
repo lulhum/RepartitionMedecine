@@ -1,0 +1,23 @@
+{# src/Lulhum/UserBundle/Resources/views/Admin/groupactionchangepromotion.html.twig #}
+
+{% extends "LulhumRepartitionMedecineBundle:Admin:groupaction.html.twig" %}
+
+{% block groupactionbodytitle %}Utilisateurs - {{ parent() }}{% endblock %}
+
+{% block groupactionaffectedentities %}Utilisateurs affectés{% endblock %}
+
+{% block bodyfooter %}
+	<div class="panel-footer" >
+		{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+		<div class="form-group" >
+			{{ form_label(form.promotion, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+			{{ form_errors(form.promotion) }}
+			<div class="col-md-10" >
+				{{ form_widget(form.promotion, {'attr': {'class': 'form-control', 'size': '2'}}) }}
+			</div>
+		</div>
+		<button type="submit" class="btn btn-primary" >Modifier</button>
+		{{ form_rest(form) }}
+		{{ form_end(form) }}
+	</div>
+{% endblock %}

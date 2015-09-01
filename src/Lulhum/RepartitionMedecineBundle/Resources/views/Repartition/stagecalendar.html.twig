@@ -48,19 +48,23 @@
 	</div>
 {% endblock %}
 
-{% block nobody %}
-	{% if app.session.flashbag.peekAll()|length > 0 %}
-		<div class="panel-body" >
-			{% for key, messages in app.session.flashbag.all() %}
-				{% for message in messages %}
-					<div class="alert alert-{{ key }} alert-dismissible">
-						{{ message }}
-						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					</div>
-				{% endfor %}
+{% block nobody %}	
+	
+	<div class="panel-body" >
+		{% for key, messages in app.session.flashbag.all() %}
+			{% for message in messages %}
+				<div class="alert alert-{{ key }} alert-dismissible">
+					{{ message }}
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				</div>
 			{% endfor %}
-		</div>
-	{% endif %}
+		{% endfor %}
+		<div class="label label-success" >Inscription possible</div>
+		<div class="label label-warning" >Inscription non-prioritaire ou tirage au sort</div>
+		<div class="label label-info" >Stage demandé</div>
+		<div class="label label-primary" >Stage accepté</div>
+	</div>
+	
 	<table class="table table-condensed" style="table-layout: fixed">
 		<tr>
 			{% for month in 1..12 %}
@@ -81,12 +85,8 @@
 									{% else %}
 										{% set color = 'info' %}
 									{% endif %}
-								{% elseif p.isValidForUser(app.user, validator) and not p.locked %}
-									{% if p.countPlaces > 0 %}
-										{% set color = 'success' %}
-									{% else %}
-										{% set color = 'warning' %}
-									{% endif %}
+								{% elseif not p.locked and p.isValidForUser(app.user, validator) %}
+									{% set color = p.validity(app.user, validator) %}
 								{% else %}
 									{% set color = 'default' %}
 								{% endif %}

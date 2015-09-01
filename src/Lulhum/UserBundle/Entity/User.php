@@ -352,6 +352,24 @@ class User extends BaseUser
         }        
     }
 
+    public function countStagesInCategoryWithinSchoolyear(Period $period, $categoryId, $locked = null)
+    {
+        if(is_null($locked)) {
+            return $this->stages->filter(function($stage) use (&$categoryId, &$period) {
+                return $stage->getProposal()->getCategory()->getCategories()->exists(function($key, $category) use (&$categoryId) {
+                    return $category->getId() === (int)$categoryId;
+                }) && $period->sameSchoolyear($stage->getProposal()->getPeriod());
+            })->count();
+        }
+        else {
+            return $this->stages->filter(function($stage) use (&$categoryId, &$locked, &$period) {
+                return $stage->getLocked() === $locked && $stage->getProposal()->getCategory()->getCategories()->exists(function($key, $category) use (&$categoryId) {
+                    return $category->getId() === (int)$categoryId;
+                }) && $period->sameSchoolyear($stage->getProposal()->getPeriod());
+            })->count();
+        }        
+    }
+
     public function countStagesInPeriod(Period $period, $locked = null)
     {
         if(is_null($locked)) {
@@ -360,17 +378,38 @@ class User extends BaseUser
             })->count();
         }
         else {
-            return $this->stages->filter(function($stage) use (&$period) {
+            return $this->stages->filter(function($stage) use (&$period, &$locked) {
                 return $stage->getLocked() === $locked &&  $stage->getPeriod()->getId() === $period->getId();
             })->count();
         }        
     }
 
-    public function countStagesInStageCategory($stageCategoryId, $locked)
+    public function countStagesInStageCategory($stageCategoryId, $locked = null)
     {
-        return $this->stages->filter(function($stage) use (&$stageCategoryId, &$locked) {
-            return $stage->getLocked() === $locked && $stage->getProposal()->getCategory()->getId() === $stageCategoryId;
-        })->count();
+        if(is_null($locked)) {
+            return $this->stages->filter(function($stage) use (&$stageCategoryId) {
+                return $stage->getProposal()->getCategory()->getId() === $stageCategoryId;
+            })->count();
+        }
+        else {
+            return $this->stages->filter(function($stage) use (&$stageCategoryId, &$locked) {
+                return $stage->getLocked() === $locked && $stage->getProposal()->getCategory()->getId() === $stageCategoryId;
+            })->count();
+        }
+    }
+
+    public function countStagesInStageCategoryWithinSchoolyear(Period $period, $stageCategoryId, $locked = null)
+    {
+        if(is_null($locked)) {
+            return $this->stages->filter(function($stage) use (&$stageCategoryId, &$period) {
+                return $stage->getProposal()->getCategory()->getId() === $stageCategoryId && $period->sameSchoolyear($stage->getProposal()->getPeriod());
+            })->count();
+        }
+        else {
+            return $this->stages->filter(function($stage) use (&$stageCategoryId, &$locked, &$period) {
+                return $stage->getLocked() === $locked && $stage->getProposal()->getCategory()->getId() === $stageCategoryId && $period->sameSchoolyear($stage->getProposal()->getPeriod());
+            })->count();
+        }
     }
 
 }

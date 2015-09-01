@@ -1,0 +1,58 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/groupactionlist.html.twig #}
+
+{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+
+{% block nobody %}
+
+	{% if app.session.flashbag.all()|length > 0 %}
+		<div class="panel-body" >
+			{% for key, messages in app.session.flashbag.all() %}
+				{% for message in messages %}
+					<div class="alert alert-{{ key }}">
+						{{ message }}
+					</div>
+				{% endfor %}
+			{% endfor %}
+		</div>
+	{% endif %}
+
+	{{ form_start(groupActionForm, {'attr': {'class': 'form-inline'}}) }}
+	<table class="table table-hover">
+		<tr>
+			<th><input type="checkbox" id="master-check" /></th>
+			{% block groupactionlisthead %}{% endblock %}
+		</tr>
+		{% for child in groupActionForm.entities %}
+			<tr>
+				<td>{{ form_widget(child) }}</td>
+				{% block groupactionlistbody %}{% endblock %}
+			</tr>
+		{% endfor %}
+	</table>
+	<div class="panel-footer" >
+		{% include "LulhumRepartitionMedecineBundle:Admin:pagination.html.twig" %}
+		<div class="form-group" >
+			{{ form_label(groupActionForm.action, null, {'label_attr': {'class': 'control-label'}}) }}
+			{{ form_errors(groupActionForm.action) }}
+			{{ form_widget(groupActionForm.action, {'attr': {'class': 'form-control'}}) }}
+		</div>
+		<div class="form-group" >
+			<button type="submit" class="btn btn-primary" >Appliquer</button>
+		</div>
+		{{ form_rest(groupActionForm) }}
+	</div>
+	{{ form_end(groupActionForm) }}
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script type="text/javascript" >
+	$(document).ready(function() {
+		$('input#master-check').change(function() {
+			var $checkboxes = $('form[name="lulhum_repartitionmedecine_stageproposalgroupaction"] :checkbox');
+			$checkboxes.prop('checked', $(this).prop('checked'));
+		});
+	});
+	</script>
+{% endblock %}
+

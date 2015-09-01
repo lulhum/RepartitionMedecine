@@ -2,3 +2,6 @@ services:
     lulhum_user_groupmailer:
         class: Lulhum\UserBundle\Util\GroupMail
         arguments: [ @mailer, @templating, @doctrine.orm.default_entity_manager ]
+    lulhum_user_contactmailer:
+        class: Lulhum\UserBundle\Util\Mail
+        arguments: [ @mailer, @templating ]

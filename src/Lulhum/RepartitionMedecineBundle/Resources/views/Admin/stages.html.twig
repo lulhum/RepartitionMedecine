@@ -1,6 +1,6 @@
 {# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/stageproposals.html.twig #}
 
-{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+{% extends "LulhumRepartitionMedecineBundle:Admin:groupactionlist.html.twig" %}
 
 {% block title %}
 	Stages - {{ parent() }}
@@ -72,76 +72,54 @@
 	{{ form_end(filterForm) }}
 {% endblock %}
 
-{% block nobody %}
-	{{ form_start(groupActionForm, {'attr': {'class': 'form-inline'}}) }}
-	<table class="table table-hover" >
-		<tr>
-			<th><input type="checkbox" id="master-check" /></th>
-			<th>Utilisateur</th>
-			<th>Période</th>
-			<th>Proposition</th>
-			<th>Contraintes</th>
-			<th>Accepté</th>
-			<th>Actions</th>
-		</tr>
-		{% for child in groupActionForm.stages %}
-			<tr>
-				<td>{{ form_widget(child) }}</td>
-				<td>{{ stages[loop.index0].user.fullname }}</td>
-				<td>{{ stages[loop.index0].proposal.period }}</td>
-				<td>
-					<a href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals_show', {'id': stages[loop.index0].proposal.id}) }}" >
-						{{ stages[loop.index0].proposal }}
-					</a>
-				</td>
-				<td>
-					{% if requirements[loop.index0]|length > 0 %}
-						<div class="btn-group">
-							<button type="button" class="btn btn-{{ requirements[loop.index0][0].level }} dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								{{ requirements[loop.index0]|length }}
-								Conflits <span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu list-group">
-								{% for requirement in requirements[loop.index0] %}
-									<li class="list-group-item-{{ requirement.level }}">
-										<a href="#">{{ requirement.message }}</a>
-									</li>
-								{% endfor %}
-							</ul>
-						</div>
-					{% else %}
-						<button class="btn btn-success" >Valide</button>
-					{% endif %}
-				</td>
-				<td>
-					{% if not stages[loop.index0].locked %}
-						<span class="label label-danger" >Non</span>
-					{% else %}
-						<span class="label label-success" >Oui</span>
-					{% endif %}
-				</td>
-				<td>
-					<a href="{{ path('lulhum_repartitionmedecine_admin_stage_stages_delete', {'id': stages[loop.index0].id}) }}" class="text-danger">
-						<span class="glyphicon glyphicon-remove" ></span>
-					</a>
-				</td>
-			</tr>
-		{% endfor %}			
-	</table>
-	<div class="panel-footer" >
-		{% set paginatedUrl = 'lulhum_repartitionmedecine_admin_stage_stages_page' %}
-		{% include "LulhumRepartitionMedecineBundle:Admin:pagination.html.twig" %}
-		<div class="form-group" >
-			{{ form_label(groupActionForm.action, null, {'label_attr': {'class': 'control-label'}}) }}
-			{{ form_errors(groupActionForm.action) }}
-			{{ form_widget(groupActionForm.action, {'attr': {'class': 'form-control'}}) }}
-		</div>
-		<div class="form-group" >
-			{{ form_widget(groupActionForm.appliquer, {'attr': {'class': 'btn btn-primary' }}) }}
-		</div>
-		{{ form_rest(groupActionForm) }}
-	</div>
-	{{ form_end(groupActionForm) }}
+{% block groupactionlisthead %}
+	<th>Utilisateur</th>
+	<th>Période</th>
+	<th>Proposition</th>
+	<th>Contraintes</th>
+	<th>Accepté</th>
+	<th>Actions</th>
+{% endblock %}
+
+{% block groupactionlistbody %}
+	<td>{{ stages[loop.index0].user.fullname }}</td>
+	<td>{{ stages[loop.index0].proposal.period }}</td>
+	<td>
+		<a href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals_show', {'id': stages[loop.index0].proposal.id}) }}" >
+			{{ stages[loop.index0].proposal }}
+		</a>
+	</td>
+	<td>
+		{% if requirements[loop.index0]|length > 0 %}
+			<div class="btn-group">
+				<button type="button" class="btn btn-{{ requirements[loop.index0][0].level }} dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					{{ requirements[loop.index0]|length }}
+					Conflits <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu list-group">
+					{% for requirement in requirements[loop.index0] %}
+						<li class="list-group-item-{{ requirement.level }}">
+							<a href="#">{{ requirement.message }}</a>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+		{% else %}
+			<button class="btn btn-success" >Valide</button>
+		{% endif %}
+	</td>
+	<td>
+		{% if not stages[loop.index0].locked %}
+			<span class="label label-danger" >Non</span>
+		{% else %}
+			<span class="label label-success" >Oui</span>
+		{% endif %}
+	</td>
+	<td>
+		<a href="{{ path('lulhum_repartitionmedecine_admin_stage_stages_delete', {'id': stages[loop.index0].id}) }}" class="text-danger">
+			<span class="glyphicon glyphicon-remove" ></span>
+		</a>
+	</td>			
 {% endblock %}
 
 {% block bodyunder %}
@@ -149,16 +127,4 @@
 		<span class="glyphicon glyphicon-remove" ></span>
 	</span>
 	Supprimer le stage
-{% endblock %}
-
-{% block javascripts %}
-	{{ parent() }}
-	<script type="text/javascript" >
-	$(document).ready(function() {
-		$('input#master-check').change(function() {
-			var $checkboxes = $('form[name="lulhum_repartitionmedecine_stagegroupaction"] :checkbox');
-			$checkboxes.prop('checked', $(this).prop('checked'));
-		});
-	});
-	</script>
 {% endblock %}

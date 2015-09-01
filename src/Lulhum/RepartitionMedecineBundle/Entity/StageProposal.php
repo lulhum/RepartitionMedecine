@@ -389,14 +389,24 @@ class StageProposal
         });
     }
 
-    public function isValidForUser(User $user, \Lulhum\RepartitionMedecineBundle\Util\StageValidator $validator)
+    public function isValidForUser(User $user, \Lulhum\RepartitionMedecineBundle\Util\StageValidator $validator, $notValidOnWarning = false)
     {
         $stage = new Stage($user, $this);
-        $valid = $validator->isValid($stage);
+        $valid = $validator->isValid($stage, $notValidOnWarning);
         $this->removeStage($stage);
         $user->removeStage($stage);
 
         return $valid;
+    }
+
+    public function getValidity(User $user, \Lulhum\RepartitionMedecineBundle\Util\StageValidator $validator)
+    {
+        $stage = new Stage($user, $this);
+        $validity = $validator->getValidity($stage);
+        $this->removeStage($stage);
+        $user->removeStage($stage);
+
+        return $validity;
     }
 
     public function __clone()

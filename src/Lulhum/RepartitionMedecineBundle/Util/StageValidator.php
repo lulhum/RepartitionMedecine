@@ -10,7 +10,12 @@ use Lulhum\RepartitionMedecineBundle\Entity\Requirement;
 
 class StageValidator
 {
-
+    const ERROR_LEVEL = array(
+        'success',
+        'warning',
+        'danger',
+    );
+    
     private $em;
 
     private $categories = null;
@@ -20,7 +25,175 @@ class StageValidator
         $this->em = $em;
     }
 
-    public function isValid(Stage $stage)
+    private function check(Requirement $requirement, $stage) {
+        if($requirement->getType() === 'maxPlaces' && $stage->getProposal()->getStages()->count() > (int)$requirement->getParams()) {
+
+            return $requirement->getStrict() ? 2 : 1;
+        }
+        if($requirement->getType() === 'promotion' && $stage->getUser()->getPromotion() !== $requirement->getParams()) {
+
+            return $requirement->getStrict() ? 2 : 1;
+        }
+        if($requirement->getType() === 'group' && $stage->getUser()->getRepartitionGroup() !== $requirement->getParams()) {
+
+            return $requirement->getStrict() ? 2 : 1;
+        }
+        if(substr($requirement->getType(), 0, 10) === 'maxChoices') {
+            if(substr($requirement->getType(), 10) === 'InPeriod') {
+                $parameters = array($stage->getProposal()->getPeriod());
+            }
+            elseif(substr($requirement->getType(), 10) === 'InStageCategory') {
+                $parameters = array($stage->getProposal()->getCategory()->getId());
+            }
+            else {
+                $parameters = array((int)$requirement->getParamsArray(0));
+            }
+            if(substr($requirement->getType(), -16) === 'WithinSchoolyear') {
+                $parameters = array_merge(array($stage->getProposal()->getPeriod()), $parameters);
+            }
+            $choices = call_user_func_array(array($stage->getUser(), 'countStages'.substr($requirement->getType(), 10)), array_merge($parameters, array(null)));
+            $max = (int)$requirement->getParamsArray(1);
+            if($choices > $max) {
+
+                return $requirement->getStrict() ? 2 : 1;
+            }
+        }
+        if(substr($requirement->getType(), 0, 9) === 'maxStages') {
+            if(substr($requirement->getType(), 9) === 'InPeriod') {
+                $parameters = array($stage->getProposal()->getPeriod(), true);
+            }
+            elseif(substr($requirement->getType(), 9) === 'InStageCategory') {
+                $parameters = array($stage->getProposal()->getCategory()->getId());
+            }
+            else {
+                $parameters = array((int)$requirement->getParamsArray(0), true);
+            }
+            if(substr($requirement->getType(), -16) === 'WithinSchoolyear') {
+                $parameters = array_merge(array($stage->getProposal()->getPeriod()), $parameters);
+            }
+            $choices = call_user_func_array(array($stage->getUser(), 'countStages'.substr($requirement->getType(), 9)), array_merge($parameters, array(false)));
+            $stages = call_user_func_array(array($stage->getUser(), 'countStages'.substr($requirement->getType(), 9)), array_merge($parameters, array(true)));
+            $max = (int)$requirement->getParamsArray(1);
+            if((!$stage->getLocked() && $stages === $max && $choices != 0) || $stages > $max) {
+
+                return $requirement->getStrict() ? 2 : 1;
+            }
+        }        
+        if(!array_key_exists($requirement->getType(), Requirement::TYPES)) {
+
+            return 1;
+        }
+
+        return 0;
+    }
+
+    private function getMessage($requirement, $stage) {
+        if($requirement->getType() === 'maxPlaces') {
+
+            return 'Ce stage a '.$stage->getProposal()->getStages()->count().' utilisateurs inscrits pour '.$requirement->getParams().' places';
+        }
+        if($requirement->getType() === 'promotion') {
+
+            return 'L\'utilisateur n\'appartient pas à la promotion requise pour ce stage ('.User::PROMOTIONS[$requirement->getParams()].')';
+        }
+        if($requirement->getType() === 'group') {
+
+            return 'L\'utilisateur n\'appartient pas au groupe requis pour ce stage ('.$requirement->getParams().')';
+        }
+        if($requirement->getType() === 'maxChoicesInCategory') {
+            $choices = $stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray(0), false);
+            $max = (int)$requirement->getParamsArray(0) - $stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray(0), true);
+            $category = $this->getCategories()[(int)$requirement->getParamsArray(0)];
+
+            return 'L\'utilisateur a déjà effectué '.$choices.'/'.$max.' choix dans la catégorie "'.$category.'"';
+        }
+        if($requirement->getType() === 'maxStagesInCategory') {
+            $stages = $stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray(0), true);
+            $max = $requirement->getParamsArray(1);
+            $category = $this->getCategories()[(int)$requirement->getParamsArray(0)];
+
+            return 'L\'utilisateur a déjà effectué '.$stages.'/'.$max.' stages dans la catégorie "'.$category.'"';
+        }
+        if($requirement->getType() === 'maxChoicesInCategoryWithinSchoolyear') {
+            $choices = $stage->getUser()->countStagesInCategoryWithinSchoolyear($stage->getProposal()->getPeriod(), (int)$requirement->getParamsArray(0), false);
+            $max = (int)$requirement->getParamsArray(1);
+            $max -= $stage->getUser()->countStagesInCategoryWithinSchoolyear($stage->getProposal()->getPeriod(), (int)$requirement->getParamsArray(0), true);
+            $category = $this->getCategories()[(int)$requirement->getParamsArray(0)];
+            $schoolyear = $stage->getProposal()->getPeriod()->getTextSchoolyear();
+
+            return 'L\'utilisateur a déjà effectué '.$choices.'/'.$max.' choix dans la catégorie "'.$category.'" pour l\'année '.$schoolyear;
+        }
+        if($requirement->getType() === 'maxStagesInCategoryWithinSchoolyear') {
+            $stages = $stage->getUser()->countStagesInCategoryWithinSchoolyear($stage->getProposal()->getPeriod(), (int)$requirement->getParamsArray(0), true);
+            $max = $requirement->getParamsArray(1);
+            $category = $this->getCategories()[(int)$requirement->getParamsArray(0)];
+            $schoolyear = $stage->getProposal()->getPeriod()->getTextSchoolyear();
+
+            return 'L\'utilisateur a déjà effectué '.$stages.'/'.$max.' stages dans la catégorie "'.$category.'" pour l\'année '.$schoolyear;
+        }
+        if($requirement->getType() === 'maxChoicesInPeriod') {
+            $choices = $stage->getUser()->countStagesInPeriod($stage->getProposal()->getPeriod(), false);
+            $max = (int)$requirement->getParams() - $stage->getUser()->countStagesInPeriod($stage->getProposal()->getPeriod(), true);
+            $period = $stage->getProposal()->getPeriod();
+
+            return 'L\'utilisateur a déjà effectué '.$choices.'/'.$max.' choix dans la période "'.$period.'"';
+        }
+        if($requirement->getType() === 'maxStagesInPeriod') {
+            $stages = $stage->getUser()->countStagesInPeriod($stage->getProposal()->getPeriod(), true);
+            $max = $requirement->getParams();
+            $period = $stage->getProposal()->getPeriod();
+
+            return 'L\'utilisateur a déjà effectué '.$stages.'/'.$max.' stages dans la période "'.$period.'"';
+        }
+        if($requirement->getType() === 'maxChoicesInStageCategory') {
+            $choices = $stage->getUser()->countStagesInStageCategory($stage->getProposal()->getCategory()->getId(), false);
+            $max = (int)$requirement->getParams() - $stage->getUser()->countStagesInStageCategory($stage->getProposal()->getCategory()->getId(), true);
+            $category = $stage->getProposal()->getCategory();
+
+            return 'L\'utilisateur a déjà effectué '.$choices.'/'.$max.' choix avec le modèle "'.$category.'"';
+        }
+        if($requirement->getType() === 'maxStagesInStageCategory') {
+            $stages = $stage->getUser()->countStagesInStageCategory($stage->getProposal()->getCategory()->getId(), true);
+            $max = $requirement->getParams();
+            $category = $stage->getProposal()->getCategory();
+
+            return 'L\'utilisateur a déjà effectué '.$stages.'/'.$max.' stages avec le modèle "'.$category.'"';
+        }
+        if($requirement->getType() === 'maxChoicesInStageCategoryWithinSchoolyear') {
+            $choices = $stage->getUser()->countStagesInStageCategoryWithinSchoolyear($stage->getProposal()->getPeriod(), $stage->getProposal()->getCategory()->getId(), false);
+            $max = (int)$requirement->getParamsArray(1);
+            $max -= $stage->getUser()->countStagesInStageCategoryWithinSchoolyear($stage->getProposal()->getPeriod(), $stage->getProposal()->getCategory()->getId(), true);
+            $category = $stage->getProposal()->getCategory();
+            $schoolyear = $stage->getProposal()->getPeriod()->getTextSchoolyear();
+
+            return 'L\'utilisateur a déjà effectué '.$choices.'/'.$max.' choix avec le modèle "'.$category.'" pour l\'année '.$schoolyear;
+        }
+        if($requirement->getType() === 'maxStagesInCategoryWithinSchoolyear') {
+            $stages = $stage->getUser()->countStagesInStageCategoryWithinSchoolyear($stage->getProposal()->getPeriod(), $stage->getProposal()->getCategory()->getId(), true);
+            $max = $requirement->getParams();
+            $category = $stage->getProposal()->getCategory();
+            $schoolyear = $stage->getProposal()->getPeriod()->getTextSchoolyear();
+
+            return 'L\'utilisateur a déjà effectué '.$stages.'/'.$max.' stages avec le modèle "'.$category.'" pour l\'année '.$schoolyear;
+        }        
+
+        return 'Le type de contrainte "'.$requirement->getType().'" n\'est pas pris en charge';
+    }
+
+    private function getCategories()
+    {
+        if(is_null($this->categories)) {
+            $this->categories = array();
+            $categories = $this->em->getRepository('LulhumRepartitionMedecineBundle:Category')->findAll();
+            foreach($categories as $category) {
+                $this->categories[$category->getId()] = $category;
+            }
+        }
+        
+        return $this->categories;
+    }
+
+    public function isValid(Stage $stage, $notValidOnWarning = false)
     {
         if($stage->getProposal()->getStages()->filter(function($s) use (&$stage) {
             return $s->getUser() === $stage->getUser();
@@ -29,56 +202,9 @@ class StageValidator
         }
 
         foreach($stage->getProposal()->getRequirements() as $requirement) {
-            if($requirement->getStrict()) {
-                if($requirement->getType() === 'maxPlaces' && $stage->getProposal()->getStages()->count() > (int)$requirement->getParams()) {
-
+            if($notValidOnWarning || $requirement->getStrict()) {
+                if($this->check($requirement, $stage) > 0) {
                     return false;
-                }
-                if($requirement->getType() === 'promotion' && $stage->getUser()->getPromotion() !== $requirement->getParams()) {
-
-                    return false;
-                }
-                if($requirement->getType() === 'group' && $stage->getUser()->getRepartitionGroup() !== $requirement->getParams()) {
-
-                    return false;
-                }
-                if($requirement->getType() === 'maxChoicesInCategory' && $stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], false) > (int)$requirement->getParamsArray()[1]) {                    
-
-                    return false;
-                }
-                if($requirement->getType() === 'maxStagesInCategory') {
-                    if($stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], true) > (int)$requirement->getParamsArray()[1]) {
-
-                        return false;
-                    }
-                    if($stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], true) == (int)$requirement->getParamsArray()[1] && $stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], false) != 0) {
-
-                        return false;
-                    }
-                }
-                if($requirement->getType() === 'maxChoicesInPeriod' && $stage->getUser()->countStagesInPeriod($stage->getProposal()->getPeriod(), false) > (int)$requirement->getParams()) {                    
-
-                    return false;
-                }
-                if($requirement->getType() === 'maxStagesInPeriod') {
-                    if($stage->getUser()->countStagesInPeriod($stage->getProposal()->getPeriod(), true) > (int)$requirement->getParams()) {
-
-                        return false;
-                    }
-                    if($stage->getUser()->countStagesInPeriod($stage->getProposal()->getPeriod(), true) == (int)$requirement->getParams() && $stage->getUser()->countStagesInPeriod($stage->getProposal()->getPeriod(), false) != 0) {
-
-                        return false;
-                    }
-                }
-                if($requirement->getType() === 'maxStagesInStageCategory') {
-                    if($stage->getUser()->countStagesInStageCategory($stage->getProposal()->getCategory()->getId(), true) > (int)$requirement->getParams()) {
-
-                        return false;
-                    }
-                    if($stage->getUser()->countStagesInStageCategory($stage->getProposal()->getCategory()->getId(), true) == (int)$requirement->getParams() && $stage->getUser()->countStagesInStageCategory($stage->getProposal()->getCategory()->getId(), false) != 0) {
-
-                        return false;
-                    }
                 }
             }
         }
@@ -97,75 +223,13 @@ class StageValidator
         }
 
         foreach($stage->getProposal()->getRequirements() as $requirement) {
-            if($requirement->getType() === 'maxPlaces' && $stage->getProposal()->getStages()->count() > (int)$requirement->getParams()) {
+            $check = $this->check($requirement, $stage);
+            if($check > 0) {
                 $conflicts[] = array(
-                    'level' => $requirement->getStrict() ? 'danger' : 'warning',
-                    'message' => 'Ce stage a '.$stage->getProposal()->getStages()->count().' utilisateurs inscrits pour '.$requirement->getParams().' places',
+                    'level' => self::ERROR_LEVEL[$check],
+                    'message' => $this->getMessage($requirement, $stage),
                 );
-            }
-            elseif($requirement->getType() === 'promotion' && $stage->getUser()->getPromotion() !== $requirement->getParams()) {
-                $conflicts[] = array(
-                    'level' => $requirement->getStrict() ? 'danger' : 'warning',
-                    'message' => 'L\'utilisateur n\'appartient pas à la promotion requise pour ce stage ('.User::PROMOTIONS[$requirement->getParams()].')',
-                );
-            }
-            elseif($requirement->getType() === 'group' && $stage->getUser()->getRepartitionGroup() !== $requirement->getParams()) {
-                $conflicts[] = array(
-                    'level' => $requirement->getStrict() ? 'danger' : 'warning',
-                    'message' => 'L\'utilisateur n\'appartient pas au groupe requis pour ce stage ('.$requirement->getParams().')',
-                );
-            }
-            elseif($requirement->getType() === 'maxChoicesInCategory' && $stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], false) > (int)$requirement->getParamsArray()[1]) {
-                $conflicts[] = array(
-                    'level' => $requirement->getStrict() ? 'danger' : 'warning',
-                    'message' => 'L\'utilisateur a déjà effectué '.$stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], false).'/'.$requirement->getParamsArray()[1].' choix dans la catégorie "'.$this->getCategories()[(int)$requirement->getParamsArray()[0]].'"',
-                );
-            }
-            elseif($requirement->getType() === 'maxStagesInCategory') {
-                $cond = !$stage->getLocked();
-                $cond = $cond && $stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], true) == (int)$requirement->getParamsArray()[1];
-                $cond = $cond && $stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], false) != 0;
-                $cond = $cond || $stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], true) > (int)$requirement->getParamsArray()[1];                
-                if($cond) {            
-                    $conflicts[] = array(
-                        'level' => $requirement->getStrict() ? 'danger' : 'warning',
-                        'message' => 'L\'utilisateur a déjà effectué '.$stage->getUser()->countStagesInCategory((int)$requirement->getParamsArray()[0], true).'/'.$requirement->getParamsArray()[1].' stages dans la catégorie "'.$this->getCategories()[(int)$requirement->getParamsArray()[0]].'"',
-                    );
-                }
-            }
-            elseif($requirement->getType() === 'maxChoicesInPeriod' && $stage->getUser()->countStagesInPeriod($stage->getProposal()->getPeriod(), false) > (int)$requirement->getParams()) {
-                $conflicts[] = array(
-                    'level' => $requirement->getStrict() ? 'danger' : 'warning',
-                    'message' => 'L\'utilisateur a déjà effectué '.$stage->getUser()->countStagesInPeriod($stage->getProposal()->getPeriod(), false).'/'.$requirement->getParams().' choix dans la période "'.$stage->getProposal()->getPeriod().'"',
-                );
-            }
-            elseif($requirement->getType() === 'maxStagesInPeriod') {
-                $cond = !$stage->getLocked();
-                $cond = $cond && $stage->getUser()->countStagesInPeriod($stage->getProposal()->getPeriod(), true) == (int)$requirement->getParams();
-                $cond = $cond && $stage->getUser()->countStagesInPeriod($stage->getProposal()->getPeriod(), false) != 0;
-                $cond = $cond || $stage->getUser()->countStagesInPeriod($stage->getProposal()->getPeriod(), true) > (int)$requirement->getParams();                
-                if($cond) {            
-                    $conflicts[] = array(
-                        'level' => $requirement->getStrict() ? 'danger' : 'warning',
-                        'message' => 'L\'utilisateur a déjà effectué '.$stage->getUser()->countStagesInPeriod($stage->getProposal()->getPeriod(), true).'/'.$requirement->getParams().' stages dans la période "'.$stage->getProposal()->getPeriod().'"',
-                    );
-                }
-            }
-            elseif($requirement->getType() === 'maxStagesInStageCategory') {
-                $cond = !$stage->getLocked();
-                $cond = $cond && $stage->getUser()->countStagesInStageCategory($stage->getProposal()->getCategory()->getId(), true) == (int)$requirement->getParams();
-                $cond = $cond && $stage->getUser()->countStagesInStageCategory($stage->getProposal()->getCategory()->getId(), false) != 0;
-                $cond = $cond || $stage->getUser()->countStagesInStageCategory($stage->getProposal()->getCategory()->getId(), true) > (int)$requirement->getParams();                
-                if($cond) {            
-                    $conflicts[] = array(
-                        'level' => $requirement->getStrict() ? 'danger' : 'warning',
-                        'message' => 'L\'utilisateur a déjà effectué '.$stage->getUser()->countStagesInStageCategory($stage->getProposal()->getCategory()->getId(), true).'/'.$requirement->getParams().' stages avec ce modèle.',
-                    );
-                }
-            }
-            elseif(!array_key_exists($requirement->getType(), Requirement::TYPES)) {
-                $conflicts[] = array('level' => 'warning', 'message' => 'Le type de contrainte "'.$requirement->getType().'" n\'est pas pris en charge');
-            }
+            }            
         }
 
         usort($conflicts, function($conflict1, $conflict2) {
@@ -177,16 +241,30 @@ class StageValidator
         return $conflicts;
     }
 
-    private function getCategories()
+    
+
+    public function getValidity(Stage $stage)
     {
-        if(is_null($this->categories)) {
-            $this->categories = array();
-            $categories = $this->em->getRepository('LulhumRepartitionMedecineBundle:Category')->findAll();
-            foreach($categories as $category) {
-                $this->categories[$category->getId()] = $category;
+        $validity = 0;
+
+        if($stage->getProposal()->getStages()->filter(function($s) use (&$stage) {
+            return $s->getUser() === $stage->getUser();
+        })->count() > 1) {
+
+            return 'danger';
+        }
+
+        foreach($stage->getProposal()->getRequirements() as $requirement) {
+            $check = $this->check($requirement, $stage);
+            if($check === 2) {
+
+                return 'danger';
+            }
+            else{
+                $validity = max($validity, $check);
             }
         }
         
-        return $this->categories;
+        return self::ERROR_LEVEL[$validity];
     }
 }

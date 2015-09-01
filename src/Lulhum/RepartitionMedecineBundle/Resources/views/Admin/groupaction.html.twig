@@ -1,0 +1,26 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/groupaction.html.twig #}
+
+{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+
+{% block title %}
+  	{{ groupAction.textAction }} - {{ parent() }}
+{% endblock %}
+
+{% block bodytitle %}
+	<h3>{% block groupactionbodytitle %}{{ groupAction.textAction }}{% endblock %}</h3>
+{% endblock %}
+
+{% block nobody %}
+	<ul class="list-group" >
+		<li class="list-group-item" >
+			<h4 class="list-group-item-heading" >
+				{% block groupactionaffectedentities %}Entités affectées{% endblock %}: {{ groupAction.entities|length }}
+			</h4>
+		</li>
+		{% for entity in groupAction.entities %}
+			<li class="list-group-item" >
+				{{ entity }}
+			</li>
+		{% endfor %}
+	</ul>
+{% endblock %}

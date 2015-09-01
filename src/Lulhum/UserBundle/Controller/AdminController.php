@@ -7,16 +7,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Lulhum\RepartitionMedecineBundle\Form\GroupActionType;
+use Lulhum\RepartitionMedecineBundle\Util\Paginator;
 use Lulhum\UserBundle\Form\GroupMailType;
 use Lulhum\UserBundle\Form\UserFilterType;
 use Lulhum\UserBundle\Form\UserType;
 use Lulhum\UserBundle\Entity\User;
 use Lulhum\UserBundle\Entity\UserFilter;
+use Lulhum\UserBundle\Util\UserGroupAction;
 
 class AdminController extends Controller
 {
 
-    public function listUsersAction(Request $request)
+    public function listUsersAction(Request $request, $page = 1)
     {
         $em = $this->getDoctrine()->getManager();
         
@@ -39,18 +42,87 @@ class AdminController extends Controller
         if($request->getMethod() === 'POST' && $request->request->has($filterFormType->getName())) {
                 $filterForm->handleRequest($request);
                 $session->set('adminUsersFilter', $userFilter);
-        }
+        }     
 
         $repository = $em->getRepository('LulhumUserBundle:User');
+        $pagination = new Paginator(
+            $em->getRepository('LulhumRepartitionMedecineBundle:Parameter')->findOneByName('pagination')->getValue(),
+            count($repository->findBy($userFilter->getForFindBy(), array('lastname' => 'asc', 'firstname' => 'asc'))),
+            $page,
+            'lulhum_user_admin_userlist_page'
+        );
+
+        $groupAction = new UserGroupAction();
+        $groupActionFormType = new GroupActionType(array(
+            'filter' => $userFilter,
+            'max' => $pagination->getMax(),
+            'offset' => $pagination->getOffset(),
+        ));
+        $groupActionForm = $this->createForm($groupActionFormType, $groupAction);        
+
+        if($request->getMethod() === 'POST' && $request->request->has($groupActionFormType->getName())) {                
+            $groupActionForm->handleRequest($request);    
+            if($groupActionForm->isValid()) {
+                if($groupAction->getAction() === 'changePromotion') {
+                    $session->set('adminUserGroupAction', $groupAction);
+                    
+                    return $this->redirect($this->generateUrl('lulhum_user_admin_group_changepromotion'));
+                }
+            }
+        }
+        
         $userList = $repository->findBy(
             $userFilter->getForFindBy(),
-            array('lastname' => 'asc', 'firstname' => 'asc')            
-        );
+            array('lastname' => 'asc', 'firstname' => 'asc'),
+            $pagination->getMax(),
+            $pagination->getOffset()
+        );        
 
         return $this->render('LulhumUserBundle:Admin:listusers.html.twig', array(
             'userList' => $userList,
             'filterForm' => $filterForm->createView(),
             'filter' => $userFilter,
+            'pagination' => $pagination,
+            'groupActionForm' => $groupActionForm->createView(),
+            
+        ));
+    }
+
+    public function groupActionChangePromotionAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();        
+        $session = new Session();
+        $groupAction = UserGroupAction::merge($em, $session, 'adminUserGroupAction');
+        if(is_null($groupAction)) {
+
+            return $this->redirect($this->getRequest()->headers->get('referer'));
+        }
+
+        $form = $this->get('form.factory')
+                     ->createBuilder('form')
+                     ->add('promotion', 'choice', array(
+                         'label' => 'Promotion',
+                         'choices' => User::PROMOTIONS,
+                         'required' => false,
+                         'empty_value' => 'Indéfini',
+                     ))
+                     ->getForm();
+
+        $form->handleRequest($request);
+
+        if($form->isValid()) {
+            foreach($groupAction->getEntities() as $user) {
+                $user->setPromotion($form->get('promotion')->getData());
+                $em->persist($user);
+            }
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('lulhum_user_admin_userlist'));
+        }
+       
+        return $this->render('LulhumUserBundle:Admin:groupactionchangepromotion.html.twig', array(
+            'groupAction' => $groupAction,
+            'form' => $form->createView(),
         ));
     }
 

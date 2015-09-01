@@ -11,5 +11,13 @@
 {% endblock %}
 
 {% block body %}
+	{% for key, messages in app.session.flashbag.all() %}
+		{% for message in messages %}
+			<div class="alert alert-{{ key }} alert-dismissible">
+				{{ message }}
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			</div>
+		{% endfor %}
+	{% endfor %}
 	{{ page.content|raw }}
 {% endblock %}

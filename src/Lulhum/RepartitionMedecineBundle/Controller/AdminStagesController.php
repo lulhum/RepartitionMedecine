@@ -10,27 +10,27 @@ use Lulhum\DeadlineBundle\Entity\Deadline;
 use Lulhum\DeadlineBundle\Form\DeadlineType;
 use Lulhum\RepartitionMedecineBundle\Entity\Category;
 use Lulhum\RepartitionMedecineBundle\Entity\Location;
+use Lulhum\RepartitionMedecineBundle\Entity\Requirement;
 use Lulhum\RepartitionMedecineBundle\Entity\Stage;
 use Lulhum\RepartitionMedecineBundle\Entity\StageCategory;
 use Lulhum\RepartitionMedecineBundle\Entity\StageCategoryFilter;
 use Lulhum\RepartitionMedecineBundle\Entity\StageFilter;
-use Lulhum\RepartitionMedecineBundle\Entity\StageGroupAction;
 use Lulhum\RepartitionMedecineBundle\Entity\Period;
 use Lulhum\RepartitionMedecineBundle\Entity\StageProposal;
 use Lulhum\RepartitionMedecineBundle\Entity\StageProposalFilter;
-use Lulhum\RepartitionMedecineBundle\Entity\StageProposalGroupAction;
+use Lulhum\RepartitionMedecineBundle\Form\GroupActionType;
 use Lulhum\RepartitionMedecineBundle\Form\RequirementType;
 use Lulhum\RepartitionMedecineBundle\Form\RequirementParamsType;
 use Lulhum\RepartitionMedecineBundle\Form\StageCategoryFilterType;
 use Lulhum\RepartitionMedecineBundle\Form\StageCategoryType;
 use Lulhum\RepartitionMedecineBundle\Form\StageFilterType;
-use Lulhum\RepartitionMedecineBundle\Form\StageGroupActionType;
 use Lulhum\RepartitionMedecineBundle\Form\PeriodType;
 use Lulhum\RepartitionMedecineBundle\Form\StageProposalType;
 use Lulhum\RepartitionMedecineBundle\Form\StageProposalFilterType;
-use Lulhum\RepartitionMedecineBundle\Form\StageProposalGroupActionType;
 use Lulhum\RepartitionMedecineBundle\Form\StageType;
 use Lulhum\RepartitionMedecineBundle\Util\Paginator;
+use Lulhum\RepartitionMedecineBundle\Util\StageProposalGroupAction;
+use Lulhum\RepartitionMedecineBundle\Util\StageGroupAction;
 use Lulhum\UserBundle\Entity\User;
 
 class AdminStagesController extends Controller
@@ -64,7 +64,12 @@ class AdminStagesController extends Controller
 
         $stageCategoryRepository = $em->getRepository('LulhumRepartitionMedecineBundle:StageCategory');
         
-        $pagination = new Paginator($em->getRepository('LulhumRepartitionMedecineBundle:Parameter')->findOneByName('pagination')->getValue(), $stageCategoryRepository->filteredFindCount($stageCategoryFilter), $page);
+        $pagination = new Paginator(
+            $em->getRepository('LulhumRepartitionMedecineBundle:Parameter')->findOneByName('pagination')->getValue(),
+            $stageCategoryRepository->filteredFindCount($stageCategoryFilter),
+            $page,
+            'lulhum_repartitionmedecine_admin_stage_categories_page'
+        );
 
         $stageCategories = $stageCategoryRepository->filteredFind($stageCategoryFilter, $pagination->getMax(), $pagination->getOffset());
 
@@ -200,19 +205,28 @@ class AdminStagesController extends Controller
 
         $proposalRepository = $em->getRepository('LulhumRepartitionMedecineBundle:StageProposal');
         
-        $pagination = new Paginator($em->getRepository('LulhumRepartitionMedecineBundle:Parameter')->findOneByName('pagination')->getValue(), $proposalRepository->filteredFindCount($stageProposalFilter), $page);
+        $pagination = new Paginator(
+            $em->getRepository('LulhumRepartitionMedecineBundle:Parameter')->findOneByName('pagination')->getValue(),
+            $proposalRepository->filteredFindCount($stageProposalFilter),
+            $page,
+            'lulhum_repartitionmedecine_admin_stage_proposals_page'
+        );
 
         $groupAction = new StageProposalGroupAction();
-        $groupActionFormType = new StageProposalGroupActionType(array('filter' => $stageProposalFilter, 'max' => $pagination->getMax(), 'offset' => $pagination->getOffset()));
+        $groupActionFormType = new GroupActionType(array(
+            'filter' => $stageProposalFilter,
+            'max' => $pagination->getMax(),
+            'offset' => $pagination->getOffset())
+        );
         $groupActionForm = $this->createForm($groupActionFormType, $groupAction);        
 
         if($request->getMethod() === 'POST' && $request->request->has($groupActionFormType->getName())) {                
             $groupActionForm->handleRequest($request);    
             if($groupActionForm->isValid()) {
-                if($groupAction->getAction() === 'addConstraint') {
+                if($groupAction->getAction() === 'addRequirement') {
                     $session->set('adminStageProposalsGroupAction', $groupAction);
 
-                    return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals_group_add_constraint'));
+                    return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals_group_add_requirement'));
                 }
                 if($groupAction->getAction() === 'start') {
                     $session->set('adminStageProposalsGroupAction', $groupAction);
@@ -224,8 +238,13 @@ class AdminStagesController extends Controller
 
                     return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals_group_clone'));
                 }
+                if($groupAction->getAction() === 'removeRequirement') {
+                    $session->set('adminStageProposalsGroupAction', $groupAction);
+
+                    return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals_group_remove_requirement'));
+                }
                 $groupAction->executeAction();
-                foreach($groupAction->getProposals() as $proposal) {
+                foreach($groupAction->getEntities() as $proposal) {
                     $em->persist($proposal);
                 }
                 $em->flush();
@@ -314,23 +333,13 @@ class AdminStagesController extends Controller
 
     public function stageProposalCloneAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        
+        $em = $this->getDoctrine()->getManager();        
         $session = new Session();
-        if($session->has('adminStageProposalsGroupAction') && $session->get('adminStageProposalsGroupAction') instanceof StageProposalGroupAction) {
-            $groupAction = $session->get('adminStageProposalsGroupAction');
-            if($groupAction->getProposals()->count() == 0) {
+        $groupAction = StageProposalGroupAction::merge($em, $session, 'adminStageProposalsGroupAction');
+        if(is_null($groupAction)) {
 
-                return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals'));
-            }
-            $groupAction->setProposals($groupAction->getProposals()->map(function($item) use (&$em) {
-                return $em->merge($item);
-            }));
-        }
-        else {
-
-            return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals'));
-        }
+            return $this->redirect($this->getRequest()->headers->get('referer'));
+        }        
 
         $form = $this->get('form.factory')
                      ->createBuilder('form')
@@ -365,7 +374,7 @@ class AdminStagesController extends Controller
             return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals'));
         }
 
-        return $this->render('LulhumRepartitionMedecineBundle:Admin:clonestageproposal.html.twig', array(
+        return $this->render('LulhumRepartitionMedecineBundle:Admin:stageproposalclone.html.twig', array(
             'groupAction' => $groupAction,
             'form' => $form->createView(),
         ));
@@ -374,24 +383,14 @@ class AdminStagesController extends Controller
 
     public function stageProposalStartAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        
+        $em = $this->getDoctrine()->getManager();        
         $session = new Session();
-        if($session->has('adminStageProposalsGroupAction') && $session->get('adminStageProposalsGroupAction') instanceof StageProposalGroupAction) {
-            $groupAction = $session->get('adminStageProposalsGroupAction');
-            if($groupAction->getProposals()->count() == 0) {
+        $groupAction = StageProposalGroupAction::merge($em, $session, 'adminStageProposalsGroupAction');
+        if(is_null($groupAction)) {
 
-                return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals'));
-            }
-            $groupAction->setProposals($groupAction->getProposals()->map(function($item) use (&$em) {
-                return $em->merge($item);
-            }));
-        }
-        else {
-
-            return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals'));
-        }
-
+            return $this->redirect($this->getRequest()->headers->get('referer'));
+        } 
+        
         $deadline = new Deadline();
         $form = $this->createForm(new DeadlineType(array(array(
             'field' => 'autovalid',
@@ -429,31 +428,21 @@ class AdminStagesController extends Controller
             return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals'));
         }
 
-        return $this->render('LulhumRepartitionMedecineBundle:Admin:startstageproposal.html.twig', array(
+        return $this->render('LulhumRepartitionMedecineBundle:Admin:stageproposalstart.html.twig', array(
             'groupAction' => $groupAction,
             'form' => $form->createView(),
         ));
     }
 
-    public function stageProposalAddConstraintAction(Request $request)
+    public function stageProposalAddRequirementAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        
+        $em = $this->getDoctrine()->getManager();        
         $session = new Session();
-        if($session->has('adminStageProposalsGroupAction') && $session->get('adminStageProposalsGroupAction') instanceof StageProposalGroupAction) {
-            $groupAction = $session->get('adminStageProposalsGroupAction');
-            if($groupAction->getProposals()->count() == 0) {
+        $groupAction = StageProposalGroupAction::merge($em, $session, 'adminStageProposalsGroupAction');
+        if(is_null($groupAction)) {
 
-                return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals'));
-            }
-            $groupAction->setProposals($groupAction->getProposals()->map(function($item) use (&$em) {
-                return $em->merge($item);
-            }));
-        }
-        else {
-
-            return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals'));
-        }
+            return $this->redirect($this->getRequest()->headers->get('referer'));
+        } 
         
         $form = $this->get('form.factory')->createBuilder('form')
                      ->add('requirements', 'collection', array(
@@ -478,7 +467,47 @@ class AdminStagesController extends Controller
             return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals'));
         }
 
-        return $this->render('LulhumRepartitionMedecineBundle:Admin:stageproposaladdconstraint.html.twig', array(
+        return $this->render('LulhumRepartitionMedecineBundle:Admin:stageproposaladdrequirement.html.twig', array(
+            'groupAction' => $groupAction,
+            'form' => $form->createView(),
+        ));
+    }
+
+    public function stageProposalRemoveRequirementAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();        
+        $session = new Session();
+        $groupAction = StageProposalGroupAction::merge($em, $session, 'adminStageProposalsGroupAction');
+        if(is_null($groupAction)) {
+
+            return $this->redirect($this->getRequest()->headers->get('referer'));
+        } 
+        
+        $form = $this->get('form.factory')->createBuilder('form')
+                     ->add('requirements', 'choice', array(
+                         'label' => 'Types de contrainte',
+                         'choices' => Requirement::TYPES,
+                         'multiple' => true,                         
+                     ))
+                     ->add('valider', 'submit')
+                     ->getForm();
+
+        $form->handleRequest($request);
+
+        if($form->isValid()) {
+            foreach($groupAction->getProposals() as $proposal) {
+                foreach($proposal->getRequirements() as $requirement) {
+                    if(in_array($requirement->getType(), $form->get('requirements')->getData())) {
+                        $em->remove($requirement);
+                    }
+                }
+            }
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_proposals'));
+        }
+
+        return $this->render('LulhumRepartitionMedecineBundle:Admin:stageproposalremoverequirement.html.twig', array(
             'groupAction' => $groupAction,
             'form' => $form->createView(),
         ));
@@ -577,10 +606,19 @@ class AdminStagesController extends Controller
 
         $stageRepository = $em->getRepository('LulhumRepartitionMedecineBundle:Stage');
         
-        $pagination = new Paginator($em->getRepository('LulhumRepartitionMedecineBundle:Parameter')->findOneByName('pagination')->getValue(), $stageRepository->filteredFindCount($stagesFilter), $page);
+        $pagination = new Paginator(
+            $em->getRepository('LulhumRepartitionMedecineBundle:Parameter')->findOneByName('pagination')->getValue(),
+            $stageRepository->filteredFindCount($stagesFilter),
+            $page,
+            'lulhum_repartitionmedecine_admin_stage_stages_page'
+        );
 
         $groupAction = new StageGroupAction();
-        $groupActionFormType = new StageGroupActionType(array('filter' => $stagesFilter));
+        $groupActionFormType = new GroupActionType(array(
+            'filter' => $stagesFilter,
+            'max' => $pagination->getMax(),
+            'offset' => $pagination->getOffset(),
+        ));
         $groupActionForm = $this->createForm($groupActionFormType, $groupAction);        
 
         if($request->getMethod() === 'POST' && $request->request->has($groupActionFormType->getName())) {                
@@ -592,7 +630,7 @@ class AdminStagesController extends Controller
                     return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_stages_group_delete'));
                 }
                 $groupAction->executeAction();
-                foreach($groupAction->getStages() as $stage) {
+                foreach($groupAction->getEntities() as $stage) {
                     $em->persist($stage);
                 }
                 $em->flush();
@@ -662,25 +700,13 @@ class AdminStagesController extends Controller
 
     public function deleteStagesAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-        
+        $em = $this->getDoctrine()->getManager();        
         $session = new Session();
-        if($session->has('adminStagesGroupAction') && $session->get('adminStagesGroupAction') instanceof StageGroupAction) {
-            $groupAction = $session->get('adminStagesGroupAction');
-            if($groupAction->getStages()->count() == 0) {
+        $groupAction = StageGroupAction::merge($em, $session, 'adminStagesGroupAction');
+        if(is_null($groupAction)) {
 
-                return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_stages'));
-            }
-            $groupAction->setStages($groupAction->getStages()->map(function($item) use (&$em) {
-                $managedItem = $em->merge($item);
-                $em->refresh($managedItem);
-                return $managedItem;
-            }));
-        }
-        else {
-
-            return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_stages'));
-        }
+            return $this->redirect($this->getRequest()->headers->get('referer'));
+        }         
 
         $form = $this->get('form.factory')
                      ->createBuilder('form')

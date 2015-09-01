@@ -29,7 +29,6 @@ function easyRequirementInput($localContainer, proposalId, formPath) {
 			$result += '}';
 		    }
 		    $input.val($result);
-		    $input.popover('hide');
 		    e.preventDefault();
 		    return false;
 		});

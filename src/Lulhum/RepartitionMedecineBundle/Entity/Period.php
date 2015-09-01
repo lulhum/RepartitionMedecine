@@ -182,4 +182,25 @@ class Period
     {
         return $this->proposals;
     }
+
+    public function sameSchoolyear(Period $period)
+    {
+        return $this->getSchoolyear() === $period->getSchoolyear();
+    }
+
+    public function getSchoolyear()
+    {
+        $year = (int)$this->start->format('Y');
+        if((int)$this->start->format('m') < 9) {
+            $year--;
+        }
+
+        return $year;
+    }
+
+    public function getTextSchoolyear()
+    {
+        return $year.'-'.($year+1);
+    }
+            
 }

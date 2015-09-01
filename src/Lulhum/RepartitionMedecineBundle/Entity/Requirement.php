@@ -20,8 +20,13 @@ class Requirement
         'maxChoicesInPeriod' => 'Maximum de choix pour cette période',
         'maxStagesInPeriod' => 'Maximum de stages pour cette période',
         'maxStagesInStageCategory' => 'Maximum de stages avec ce modèle',
+        'maxChoicesInStageCategory' => 'Maximum de choix avec ce modèle',
+        'maxChoicesInStageCategoryWithinSchoolyear' => 'Maximum de choix avec ce modèle dans la même année',
+        'maxStagesInStageCategoryWithinScoolyear' => 'Maximum de stages avec ce modèle dans la même année',
         'maxStagesInCategory' => 'Maximum de stages dans la catégorie',
         'maxChoicesInCategory' => 'Maximum de choix dans la catégorie',
+        'maxChoicesInCategoryWithinSchoolyear' => 'Maximum de choix avec dans la catégorie dans la même année',
+        'maxStagesInCategoryWithinSchoolyear' => 'Maximum de stages avec dans la catégorie dans la même année',
     );
     
     /**
@@ -189,9 +194,24 @@ class Requirement
         return $response;
     }
 
-    public function getParamsArray()
-    {        
-        return preg_split("/[,{}]/", $this->getParams(), -1, PREG_SPLIT_NO_EMPTY);
+    public function getParamsArray($index = null)
+    {
+        $paramsArray = preg_split("/[,{}]/", $this->getParams(), -1, PREG_SPLIT_NO_EMPTY);
+        if(is_null($index)) {
+            
+            return $paramsArray;
+        }
+        if(array_key_exists($index, $paramsArray)) {
+
+            return $paramsArray[$index];
+        }
+
+        if(count($paramsArray) > 0) {
+            
+            return $paramsArray[0];
+        }
+
+        return null;
     }
         
 }

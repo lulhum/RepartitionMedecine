@@ -73,7 +73,7 @@
 		</div>
 	{% else %}
 		{% for proposal in proposals %}
-			<div class="panel panel-default" >
+			<div class="panel panel-{% if validator is null or proposal.isValidForUser(app.user, validator, true) %}default{% else %}warning{% endif %}" >
 				<div class="panel-heading" >					
 					{{ proposal.name }}
 					<button class="btn btn-default" role="button" data-toggle="collapse" href="#proposal-info-{{ proposal.id }}" aria-expanded="false" aria-controls="proposal-info-{{ proposal.id }}" >

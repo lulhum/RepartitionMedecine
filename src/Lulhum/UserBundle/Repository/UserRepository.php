@@ -33,5 +33,28 @@ class UserRepository extends EntityRepository
 
         return $userListGroups;
     }
+
+    public function filteredFindQB($filter, $max = null, $offset = null)
+    {
+        $queryBuilder = $this->createQueryBuilder('u');
+        if(count($filter->getPromotions()) > 0) {
+            $queryBuilder->andWhere('u.promotion IN(:promotions)')
+                         ->setParameter('promotion', $filter->getPromotions());
+        }
+        if(!is_null($filter->getGroup())) {
+            $querBuilder->andWhere('u.repartitionGroup = :group')
+                        ->setParameter('group', $filter->getGroup());
+        }
+        $queryBuilder->addOrderBy('u.lastname')
+                     ->addOrderBy('u.firstname');
+        if(!is_null($max)) {
+            $queryBuilder->setMaxResults($max);
+            if(!is_null($offset)) {
+                $queryBuilder->setFirstResult($offset);
+            }
+        }
+
+        return $queryBuilder;
+    }
     
 }

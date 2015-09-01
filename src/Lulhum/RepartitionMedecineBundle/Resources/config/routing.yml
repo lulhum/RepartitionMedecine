@@ -167,9 +167,9 @@ lulhum_repartitionmedecine_admin_stage_proposals_delete:
     requirements:
         id: \d+
 
-lulhum_repartitionmedecine_admin_stage_proposals_group_add_constraint:
-    path: /admin/stages/stageproposals/group/addconstraint
-    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stageProposalAddConstraint }
+lulhum_repartitionmedecine_admin_stage_proposals_group_add_requirement:
+    path: /admin/stages/stageproposals/group/requirement/add
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stageProposalAddRequirement }
 
 lulhum_repartitionmedecine_admin_stage_proposals_group_start:
     path: /admin/stages/stageproposals/group/start
@@ -178,6 +178,10 @@ lulhum_repartitionmedecine_admin_stage_proposals_group_start:
 lulhum_repartitionmedecine_admin_stage_proposals_group_clone:
     path: /admin/stages/stageproposals/group/clone
     defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stageProposalClone }
+
+lulhum_repartitionmedecine_admin_stage_proposals_group_remove_requirement:
+    path: /admin/stages/stageproposals/group/requirement/remove
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:stageProposalRemoveRequirement }
 
 lulhum_repartitionmedecine_admin_requirements_getform:
     path: /admin/requirements/getform

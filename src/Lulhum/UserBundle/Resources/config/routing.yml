@@ -2,6 +2,16 @@ lulhum_user_admin_userlist:
     path: /admin/users
     defaults: { _controller: LulhumUserBundle:Admin:listUsers }
 
+lulhum_user_admin_userlist_page:
+    path: /admin/users/page/{page}
+    defaults: { _controller: LulhumUserBundle:Admin:listUsers }
+    requirements:
+        page: \d+
+
+lulhum_user_admin_group_changepromotion:
+    path: /admin/users/groupaction/changepromotion
+    defaults: { _controller: LulhumUserBundle:Admin:groupActionChangePromotion }
+
 lulhum_user_admin_userlist_resetfilter:
     path: /admin/users/resetfilter
     defaults: { _controller: LulhumUserBundle:Admin:resetUserFilter }
@@ -37,3 +47,7 @@ lulhum_user_admin_user_switchadmin:
 lulhum_user_admin_groupmail:
     path: /admin/mail
     defaults: { _controller: LulhumUserBundle:Admin:groupMail }
+
+lulhum_user_contact:
+    path: /contact
+    defaults: { _controller: LulhumUserBundle:Contact:contact }

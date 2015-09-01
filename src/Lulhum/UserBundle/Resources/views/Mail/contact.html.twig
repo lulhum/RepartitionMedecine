@@ -1,0 +1,57 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Mail/contact.html.twig #}
+
+{% extends "LulhumRepartitionMedecineBundle::layout.html.twig" %}
+
+{% block title %}
+Contact - {{ parent() }}
+{% endblock %}
+
+{% block bodytitle %}
+	<h3>Formulaire de Contact</h3>
+{% endblock %}
+
+{% block body %}
+	{% for key, messages in app.session.flashbag.all() %}
+		{% for message in messages %}
+			<div class="alert alert-{{ key }} alert-dismissible">
+				{{ message }}
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			</div>
+		{% endfor %}
+	{% endfor %}
+	{{ form_start(form) }}
+	<div class="form-group" >
+		{{ form_label(form.from) }}
+		{{ form_errors(form.from) }}
+		{{ form_widget(form.from, {'attr': {'class': 'form-control'}}) }}
+	</div>
+	<div class="form-group" >
+		{{ form_label(form.title) }}
+		{{ form_errors(form.title) }}
+		{{ form_widget(form.title, {'attr': {'class': 'form-control'}}) }}
+	</div>
+	{% include "LulhumCMSBundle:Admin:wisihtml_toolbar.html.twig" %}
+	<div class="form-group" >
+		{{ form_label(form.content) }}
+		{{ form_errors(form.content) }}
+		{{ form_widget(form.content, {'attr': {'placeholder': 'Votre texte ici...', 'class': 'form-control vresize', 'style': 'height:260px'}}) }}
+	</div>
+	<button type="submit" class="btn btn-primary" >Envoyer</button>
+	{{ form_rest(form) }}
+	{{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script type="text/javascript" src="{{ asset('bundles/lulhumrepartitionmedecine/js/search-select-popover.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('vendor/wysihtml/dist/wysihtml5x-toolbar.min.js') }}" ></script>
+	<script type="text/javascript" src="{{ asset('vendor/wysihtml/parser_rules/advanced_and_extended.js') }}" ></script>
+	<script type="text/javascript" >
+	$(document).ready(function() {	
+		var editor = new wysihtml5.Editor('lulhum_user_groupmail_content', {
+			toolbar: 'toolbar',
+			parserRules:  wysihtml5ParserRules
+		});
+	});
+	</script>
+{% endblock %}

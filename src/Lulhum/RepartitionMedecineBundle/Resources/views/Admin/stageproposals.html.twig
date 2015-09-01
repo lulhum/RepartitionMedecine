@@ -1,6 +1,6 @@
 {# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/stageproposals.html.twig #}
 
-{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+{% extends "LulhumRepartitionMedecineBundle:Admin:groupactionlist.html.twig" %}
 
 {% block title %}
   Propositions de stage - {{ parent() }}
@@ -69,146 +69,123 @@
 	{% endfor %}
 {% endblock %}
 
-{% block nobody %}
-	{{ form_start(groupActionForm, {'attr': {'class': 'form-inline'}}) }}
-	<table class="table table-hover" >
-		<tr>
-			<th><input type="checkbox" id="master-check" /></th>
-			<th>Nom</th>
-			<th>Période</th>
-			<th>Modèle</th>
-			<th>Contraintes</th>
-			<th>Inscrits</th>
-			<th>Active</th>
-			<th>Actions</th>
-		</tr>
-		{% for child in groupActionForm.proposals %}
-			<tr>
-				<td>{{ form_widget(child) }}</td>
-				<td>
-					<a href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals_show', {'id': stageProposals[loop.index0].id}) }}" >
-						{{ stageProposals[loop.index0].name }}
-					</a>
-				</td>
-				<td>
-					{% if stageProposals[loop.index0].period.description is not null %}
-						{{ stageProposals[loop.index0].period.description }}
-					{% else %}
-						{{ stageProposals[loop.index0].period }}
-					{% endif %}
-				</td>
-				<td>
-					<a href="{{ path('lulhum_repartitionmedecine_admin_stage_categories_show', {'id': stageProposals[loop.index0].category.id}) }}">
-						{{ stageProposals[loop.index0].category }}
-					</a>
-				</td>
-				<td>
-					<div class="dropdown" >
-						<button class="btn btn-default dropdown-toggle" type="button" id="requirements-for-stage-proposal-{{ loop.index0 }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
-							Contraintes
-							<span class="badge">{{ stageProposals[loop.index0].requirements|length }}</span>
-							<span class="caret" ></span>
-						</button>
-						<ul class="dropdown-menu" aria-labelledby="requirements-for-stage-proposal-{{ loop.index0 }}" >
-							{% for requirement in stageProposals[loop.index0].requirements %}
-								<li><a href="">
-									{% if requirement.type == 'promotion' %}
-										{{ requirement.textType }}: {{ promotions[requirement.params] }}
-									{% elseif requirement.type in ['maxStagesInCategory', 'maxChoicesInCategory'] %}
-										{{ requirement.textType }}
-										"{{ categories[requirement.paramsArray[0]] }}":
-										{{ requirement.paramsArray[1] }}
-									{% else %}
-										{{ requirement }}
-									{% endif %}
-								</a></li>
-							{% endfor %}
-						</ul>
-					</div>
-				</td>
-				<td>	
-					{% if stageProposals[loop.index0].hasRequirementType('maxPlaces') %}
-						{% set maxPlaces = stageProposals[loop.index0].getRequirementsByType('maxPlaces').first.params %}
-						{% set usedPlaces = stageProposals[loop.index0].stages.count %}
-						<div class="label label-{% if maxPlaces < usedPlaces %}danger{% else %}success{% endif %}" >
-							{{ usedPlaces }}
-							/						
-							{{ maxPlaces }}
-						</div>
-					{% else %}
-						<div class="label label-success" >
-							{{ stageProposals[loop.index0].stages.count }}
-							/
-							&infin;
-						</div>
-					{% endif %}
-				</td>
-				<td>
-					{% if stageProposals[loop.index0].locked %}
-						{% if stageProposals[loop.index0].deadline is not null %}
-							{% set deadline = stageProposals[loop.index0].deadline %}							
-							<button type="button"
-								class="btn btn-danger btn-xs"
-								data-container="body"
-								data-toggle="popover"
-								data-placement="right"
-								data-trigger="click"
-								data-content="{{ deadline.date|date('d/m - H:i') }} +{{ deadline.delay|date('H:i') }}" >
-								Non -
-								<span class="glyphicon glyphicon-time" ></span>
-							</button>
-						{% else %}
-							<span class="label label-danger" >Non</span>
-						{% endif %}
-					{% else %}
-						{% if stageProposals[loop.index0].deadline is not null %}
-							{% set deadline = stageProposals[loop.index0].deadline %}							
-							<button type="button"
-								class="btn btn-success btn-xs"
-								data-container="body"
-								data-toggle="popover"
-								data-placement="right"
-								data-trigger="click"
-								data-content="{{ deadline.date|date('d/m - H:i') }} +{{ deadline.delay|date('H:i') }}" >
-								Oui -
-								<span class="glyphicon glyphicon-time" ></span>
-							</button>
-						{% else %}
-							<span class="label label-success" >Oui</span>
-						{% endif %}
-					{% endif %}
-				</td>
-				<td>
-					<a href="{{ path('lulhum_repartitionmedecine_admin_stage_stages_inproposal', {'id': stageProposals[loop.index0].getId()}) }}">
-						<span class="glyphicon glyphicon-share" ></span>
-					</a>
-					<a href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals_edit', {'id': stageProposals[loop.index0].getId()}) }}">
-						<span class="glyphicon glyphicon-edit" ></span>
-					</a>
-					<a href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals_delete', {'id': stageProposals[loop.index0].getId()}) }}" class="text-danger">
-						<span class="glyphicon glyphicon-remove" ></span>
-					</a>
-				</td>
-			</tr>
-		{% endfor %}			
-	</div>
-	</table>
-	<div class="panel-footer" >
-		{% set paginatedUrl = 'lulhum_repartitionmedecine_admin_stage_proposals_page' %}
-		{% include "LulhumRepartitionMedecineBundle:Admin:pagination.html.twig" %}
-		<div class="form-group" >
-			{{ form_label(groupActionForm.action, null, {'label_attr': {'class': 'control-label'}}) }}
-			{{ form_errors(groupActionForm.action) }}
-			{{ form_widget(groupActionForm.action, {'attr': {'class': 'form-control'}}) }}
-		</div>
-		<div class="form-group" >
-			{{ form_widget(groupActionForm.appliquer, {'attr': {'class': 'btn btn-primary' }}) }}
-		</div>
-		{{ form_rest(groupActionForm) }}
-	</div>
-	{{ form_end(groupActionForm) }}
+{% block groupactionlisthead %}
+	<th>Nom</th>
+	<th>Période</th>
+	<th>Modèle</th>
+	<th>Contraintes</th>
+	<th>Inscrits</th>
+	<th>Active</th>
+	<th>Actions</th>
 {% endblock %}
 
+{% block groupactionlistbody %}
+	<td>
+		<a href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals_show', {'id': stageProposals[loop.index0].id}) }}" >
+			{{ stageProposals[loop.index0].name }}
+		</a>
+	</td>
+	<td>
+		{% if stageProposals[loop.index0].period.description is not null %}
+			{{ stageProposals[loop.index0].period.description }}
+		{% else %}
+			{{ stageProposals[loop.index0].period }}
+		{% endif %}
+	</td>
+	<td>
+		<a href="{{ path('lulhum_repartitionmedecine_admin_stage_categories_show', {'id': stageProposals[loop.index0].category.id}) }}">
+			{{ stageProposals[loop.index0].category }}
+		</a>
+	</td>
+	<td>
+		<div class="dropdown" >
+			<button class="btn btn-default dropdown-toggle" type="button" id="requirements-for-stage-proposal-{{ loop.index0 }}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" >
+				Contraintes
+				<span class="badge">{{ stageProposals[loop.index0].requirements|length }}</span>
+				<span class="caret" ></span>
+			</button>
+			<ul class="dropdown-menu" aria-labelledby="requirements-for-stage-proposal-{{ loop.index0 }}" >
+				{% for requirement in stageProposals[loop.index0].requirements %}
+					<li><a href="">
+						{% if requirement.type == 'promotion' %}
+							{{ requirement.textType }}: {{ promotions[requirement.params] }}
+						{% elseif requirement.type in ['maxStagesInCategory', 'maxChoicesInCategory'] %}
+							{{ requirement.textType }}
+							"{{ categories[requirement.paramsArray[0]] }}":
+							{{ requirement.paramsArray[1] }}
+						{% else %}
+							{{ requirement }}
+						{% endif %}
+					</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+	</td>
+	<td>	
+		{% if stageProposals[loop.index0].hasRequirementType('maxPlaces') %}
+			{% set maxPlaces = stageProposals[loop.index0].getRequirementsByType('maxPlaces').first.params %}
+			{% set usedPlaces = stageProposals[loop.index0].stages.count %}
+			<div class="label label-{% if maxPlaces < usedPlaces %}danger{% else %}success{% endif %}" >
+				{{ usedPlaces }}
+				/						
+				{{ maxPlaces }}
+			</div>
+		{% else %}
+			<div class="label label-success" >
+				{{ stageProposals[loop.index0].stages.count }}
+				/
+				&infin;
+			</div>
+		{% endif %}
+	</td>
+	<td>
+		{% if stageProposals[loop.index0].locked %}
+			{% if stageProposals[loop.index0].deadline is not null %}
+				{% set deadline = stageProposals[loop.index0].deadline %}							
+				<button type="button"
+					class="btn btn-danger btn-xs"
+					data-container="body"
+					data-toggle="popover"
+					data-placement="right"
+					data-trigger="click"
+					data-content="{{ deadline.date|date('d/m - H:i') }} +{{ deadline.delay|date('H:i') }}" >
+					Non -
+					<span class="glyphicon glyphicon-time" ></span>
+				</button>
+			{% else %}
+				<span class="label label-danger" >Non</span>
+			{% endif %}
+		{% else %}
+			{% if stageProposals[loop.index0].deadline is not null %}
+				{% set deadline = stageProposals[loop.index0].deadline %}							
+				<button type="button"
+					class="btn btn-success btn-xs"
+					data-container="body"
+					data-toggle="popover"
+					data-placement="right"
+					data-trigger="click"
+					data-content="{{ deadline.date|date('d/m - H:i') }} +{{ deadline.delay|date('H:i') }}" >
+					Oui -
+					<span class="glyphicon glyphicon-time" ></span>
+				</button>
+			{% else %}
+				<span class="label label-success" >Oui</span>
+			{% endif %}
+		{% endif %}
+	</td>
+	<td>
+		<a href="{{ path('lulhum_repartitionmedecine_admin_stage_stages_inproposal', {'id': stageProposals[loop.index0].getId()}) }}">
+			<span class="glyphicon glyphicon-share" ></span>
+		</a>
+		<a href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals_edit', {'id': stageProposals[loop.index0].getId()}) }}">
+			<span class="glyphicon glyphicon-edit" ></span>
+		</a>
+		<a href="{{ path('lulhum_repartitionmedecine_admin_stage_proposals_delete', {'id': stageProposals[loop.index0].getId()}) }}" class="text-danger">
+			<span class="glyphicon glyphicon-remove" ></span>
+		</a>
+	</td>
+{% endblock %}
+			
 {% block bodyunder %}
 	<div>
 		<span class="text-primary" >
@@ -229,12 +206,7 @@
 {% block javascripts %}
 	{{ parent() }}
 	<script type="text/javascript" >
-	$(document).ready(function() {
-		$('input#master-check').change(function() {
-			var $checkboxes = $('form[name="lulhum_repartitionmedecine_stageproposalgroupaction"] :checkbox');
-			$checkboxes.prop('checked', $(this).prop('checked'));
-		});
-		
+	$(document).ready(function() {			
 		$(function () {
 			$('[data-toggle="popover"]').popover()
 		})

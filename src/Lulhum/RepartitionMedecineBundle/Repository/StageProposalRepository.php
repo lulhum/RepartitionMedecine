@@ -19,6 +19,9 @@ class StageProposalRepository extends EntityRepository
             $queryBuilder->join('s.period', 'p', 'WITH', 'p.id IN(:periods)')
                          ->setParameter('periods', $filter->getPeriods()->map(function($ob) {return $ob->getId();})->toArray());
         }
+        else {
+            $queryBuilder->join('s.period', 'p');
+        }
         if(!$filter->getStageCategories()->isEmpty()) {
             $queryBuilder->join('s.category', 'c', 'WITH', 'c.id IN(:stagecats)')
                          ->setParameter('stagecats', $filter->getStageCategories()->map(function($ob) {return $ob->getId();})->toArray());
