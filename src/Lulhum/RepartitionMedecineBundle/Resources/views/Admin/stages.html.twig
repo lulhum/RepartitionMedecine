@@ -47,6 +47,12 @@
 		{{ form_errors(filterForm.group) }}
 		{{ form_widget(filterForm.group, {'attr': {'class': 'form-control', 'size': '2'}}) }}
 	</div>
+	<div class="form-group" >
+		{{ form_label(filterForm.locked, null, {'label_attr': {'class': 'control-label'}}) }}
+		<br/>
+		{{ form_errors(filterForm.locked) }}
+		{{ form_widget(filterForm.locked, {'attr': {'class': 'form-control', 'size': '2'}}) }}
+	</div>
 	<br/>
 	<div style="margin-top:10px" >
 		<div class="form-group" >

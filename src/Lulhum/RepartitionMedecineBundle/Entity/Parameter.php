@@ -50,6 +50,12 @@ class Parameter
             ),
             'entity' => false,
         ),
+        'plateformMail' => array(
+            'description' => 'Adresse mail du site',
+            'default' => '',
+            'values' => null,
+            'entity' => false,
+        ),
         'siteTitle' => array(
             'description' => 'Titre du site',
             'default' => 'Répartition des stages de médecine',

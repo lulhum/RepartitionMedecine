@@ -45,6 +45,10 @@ class StageRepository extends EntityRepository
             $queryBuilder->join('p.requirements', 'r', 'WITH', 'r.type = \'group\' AND r.params = :group')
                          ->setParameter('group', $filter->getGroup());
         }
+        if(!is_null($filter->getLocked())) {
+            $queryBuilder->andWhere('s.locked = :locked')
+                         ->setParameter('locked', $filter->getLocked());
+        }
 
         $queryBuilder->join('s.user', 'u');
         $queryBuilder->addOrderBy('u.lastname')

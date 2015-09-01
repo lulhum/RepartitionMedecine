@@ -1,0 +1,78 @@
+<div id="toolbar">
+	<div class="form-group" >
+		<div class="btn-group" role="group" >
+			<a data-wysihtml5-command="bold" class="btn btn-default" title="Gras" >
+				<span class="glyphicon glyphicon-bold" ></span>
+			</a>
+			<a data-wysihtml5-command="italic" class="btn btn-default" title="Italique" >
+				<span class="glyphicon glyphicon-italic" ></span>
+			</a>
+			<a data-wysihtml5-command="underline" class="btn btn-default" title="Souligné" >
+				<u>U</u>
+			</a>
+		</div>
+		<div class="btn-group" role="group" >
+			<a data-wysihtml5-command="alignLeftStyle" class="btn btn-default" title="Aligné à gauche" >
+				<span class="glyphicon glyphicon-align-left" ></span>
+			</a>
+			<a data-wysihtml5-command="alignCenterStyle" class="btn btn-default" title="Centré">
+				<span class="glyphicon glyphicon-align-center" ></span>
+			</a>
+			<a data-wysihtml5-command="alignRightStyle" class="btn btn-default" title="Aligné à droite" >
+				<span class="glyphicon glyphicon-align-right" ></span>
+			</a>
+			
+		</div>
+		<div class="btn-group" role="group" >
+			<a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h1" class="btn btn-default" title="Titre 1">H1</a>
+			<a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h2" class="btn btn-default" title="Titre 2">H2</a>
+			<a data-wysihtml5-command="formatBlock" data-wysihtml5-command-value="h3" class="btn btn-default" title="Titre 3">H3</a>
+		</div>
+		<div class="btn-group" role="group" >
+			<a data-wysihtml5-command="createLink" class="btn btn-default" title="Lien" >
+				<span class="glyphicon glyphicon-link" ></span>
+			</a>
+			<a data-wysihtml5-command="insertImage" class="btn btn-default" title="Image" >
+				<span class="glyphicon glyphicon-picture" ></span>
+			</a>
+		</div>
+		<div class="btn-group" role="group" >
+			<a data-wysihtml5-command="insertUnorderedList" class="btn btn-default" title="Liste" >
+				<span class="glyphicon glyphicon-list" ></span>
+			</a>
+		</div>
+		<div class="btn-group pull-right" role="group" >
+			<a data-wysihtml5-action="change_view" class="btn btn-default" title="Basculer le mode d'édition" >
+				<span class="glyphicon glyphicon-wrench" ></span>
+			</a>
+		</div>
+	</div>
+	<div data-wysihtml5-dialog="createLink" class="form-group" style="display: none;">
+		<div class="form-inline" >
+			<label>
+				Lien:
+				<input data-wysihtml5-dialog-field="href" class="form-control" value="http://">
+			</label>
+			<a data-wysihtml5-dialog-action="save" class="btn btn-success btn-sm" ><span class="glyphicon glyphicon-ok" ></span></a>
+			<a data-wysihtml5-dialog-action="cancel" class="btn btn-danger btn-sm" ><span class="glyphicon glyphicon-remove" ></span></a>
+		</div>
+	</div>
+	<div data-wysihtml5-dialog="insertImage" class="form-group" style="display: none;">
+		<div class="form-inline" >
+			<label>
+				Image:
+				<input data-wysihtml5-dialog-field="src" class="form-control" value="http://">
+			</label>
+			<label>
+				Alignement:
+				<select data-wysihtml5-dialog-field="className" class="form-control" >
+					<option value="">Défaut</option>
+					<option value="wysiwyg-float-left">À gauche</option>
+					<option value="wysiwyg-float-right">À droite</option>
+				</select>
+			</label>
+			<a data-wysihtml5-dialog-action="save" class="btn btn-success btn-sm" ><span class="glyphicon glyphicon-ok" ></span></a>
+			<a data-wysihtml5-dialog-action="cancel" class="btn btn-danger btn-sm" ><span class="glyphicon glyphicon-remove" ></span></a>
+		</div>
+	</div>
+</div>

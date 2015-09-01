@@ -26,6 +26,7 @@ class AdminController extends Controller
         $parameters->getParameters()->add($parameterRepository->findOneByName('groupRepartitionMode'));
         $parameters->getParameters()->add($parameterRepository->findOneByName('pagination'));
         $parameters->getParameters()->add($parameterRepository->findOneByName('allowUserRegistrations'));
+        $parameters->getParameters()->add($parameterRepository->findOneByName('plateformMail'));
         $parameters->getParameters()->add($parameterRepository->findOneByName('siteTitle'));
         $parameters->getParameters()->add($parameterRepository->findOneByName('siteHomepage'));
         

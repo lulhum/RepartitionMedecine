@@ -7,10 +7,11 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
+use Lulhum\UserBundle\Form\GroupMailType;
+use Lulhum\UserBundle\Form\UserFilterType;
 use Lulhum\UserBundle\Form\UserType;
 use Lulhum\UserBundle\Entity\User;
 use Lulhum\UserBundle\Entity\UserFilter;
-use Lulhum\UserBundle\Form\UserFilterType;
 
 class AdminController extends Controller
 {
@@ -169,6 +170,23 @@ class AdminController extends Controller
             'form' => $form->createView(),
             'user' => $user,
             'message' => $message,
+        ));
+    }
+    
+    public function groupMailAction(Request $request)
+    {
+        $groupmail = $this->get('lulhum_user_groupmailer');
+        $form = $this->createForm(new GroupMailType(), $groupmail);
+
+        $form->handleRequest($request);
+
+        if($form->isValid()) {
+            $groupmail->send();
+            $request->getSession()->getFlashBag()->add('success', 'Mail envoyé.');
+        }
+
+        return $this->render('LulhumUserBundle:Admin:groupmail.html.twig', array(
+            'form' => $form->createView(),
         ));
     }
 

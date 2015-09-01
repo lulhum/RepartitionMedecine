@@ -33,3 +33,7 @@ lulhum_user_admin_user_switchadmin:
     defaults: { _controller: LulhumUserBundle:Admin:switchAdmin }
     requirements:
         userId: \d+
+
+lulhum_user_admin_groupmail:
+    path: /admin/mail
+    defaults: { _controller: LulhumUserBundle:Admin:groupMail }

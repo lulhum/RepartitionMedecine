@@ -54,6 +54,12 @@ class StageFilterType extends AbstractType
                 'required' => false,
                 'empty_value' => 'Indifférent',
             ))
+            ->add('locked', 'choice', array(
+                'choices' => array(0 => 'Non', 1 => 'Oui'),
+                'label' => 'Accepté',
+                'required' => false,
+                'empty_value' => 'Indifférent',
+            ))
             ->add('filtrer', 'submit');
     }
     

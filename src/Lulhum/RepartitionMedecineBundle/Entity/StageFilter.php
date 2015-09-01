@@ -19,7 +19,7 @@ class StageFilter
 
     protected $promotions;
 
-    protected $group=null;
+    protected $group=null;    
 
     public function __construct()
     {
@@ -98,6 +98,16 @@ class StageFilter
     public function setGroup($group)
     {
         $this->group = $group;
+    }
+
+    public function getLocked()
+    {
+        return $this->locked;
+    }
+
+    public function setLocked($locked)
+    {
+        $this->locked = $locked;
     }
 
     public function getCollections()
