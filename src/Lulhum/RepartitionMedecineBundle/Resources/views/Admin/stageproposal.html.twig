@@ -8,7 +8,9 @@
 
 {% block stylesheets %}
 	{{ parent() }}
-	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.0/css/bootstrap-datepicker.min.css" />	
+	{% stylesheets '@datepicker_css' %}
+	<link rel="stylesheet" type="text/css" media="screen" href="{{ asset_url }}"/>
+        {% endstylesheets %}	
 {% endblock %}
 
 {% block bodytitle %}
@@ -123,9 +125,9 @@
 
 {% block javascripts %}
 	{{ parent() }}
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.0/js/bootstrap-datepicker.min.js"></script> 
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.0/locales/bootstrap-datepicker.fr.min.js"></script>
-	<script type="text/javascript" src="{{ asset('bundles/lulhumrepartitionmedecine/js/requirement.js') }}"></script>
+	{% javascripts '@datepicker_js' '@LulhumRepartitionMedecineBundle/Resources/public/js/requirement.js' %}
+	<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
 	<script type="text/javascript">
 	$(document).ready(function() {		
 		
@@ -141,8 +143,14 @@
 				$addPeriodLink.attr('data-activated', 'true');
 				$addPeriodLink.attr('class', 'btn btn-danger');
 				$addPeriodLink.html('Annuler');
-				$('#lulhum_repartitionmedecine_stageproposal_new_period_start').datepicker({format: 'dd/mm/yyyy', weekStart: 1, language: "fr"});
-				$('#lulhum_repartitionmedecine_stageproposal_new_period_stop').datepicker({format: 'dd/mm/yyyy', weekStart: 1, language: "fr"});
+				$('#lulhum_repartitionmedecine_stageproposal_new_period_start').datetimepicker({
+					locale: 'fr',
+					format: 'L'
+				});
+				$('#lulhum_repartitionmedecine_stageproposal_new_period_stop').datetimepicker({
+					locale: 'fr',
+					format: 'L'
+				});
 			}
 			else {
 				$addPeriodLink.attr('data-activated', 'false');

@@ -4,7 +4,9 @@
 
 {% block stylesheets %}
 	{{ parent() }}
-	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.15.35/css/bootstrap-datetimepicker.min.css" />
+	{% stylesheets '@datepicker_css' %}
+	<link rel="stylesheet" type="text/css" media="screen" href="{{ asset_url }}"/>
+        {% endstylesheets %}
 {% endblock %}
 
 {% block bodyfooter %}
@@ -46,8 +48,9 @@
 
 {% block javascripts %}
 	{{ parent() }}
-	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.js"></script>
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.15.35/js/bootstrap-datetimepicker.min.js"></script>
+	{% javascripts '@datepicker_js'%}
+	<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
 	<script type="text/javascript" >
 	$(document).ready(function() {
 		$('#lulhum_deadline_deadline_date').datetimepicker({

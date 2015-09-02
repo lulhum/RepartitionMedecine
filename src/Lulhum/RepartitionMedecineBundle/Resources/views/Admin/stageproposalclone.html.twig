@@ -8,7 +8,9 @@
 
 {% block stylesheets %}
 	{{ parent() }}
-	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.0/css/bootstrap-datepicker.min.css" />	
+	{% stylesheets '@datepicker_css' %}
+	<link rel="stylesheet" type="text/css" media="screen" href="{{ asset_url }}"/>
+        {% endstylesheets %}
 {% endblock %}
 
 {% block bodytitle %}
@@ -39,8 +41,9 @@
 
 {% block javascripts %}
 	{{ parent() }}
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.0/js/bootstrap-datepicker.min.js"></script> 
-	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.4.0/locales/bootstrap-datepicker.fr.min.js"></script>
+	{% javascripts '@datepicker_js'%}
+	<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
 	<script type="text/javascript" >
 	$(document).ready(function() {
 
@@ -62,8 +65,14 @@
 				.replace(/__name__/g, index));
 			addDeleteLink($prototype);			
 			$container.append($prototype);
-			$('#form_new_periods_'+(index)+'_start').datepicker({format: 'dd/mm/yyyy', weekStart: 1, language: "fr"});
-			$('#form_new_periods_'+(index)+'_stop').datepicker({format: 'dd/mm/yyyy', weekStart: 1, language: "fr"});
+			$('#form_new_periods_'+(index)+'_start').datetimepicker({
+				locale: 'fr',
+				format: 'L'
+			});
+			$('#form_new_periods_'+(index)+'_stop').datetimepicker({
+				locale: 'fr',
+				format: 'L'
+			});
 			index++;
 		}
 

@@ -28,6 +28,7 @@ function easyRequirementInput($localContainer, proposalId, formPath) {
 			$localPopover.find('[type!="hidden"]:input').each(function() { $result+=$(this).val()+',' });
 			$result += '}';
 		    }
+		    $input.popover('hide');
 		    $input.val($result);
 		    e.preventDefault();
 		    return false;

@@ -1,5 +1,5 @@
 {
-    "name": "lulhum/symfony",
+    "name": "lulhum/repartition-medecine",
     "license": "proprietary",
     "type": "project",
     "autoload": {
@@ -8,6 +8,20 @@
             "SymfonyStandard\\": "app/SymfonyStandard/"
         }
     },
+    "repositories": [
+	{
+            "type": "package",
+            "package": {
+		"name": "voog/wysihtml",
+		"version": "master",
+		"source": {
+                    "url": "https://github.com/Voog/wysihtml.git",
+                    "type": "git",
+                    "reference": "master"
+		}
+            }
+	}
+    ],
     "require": {
         "php": ">=5.3.9",
         "symfony/symfony": "2.7.*",
@@ -20,8 +34,13 @@
         "sensio/distribution-bundle": "~4.0",
         "sensio/framework-extra-bundle": "~3.0,>=3.0.2",
         "incenteev/composer-parameter-handler": "~2.0",
+	"twig/extensions": "~1.0",
 	"liuggio/excelbundle": "~2.0",
 	"friendsofsymfony/user-bundle": "2.0.*@dev",
+	"twbs/bootstrap": "3.*",
+	"components/jquery": "1.11.1",
+	"voog/wysihtml": "@dev",
+	"eonasdan/bootstrap-datetimepicker": "~4.15"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"

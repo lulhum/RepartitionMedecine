@@ -35,7 +35,9 @@
 
 {% block javascripts %}
 	{{ parent() }}
-	<script type="text/javascript" src="{{ asset('bundles/lulhumrepartitionmedecine/js/requirement.js') }}"></script>
+	{% javascripts '@LulhumRepartitionMedecineBundle/Resources/public/js/requirement.js' %}
+	<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
 	<script type="text/javascript">
 	$(document).ready(function() {
 		manageRequirements($('div#lulhum_repartitionmedecine_requirements'), '{{ path('lulhum_repartitionmedecine_admin_requirements_getform') }}', '', 1);
