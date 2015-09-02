@@ -49,10 +49,9 @@
 	<script type="text/javascript" >
 	$(document).ready(function() {
 		$('input#master-check').change(function() {
-			var $checkboxes = $('form[name="lulhum_repartitionmedecine_stageproposalgroupaction"] :checkbox');
+			var $checkboxes = $('form[name="lulhum_repartitionmedecine_groupaction"] :checkbox');
 			$checkboxes.prop('checked', $(this).prop('checked'));
 		});
 	});
 	</script>
 {% endblock %}
-

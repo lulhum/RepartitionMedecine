@@ -1,4 +1,4 @@
-function easyRequirementInput($localContainer, $proposalId, $formPath) {
+function easyRequirementInput($localContainer, proposalId, formPath) {
     var $select = $localContainer.find('select').first();
     var $input = $localContainer.find('input').first();
     var $inputLabel = $localContainer.find('label[for="'+$input.attr('id')+'"]');
@@ -6,10 +6,10 @@ function easyRequirementInput($localContainer, $proposalId, $formPath) {
     $input.attr('disabled', true);
     $.ajax({
 	type: "POST",
-	url: $formPath,
+	url: formPath,
 	data: {
 	    'paramType': $select.val(),
-	    'proposal': $proposalId
+	    'proposal': proposalId
 	},
 	cache: false,
 	success: function(data) {
@@ -29,7 +29,6 @@ function easyRequirementInput($localContainer, $proposalId, $formPath) {
 			$result += '}';
 		    }
 		    $input.val($result);
-		    $input.popover('hide');
 		    e.preventDefault();
 		    return false;
 		});
@@ -48,12 +47,13 @@ function easyRequirementInput($localContainer, $proposalId, $formPath) {
     $select.change(function() {
 	$inputLabel.html('Chargement...');
 	$input.attr('disabled', true);
+	$input.popover('hide');
 	$.ajax({
 	    type: "POST",
-	    url: $formPath,
+	    url: formPath,
 	    data: {
 		'paramType': $select.val(),
-		'proposal': $proposalId
+		'proposal': proposalId
 	    },
 	    cache: false,
 	    success: function(data) {
@@ -72,37 +72,39 @@ function easyRequirementInput($localContainer, $proposalId, $formPath) {
     });
 }
 
-function manageRequirements($requirementsContainer, formPath, allowAdd) {
-
+function manageRequirements($requirementsContainer, formPath, proposal, initial) {
+    
     var index = 0;
-
+    
     $requirementsContainer.children('div').each(function() {
 	addDeleteLink($(this));
 	$(this).find('div.panel-heading').children('label').html('Contrainte n°' + (index+1));
-	easyRequirementInput($(this), {{ proposal.id }});
+	easyRequirementInput($(this), proposal, formPath);
 	index++;
     });
-
-    if(allowAdd) {
-	var $addRequirementLink = $('<a href="#" id="add_requirement" class="btn btn-success" style="margin-right:10px">Ajouter une contrainte</a>');
-	$addRequirementLink.insertBefore($('button[type="submit"]'));
-
-	$addRequirementLink.click(function(e) {
-	    addRequirement($requirementsContainer);
-	    e.preventDefault();
-	    return false;
-	});
+    
+    var $addRequirementLink = $('<a href="#" id="add_requirement" class="btn btn-success" style="margin-right:10px">Ajouter une contrainte</a>');
+    $addRequirementLink.insertBefore($('button[type="submit"]'));
+    
+    $addRequirementLink.click(function(e) {
+	addRequirement($requirementsContainer);
+	e.preventDefault();
+	return false;
+    });
+    
+    for(i = 0; i < initial; i++) {
+	addRequirement($requirementsContainer);
     }
-
+    
     function addRequirement($container) {
 	var $prototype = $($container.attr('data-prototype').replace(/__name__label__/g, 'Contrainte n°' + (index+1))
 			   .replace(/__name__/g, index));
-	easyRequirementInput($prototype, {{ proposal.id }});
+	easyRequirementInput($prototype, proposal, formPath);
 	addDeleteLink($prototype);
-	$prototype.insertBefore($addRequirementLink);			
+	$prototype.insertBefore($addRequirementLink);
 	index++;
     }
-
+    
     function addDeleteLink($prototype) {
 	$deleteLink = $('<a href="#" class="btn btn-danger">Supprimer</a>');
 	$prototype.children('div.panel-footer').append($deleteLink);
@@ -111,5 +113,5 @@ function manageRequirements($requirementsContainer, formPath, allowAdd) {
 	    e.preventDefault();
 	    return false;
 	});
-    }    
+    }
 }

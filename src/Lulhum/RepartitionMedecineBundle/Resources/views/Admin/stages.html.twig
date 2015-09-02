@@ -15,31 +15,31 @@
 		{{ form_label(filterForm.stageProposals, null, {'label_attr': {'class': 'control-label'}}) }}
 		<br/>
 		{{ form_errors(filterForm.stageProposals) }}
-		{{ form_widget(filterForm.stageProposals, {'attr': {'class': 'form-control', 'multiple': 'true', 'size': '2'}}) }}
+		{{ form_widget(filterForm.stageProposals, {'attr': {'class': 'form-control', 'size': '2'}}) }}
 	</div>
 	<div class="form-group" >
 		{{ form_label(filterForm.periods, null, {'label_attr': {'class': 'control-label'}}) }}
 		<br/>
 		{{ form_errors(filterForm.periods) }}
-		{{ form_widget(filterForm.periods, {'attr': {'class': 'form-control', 'multiple': 'true', 'size': '2'}}) }}
+		{{ form_widget(filterForm.periods, {'attr': {'class': 'form-control', 'size': '2'}}) }}
 	</div>
 	<div class="form-group" >
 		{{ form_label(filterForm.categoriesOr, null, {'label_attr': {'class': 'control-label'}}) }}
 		<br/>
 		{{ form_errors(filterForm.categoriesOr) }}
-		{{ form_widget(filterForm.categoriesOr, {'attr': {'class': 'form-control', 'multiple': 'true', 'size': '2'}}) }}
+		{{ form_widget(filterForm.categoriesOr, {'attr': {'class': 'form-control', 'size': '2'}}) }}
 	</div>
 	<div class="form-group" >
 		{{ form_label(filterForm.categoriesAnd, null, {'label_attr': {'class': 'control-label'}}) }}
 		<br/>
 		{{ form_errors(filterForm.categoriesAnd) }}
-		{{ form_widget(filterForm.categoriesAnd, {'attr': {'class': 'form-control', 'multiple': 'true', 'size': '2'}}) }}
+		{{ form_widget(filterForm.categoriesAnd, {'attr': {'class': 'form-control', 'size': '2'}}) }}
 	</div>
 	<div class="form-group" >
 		{{ form_label(filterForm.promotions, null, {'label_attr': {'class': 'control-label'}}) }}
 		<br/>
 		{{ form_errors(filterForm.promotions) }}
-		{{ form_widget(filterForm.promotions, {'attr': {'class': 'form-control', 'multiple': 'true', 'size': '2'}}) }}
+		{{ form_widget(filterForm.promotions, {'attr': {'class': 'form-control', 'size': '2'}}) }}
 	</div>
 	<div class="form-group" >
 		{{ form_label(filterForm.group, null, {'label_attr': {'class': 'control-label'}}) }}
@@ -66,6 +66,47 @@
 		</div>	
 		<div class="form-group" >				
 			<a class="btn btn-success" href="{{ path('lulhum_repartitionmedecine_admin_stage_stages_new') }}">Nouveau Stage</a>
+		</div>
+		<div class="btn-group">
+			<div class="btn-group">
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<span class="glyphicon glyphicon-export" ></span>
+					<span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					<li>
+						<a href="{{ path('lulhum_repartitionmedecine_admin_export', {'ext': 'xlsx', 'table': 'stagesbyuser'}) }}" data-export="table">
+							Stages par utilisateur
+						</a>
+					</li>
+				</ul>
+			</div>
+			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-export="toggle" aria-haspopup="true" aria-expanded="false">
+				<span class="caret"></span>
+				<span class="sr-only">Toggle Dropdown</span>
+			</button>
+			<ul class="dropdown-menu">
+				<li class="active" >
+					<a data-export="format" data-format="xlsx">
+						xlsx
+					</a>
+				</li>
+				<li>
+					<a data-export="format" data-format="xls">
+						xls
+					</a>
+				</li>
+				<li>
+					<a data-export="format" data-format="csv">
+						csv
+					</a>
+				</li>
+				<li>
+					<a data-export="format" data-format="html">
+						html
+					</a>
+				</li>
+			</ul>
 		</div>
 	</div>
 	{{ form_rest(filterForm) }}
@@ -127,4 +168,25 @@
 		<span class="glyphicon glyphicon-remove" ></span>
 	</span>
 	Supprimer le stage
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script type="text/javascript" >
+	$(document).ready(function() {
+		$('[data-export="format"]').click(function(e) {
+			var ext = $(this).attr('data-format');
+			$('[data-export="format"]').each(function() {
+				$(this).parent().attr('class', '');
+			});
+			$(this).parent().attr('class', 'active');
+			$('[data-export="table"]').each(function() {
+				$(this).attr('href', $(this).attr('href').replace(/\.[a-z]+$/, '.'+ext));
+			});
+			$(this).parents('div.btn-group').children('[data-export="toggle"').dropdown('toggle');
+			e.preventDefault();
+			return false;			
+		});
+	});
+	</script>
 {% endblock %}

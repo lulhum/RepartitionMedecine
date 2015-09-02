@@ -25,6 +25,7 @@
 		{{ form_errors(form.menu) }}
 		{{ form_widget(form.menu, {'attr': {'class': 'form-control'}}) }}
 	</div>
+	{% set showSpecialBlocks = true %}
 	{% include "LulhumCMSBundle:Admin:wisihtml_toolbar.html.twig" %}
 	<div class="form-group" >
 		{{ form_label(form.content) }}

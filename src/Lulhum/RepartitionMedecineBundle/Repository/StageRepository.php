@@ -76,4 +76,21 @@ class StageRepository extends EntityRepository
                     ->getSingleScalarResult();
     }
 
+    public function periodsResume($periods)
+    {
+        $queryBuilder = $this->createQueryBuilder('s')
+                             ->join('s.proposal', 'p', 'WITH', 'p.period IN(:periods)')            
+                             ->setParameter('periods', $periods)
+                             ->join('p.period', 'period')
+                             ->join('s.user', 'u')
+                             ->where('s.locked = 1')
+                             ->addOrderBy('u.promotion')
+                             ->addOrderBy('u.lastname')
+                             ->addOrderBy('u.firstname')
+                             ->addOrderBy('period.start')
+                             ->addOrderBy('period.stop');
+
+        return $queryBuilder->getQuery()->getResult();
+    }
+
 }

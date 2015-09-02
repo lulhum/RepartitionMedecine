@@ -17,7 +17,15 @@ class Page
         'ROLE_USER' => 'Utilisateur connecté',
         'ROLE_ADMIN' => 'Administrateur',
     );
-    
+
+    const SPECIAL_BLOCKS = array(
+        'facebook' => array(
+            'description' => 'Intégration du plugin Facebook',
+            'markup' => '[[fb:facebook]]',
+            'pattern' => '/\[\[fb:([[:graph:]]*)\]\]/',
+            'html' =>'<div id="fb-root"></div><script>(function(d, s, id) { var js, fjs = d.getElementsByTagName(s)[0];if (d.getElementById(id)) return;js = d.createElement(s); js.id = id;js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.4";fjs.parentNode.insertBefore(js, fjs);}(document, \'script\', \'facebook-jssdk\'));</script><div class="fb-page" data-href="https://www.facebook.com/$1" data-tabs="timeline" data-width="500px" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><div class="fb-xfbml-parse-ignore"><blockquote cite="https://www.facebook.com/$1"><a href="https://www.facebook.com/$1">Facebook</a></blockquote></div></div>',
+        )
+    );
     /**
      * @var integer
      *
@@ -112,6 +120,16 @@ class Page
         return $this->content;
     }
 
+    public function getContentSpecialBlocks()
+    {
+        $result = $this->content;
+        foreach(self::SPECIAL_BLOCKS as $block) {
+            $result = preg_replace($block['pattern'], $block['html'], $result);
+        }
+
+        return $result;
+    }
+
     /**
      * Set visibility
      *
@@ -171,6 +189,11 @@ class Page
     public function textVisibility()
     {
         return is_null($this->visibility) ? 'Publique' : self::VISIBILITIES[$this->visibility];
+    }
+
+    public function getSpecialBlocks()
+    {
+        return self::SPECIAL_BLOCKS;
     }
 
 }

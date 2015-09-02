@@ -95,17 +95,15 @@
 		<a href="{{ path('lulhum_user_admin_user_edit', {'id': u.id}) }}" >
 			<span class="glyphicon glyphicon-edit" ></span>
 		</a>
-		<a href="" >
-			{% if u.hasRole('ROLE_ADMIN') %}
-				<a href="{{ path('lulhum_user_admin_user_switchadmin', {'id': u.id}) }}" class="text-success" >
-					<span class="glyphicon glyphicon-eye-open" ></span>
-				</a>
-			{% else %}
-				<a href="{{ path('lulhum_user_admin_user_switchadmin', {'id': u.id}) }}" class="text-danger" >
-					<span class="glyphicon glyphicon-eye-close" ></span>
-				</a>
-			{% endif %}
-		</a>
+		{% if u.hasRole('ROLE_ADMIN') %}
+			<a href="{{ path('lulhum_user_admin_user_switchadmin', {'id': u.id}) }}" class="text-success" >
+				<span class="glyphicon glyphicon-eye-open" ></span>
+			</a>
+		{% else %}
+			<a href="{{ path('lulhum_user_admin_user_switchadmin', {'id': u.id}) }}" class="text-danger" >
+				<span class="glyphicon glyphicon-eye-close" ></span>
+			</a>
+		{% endif %}
 		<a href="{{ path('lulhum_user_admin_user_delete', {'id': u.id}) }}" class="text-danger" >
 			<span class="glyphicon glyphicon-remove" ></span>
 		</a>

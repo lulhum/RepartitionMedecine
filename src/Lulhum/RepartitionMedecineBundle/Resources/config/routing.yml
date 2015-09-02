@@ -284,3 +284,18 @@ lulhum_repartitionmedecine_admin_locations_delete:
     defaults: { _controller: LulhumRepartitionMedecineBundle:Admin:deleteLocation }
     requirements:
         id: \d+
+
+lulhum_repartitionmedecine_admin_export:
+    path: /admin/export/{table}.{ext}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:Admin:export }
+    requirements:
+        type: xls|csv|html|xlsx
+        table: stagesbyuser
+
+lulhum_repartitionmedecine_admin_export_page:
+    path: /admin/export/{table}-{page}.{ext}
+    defaults: { _controller: LulhumRepartitionMedecineBundle:Admin:export }
+    requirements:
+        ext: xls|csv|html|xlsx
+        table: stagesbyuser
+        page: \d+

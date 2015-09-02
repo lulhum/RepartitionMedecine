@@ -41,11 +41,27 @@
 				<span class="glyphicon glyphicon-list" ></span>
 			</a>
 		</div>
+		{% if showSpecialBlocks is defined and showSpecialBlocks and page.specialBlocks|length > 0 %}
+			<div class="btn-group" role="group" >
+				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Balises spéciales">
+					<span class="glyphicon glyphicon-briefcase" ></span> <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+					{% for block in page.specialBlocks %}
+						<li>
+							<a data-wysihtml5-command="insertHTML" data-wysihtml5-command-value="{{ block.markup }}">
+								{{ block.description }}
+							</a>
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+		{% endif %}
 		<div class="btn-group pull-right" role="group" >
 			<a data-wysihtml5-action="change_view" class="btn btn-default" title="Basculer le mode d'édition" >
 				<span class="glyphicon glyphicon-wrench" ></span>
 			</a>
-		</div>
+		</div>		
 	</div>
 	<div data-wysihtml5-dialog="createLink" class="form-group" style="display: none;">
 		<div class="form-inline" >

@@ -5,7 +5,7 @@ function activateSearchSelectPopover() {
 	    var $content = $('<div></div>');
 	    var $select = $inputgroup.children("select");
 	    var $search = $('<input type="text" data-lulhumsearchfor="'+$(this).attr('id')+'" data-select="'+$select.attr('id')+'" placeholder="Rechercher..." />');
-	    $content.append($search);				
+	    $content.append($search);
 	    var $optgroups = $select.children("optgroup");
 	    if($optgroups.length > 0) {
 		$selOpts = $('<select data-lulhumsearchfor="'+$(this).attr('id')+'" class="form-control"></select>');
@@ -15,14 +15,14 @@ function activateSearchSelectPopover() {
 		    $selOpts.append($('<option value="'+optgroup+'">'+optgroup+'</option>'));
 		});
 		$content.append($selOpts);
-	    }				
+	    }
 	    
 	    return $content.html();
 	},
     });
-
+    
     $('[data-toggle="popover"]').on('shown.bs.popover', function() {
-	var $search =  $('input[data-lulhumsearchfor="'+$(this).attr('id')+'"]');
+	var $search = $('input[data-lulhumsearchfor="'+$(this).attr('id')+'"]');
 	var $select = $('select#'+$search.attr('data-select'));
 	var $optgroups = $('select[data-lulhumsearchfor="'+$(this).attr('id')+'"]');
 	var optgroup = '';

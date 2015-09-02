@@ -8,6 +8,5 @@
 /bin/
 /composer.phar
 /vendor/
-/web/bundles/*
-!/web/bundles/lulhumrepartitionmedecine/
+/web/bundles/
 /web/vendor/

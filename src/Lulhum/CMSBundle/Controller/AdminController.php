@@ -39,6 +39,7 @@ class AdminController extends Controller
         return $this->render('LulhumCMSBundle:Admin:page.html.twig', array(
             'form' => $form->createView(),
             'new' => true,
+            'page' => $page,
         ));
     }
 
@@ -59,6 +60,7 @@ class AdminController extends Controller
         return $this->render('LulhumCMSBundle:Admin:page.html.twig', array(
             'form' => $form->createView(),
             'new' => false,
+            'page' => $page,
         ));
     }
 

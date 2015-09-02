@@ -17,10 +17,11 @@ class AppKernel extends Kernel
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
             new Lulhum\RepartitionMedecineBundle\LulhumRepartitionMedecineBundle(),
-            new FOS\UserBundle\FOSUserBundle(),
             new Lulhum\UserBundle\LulhumUserBundle(),
             new Lulhum\DeadlineBundle\LulhumDeadlineBundle(),
             new Lulhum\CMSBundle\LulhumCMSBundle(),
+            new FOS\UserBundle\FOSUserBundle(),
+            new Liuggio\ExcelBundle\LiuggioExcelBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {
