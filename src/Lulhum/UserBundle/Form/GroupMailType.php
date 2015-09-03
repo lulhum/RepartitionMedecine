@@ -48,4 +48,4 @@ class GroupMailType extends AbstractType
     {
         return 'lulhum_user_groupmail';
     }
-} 
+}

@@ -61,4 +61,4 @@ class StageCategoryType extends AbstractType
     {
         return 'lulhum_repartitionmedecine_stagecategory';
     }
-} 
+}

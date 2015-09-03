@@ -1,6 +1,7 @@
 {
     "name": "lulhum/repartition-medecine",
-    "license": "proprietary",
+    "description": "Stage Repartition",
+    "license": "GNU AGPL v3",
     "type": "project",
     "autoload": {
         "psr-4": {

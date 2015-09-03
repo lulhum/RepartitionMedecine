@@ -66,4 +66,4 @@ class RequirementParamsType extends AbstractType
     {
         return 'lulhum_repartitionmedecine_requirementparams';
     }
-} 
+}

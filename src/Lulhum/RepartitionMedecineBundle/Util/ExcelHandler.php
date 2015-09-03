@@ -157,7 +157,7 @@ class ExcelHandler
                              ->setKeywords($this->removeAccents("Répartition Stages Médecine"))
                              ->setCategory($this->removeAccents("Répartition Stages Médecine"));
         $periods = $this->em->getRepository('LulhumRepartitionMedecineBundle:Period')->findCurrents();
-        $periodsColumns = array();
+        $periodsColumn = array();
         $i = 1;
         foreach($periods as $period) {
             $periodsColumn[$period->getId()] = $this->num2alpha($i);
@@ -199,7 +199,7 @@ class ExcelHandler
                              ->setKeywords($this->removeAccents("Répartition Stages Médecine"))
                              ->setCategory($this->removeAccents("Répartition Stages Médecine"));
         $periods = $this->em->getRepository('LulhumRepartitionMedecineBundle:Period')->findCurrents();
-        $periodsColumns = array();
+        $periodsColumn = array();
         $i = 1;        
         foreach($periods as $period) {
             $periodsColumn[$period->getId()] = $this->num2alpha($i);

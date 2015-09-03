@@ -3,7 +3,7 @@
 namespace Lulhum\CMSBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Lulhum\CMSBundle\Entity\Page;
 
 class PageController extends Controller
@@ -12,7 +12,7 @@ class PageController extends Controller
     public function pageAction(Page $page, $id)
     {
         if(!$page->isVisible($this->container->get('security.context'))) {
-            throw new AccessDeniedHttpException;
+            throw new AccessDeniedException;
         }
         
         return $this->render('LulhumCMSBundle:Page:page.html.twig', array(

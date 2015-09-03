@@ -237,8 +237,8 @@ class AdminController extends Controller
                 }
             }
             else {
-                
-                for($i = 0; $i < $excelHandler->getPhpExcelObject()->getSheetCount(); $i++) {
+                $sheets = $excelHandler->getPhpExcelObject()->getSheetCount();
+                for($i = 0; $i < $sheets; $i++) {
                     $excelHandler->getPhpExcelObject()->setActiveSheetIndex($i);
                     $writer->setSheetIndex($i);
                     if($i < $excelHandler->getPhpExcelObject()->getSheetCount() -1) {

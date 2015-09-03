@@ -73,4 +73,4 @@ class StageFilterType extends AbstractType
     {
         return 'lulhum_repartitionmedecine_stagefilter';
     }
-} 
+}

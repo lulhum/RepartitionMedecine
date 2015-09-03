@@ -34,4 +34,4 @@ class CategoryType extends AbstractType
     {
         return 'lulhum_repartitionmedecine_category';
     }
-} 
+}

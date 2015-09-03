@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Request;
 
 class SecurityController extends BaseController
 {
-    public function renderLogin(array $data)
+    protected function renderLogin(array $data)
     {
         $data['allowUserRegistration'] = ($this->getDoctrine()->getManager()->getRepository('LulhumRepartitionMedecineBundle:Parameter')->findOneByName('allowUserRegistrations')->getValue() === 'true');
  

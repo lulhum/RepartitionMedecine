@@ -46,4 +46,4 @@ class PeriodType extends AbstractType
     {
         return 'lulhum_repartitionmedecine_period';
     }
-} 
+}

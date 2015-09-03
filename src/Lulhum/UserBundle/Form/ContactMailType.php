@@ -39,4 +39,4 @@ class ContactMailType extends AbstractType
     {
         return 'lulhum_user_contactmail';
     }
-} 
+}

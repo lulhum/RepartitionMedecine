@@ -47,4 +47,4 @@ class RequirementType extends AbstractType
     {
         return 'lulhum_repartitionmedecine_requirement';
     }
-} 
+}

@@ -55,4 +55,4 @@ class UserFilterType extends AbstractType
     {
         return 'lulhum_repartitionmedecine_userfilter';
     }
-} 
+}

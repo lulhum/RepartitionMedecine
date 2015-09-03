@@ -1,3 +1,0 @@
-lulhum_deadline_homepage:
-    path:     /hello/{name}
-    defaults: { _controller: LulhumDeadlineBundle:Default:index }

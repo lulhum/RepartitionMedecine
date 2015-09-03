@@ -46,4 +46,4 @@ class PageType extends AbstractType
     {
         return 'lulhum_cms_page';
     }
-} 
+}

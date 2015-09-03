@@ -35,4 +35,4 @@ class LocationType extends AbstractType
     {
         return 'lulhum_repartitionmedecine_location';
     }
-} 
+}

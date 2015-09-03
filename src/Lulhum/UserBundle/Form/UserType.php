@@ -73,4 +73,4 @@ class UserType extends AbstractType
     {
         return 'lulhum_userbundle_user';
     }
-} 
+}

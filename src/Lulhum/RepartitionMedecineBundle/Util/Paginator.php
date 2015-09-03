@@ -83,7 +83,9 @@ class Paginator
     public function getNeighbors()
     {
         $res = array();
-        for($i = max(1, $this->page - self::NEIGHBORHOOD); $i < min($this->pages + 1, $this->page + self::NEIGHBORHOOD + 1); $i++) {
+        $start = max(1, $this->page - self::NEIGHBORHOOD);
+        $stop = min($this->pages + 1, $this->page + self::NEIGHBORHOOD + 1);
+        for($i = $start; $i < $stop; $i++) {
             $res[] = $i;
         }
 

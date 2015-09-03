@@ -59,4 +59,4 @@ class StageProposalType extends AbstractType
     {
         return 'lulhum_repartitionmedecine_stageproposal';
     }
-} 
+}
