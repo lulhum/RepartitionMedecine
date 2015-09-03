@@ -1,0 +1,30 @@
+{# app/Resources/TwigBundle/views/Exception/error.html.twig #}
+
+{% extends "::layout.html.twig" %}
+
+{% block title %}Erreur {{ status_code }} {{ status_text }}{% endblock %}
+
+{% block navbarmain %}{% endblock %}
+
+{% block main %}
+	<div class="panel panel-danger" >
+		<div class="panel-heading" >
+			<h1>Oups! Une erreur est survenue</h1>
+			<div>Le serveur a retourné une erreur "{{ status_code }} {{ status_text }}".</div>
+		</div>
+
+		<div class="panel-body">
+			{% block errortext %}
+				Quelquechose ne s'est pas passé comme prévu.
+				<br/>
+				Merci de nous informer de ce que vous faisiez lorsque cette erreur est survenue.
+				Nous corrigerons le problème aussi vite que possible.
+				<br/>
+				Nous nous excusons pour la gêne occasionnée.			
+			{% endblock %}
+		</div>
+		<div class="panel-footer">
+			<strong><a href="{{ path('lulhum_user_contact') }}" >Formulaire de contact</a></strong>
+		</div>
+	</div>
+{% endblock %}

@@ -14,7 +14,7 @@
 		</title>
 
 		{% block stylesheets %}
-			{% stylesheets '@bootstrap_css' '@LulhumRepartitionMedecineBundle/Resources/public/css/mytweaks.css'%}
+			{% stylesheets '@bootstrap_css' '@LulhumRepartitionMedecineBundle/Resources/public/css/mytweaks.css' %}
 			<link rel="stylesheet" type="text/css" media="screen" href="{{ asset_url }}"/>
                         {% endstylesheets %}
 		{% endblock %}
@@ -75,7 +75,7 @@
 									<li><a href="{{ path('fos_user_security_logout') }}">Déconnexion</a></li>
 								{% else %}
 									<li><a href="{{ path('fos_user_security_login') }}">Connexion</a></li>
-								{% endif %}							
+								{% endif %}
 							{% endblock %}
 						</ul>
 					</div>

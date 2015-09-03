@@ -48,14 +48,6 @@ assetic:
     filters:
         cssrewrite: ~
     assets:
-        bootstrap_js:
-            inputs:
-                - %kernel.root_dir%/../vendor/twbs/bootstrap/dist/js/bootstrap.js
-        bootstrap_css:
-            inputs:
-                - %kernel.root_dir%/../vendor/twbs/bootstrap/dist/css/bootstrap.css
-                - %kernel.root_dir%/../vendor/twbs/bootstrap/dist/css/bootstrap-theme.css
-            filters: [cssrewrite]
         bootstrap_glyphicons_ttf:
             inputs:
                 - %kernel.root_dir%/../vendor/twbs/bootstrap/dist/fonts/glyphicons-halflings-regular.ttf
@@ -74,14 +66,21 @@ assetic:
             output: "fonts/glyphicons-halflings-regular.woff"
         jquery:
             inputs:
-                - %kernel.root_dir%/../vendor/components/jquery/jquery.js
+                - %kernel.root_dir%/../vendor/components/jquery/jquery.min.js
+        bootstrap_js:
+            inputs:
+                - %kernel.root_dir%/../vendor/twbs/bootstrap/dist/js/bootstrap.min.js
+        bootstrap_css:
+            inputs:
+                - %kernel.root_dir%/../vendor/twbs/bootstrap/dist/css/bootstrap.min.css
+                - %kernel.root_dir%/../vendor/twbs/bootstrap/dist/css/bootstrap-theme.min.css     
         wysihtml:
             inputs:
                 - %kernel.root_dir%/../vendor/voog/wysihtml/dist/wysihtml-toolbar.min.js
                 - %kernel.root_dir%/../vendor/voog/wysihtml/parser_rules/advanced_and_extended.js
         datepicker_js:
             inputs:
-                - %kernel.root_dir%/../vendor/moment/moment/min/moment-with-locales.js
+                - %kernel.root_dir%/../vendor/moment/moment/min/moment-with-locales.min.js
                 - %kernel.root_dir%/../vendor/eonasdan/bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js
         datepicker_css:
             inputs:

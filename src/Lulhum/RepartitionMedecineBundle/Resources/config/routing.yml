@@ -290,12 +290,12 @@ lulhum_repartitionmedecine_admin_export:
     defaults: { _controller: LulhumRepartitionMedecineBundle:Admin:export }
     requirements:
         type: xls|csv|html|xlsx
-        table: stagesbyuser
+        table: stagesbyuser|stagesbycategory
 
 lulhum_repartitionmedecine_admin_export_page:
     path: /admin/export/{table}-{page}.{ext}
     defaults: { _controller: LulhumRepartitionMedecineBundle:Admin:export }
     requirements:
         ext: xls|csv|html|xlsx
-        table: stagesbyuser
+        table: stagesbyuser|stagesbycategory
         page: \d+

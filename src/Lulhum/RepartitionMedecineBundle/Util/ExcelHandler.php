@@ -36,6 +36,7 @@ class ExcelHandler
 
     const TABLES = array(
         'stagesbyuser',
+        'stagesbycategory',
     );
     
     protected $phpExcelObject;
@@ -125,13 +126,18 @@ class ExcelHandler
             $this->phpExcelObject->setIndexByName($sheetname, 0);
             $this->phpExcelObject->setActiveSheetIndex(0);
         }
+    }    
+
+    public function create()
+    {
+        call_user_func(array($this, $this->table));
     }
 
-    private function sheetHeader($title, $periods)
+    private function sheetHeader($title, $periods, $subject)
     {
         $this->phpExcelObject->getActiveSheet()
                              ->setTitle($this->removeAccents($title))
-                             ->setCellValue('A1', $this->htmlHelper->toRichTextObject('<b>Utilisateur</b>'))
+                             ->setCellValue('A1', $this->htmlHelper->toRichTextObject('<b>'.$this->removeAccents($subject).'</b>'))
                              ->getColumnDimension('A')->setAutoSize(true);
         $i = 1;
         foreach($periods as $period) {
@@ -139,11 +145,6 @@ class ExcelHandler
                                  ->getColumnDimension($this->num2alpha($i))->setAutoSize(true);
             $i++;
         }
-    }
-
-    public function create()
-    {
-        call_user_func(array($this, $this->table));
     }
 
     private function stagesByUser()
@@ -165,7 +166,7 @@ class ExcelHandler
         $start = true;
         $promotion = null;
         $this->sheet = 0;        
-        foreach($this->em->getRepository('LulhumRepartitionMedecineBundle:Stage')->periodsResume($periods) as $stage) {
+        foreach($this->em->getRepository('LulhumRepartitionMedecineBundle:Stage')->periodsResume($periods, 'byuser') as $stage) {
             if($stage->getUser()->getPromotion() != $promotion || $start) {
                 $start = false;
                 $promotion = $stage->getUser()->getPromotion();
@@ -174,7 +175,7 @@ class ExcelHandler
                 }
                 $this->phpExcelObject->setActiveSheetIndex($this->sheet);
                 $this->sheet++;
-                $this->sheetHeader($stage->getUser()->getPromotion(), $periods);                
+                $this->sheetHeader($promotion, $periods, 'Utilisateur');                
                 $user = null;
                 $i = 1;
             }
@@ -184,6 +185,56 @@ class ExcelHandler
                 $this->phpExcelObject->getActiveSheet()->setCellValue('A'.$i, $this->removeAccents($stage->getUser()));
             }
             $this->phpExcelObject->getActiveSheet()->setCellValue($periodsColumn[$stage->getProposal()->getPeriod()->getId()].$i, $this->removeAccents($stage->getProposal()->getCategory()));            
+        }
+        $this->phpExcelObject->setActiveSheetIndex(0);
+    }
+
+    private function stagesByCategory()
+    {
+        $this->phpExcelObject->getProperties()->setCreator("liuggio")
+                             ->setLastModifiedBy($this->em->getRepository('LulhumRepartitionMedecineBundle:Parameter')->findOneByName('plateformMail')->getValue())
+                             ->setTitle($this->removeAccents('Répartition des Stages par Modèle - ').(new \DateTime())->format('d/m/Y'))
+                             ->setSubject($this->removeAccents('Répartition des Stages par Modèle - ').(new \DateTime())->format('d/m/Y'))
+                             ->setDescription($this->removeAccents('Répartition des Stages par Modèle - ').(new \DateTime())->format('d/m/Y'))
+                             ->setKeywords($this->removeAccents("Répartition Stages Médecine"))
+                             ->setCategory($this->removeAccents("Répartition Stages Médecine"));
+        $periods = $this->em->getRepository('LulhumRepartitionMedecineBundle:Period')->findCurrents();
+        $periodsColumns = array();
+        $i = 1;        
+        foreach($periods as $period) {
+            $periodsColumn[$period->getId()] = $this->num2alpha($i);
+            $i++;
+        }
+        $start = true;
+        $promotion = null;
+        $this->sheet = 0;        
+        foreach($this->em->getRepository('LulhumRepartitionMedecineBundle:Stage')->periodsResume($periods, 'bycategory') as $stage) {
+            if($stage->getUser()->getPromotion() != $promotion || $start) {
+                $start = false;
+                $promotion = $stage->getUser()->getPromotion();
+                if($this->sheet > 0) {
+                    $this->phpExcelObject->createSheet();
+                }
+                $this->phpExcelObject->setActiveSheetIndex($this->sheet);
+                $this->sheet++;
+                $this->sheetHeader($promotion, $periods, 'Modèle');                
+                $category = null;
+                $periodsColumnIndexes = array_fill_keys(array_keys($periodsColumn), 1);
+                $i = 1;
+            }
+            if($stage->getProposal()->getCategory()->getId() != $category) {
+                $max = max($periodsColumnIndexes) + 1;
+                $periodsColumnIndexes = array_fill_keys(array_keys($periodsColumnIndexes), $max);
+                $category = $stage->getProposal()->getCategory()->getId();
+                $this->phpExcelObject->getActiveSheet()->setCellValue('A'.($max+1), $this->removeAccents($stage->getProposal()->getCategory()));
+            }
+            $periodId = $stage->getProposal()->getPeriod()->getId();
+            $periodsColumnIndexes[$periodId]++;
+            $this->phpExcelObject->getActiveSheet()
+                                 ->setCellValue(
+                                     $periodsColumn[$periodId].$periodsColumnIndexes[$periodId],
+                                     $this->removeAccents($stage->getUser())
+                                 );            
         }
         $this->phpExcelObject->setActiveSheetIndex(0);
     }

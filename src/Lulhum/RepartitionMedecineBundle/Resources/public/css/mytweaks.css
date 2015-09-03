@@ -4,3 +4,6 @@
 .bottom-buffer {
     margin-bottom:10px;
 }
+div.panel-danger div.panel-footer {
+    background-color: #f2dede;
+}

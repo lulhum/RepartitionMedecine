@@ -38,6 +38,7 @@ class RepartitionController extends Controller
         $listItems = array();
 
         $securityContext = $this->container->get('security.context');
+        
         $user = $securityContext->getToken()->getUser();
         if($securityContext->isGranted('IS_AUTHENTICATED_REMEMBERED')) {
             if($user->getPromotion() === 'DFASM1' || $user->getPromotion() === 'DFASM2') {

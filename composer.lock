@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "a0f989bab10b351d2798a4058d59f4f2",
+    "hash": "1c5fdc94ef16c06e413a602150b95a01",
     "packages": [
         {
             "name": "components/jquery",
@@ -796,12 +796,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSUserBundle.git",
-                "reference": "fea7f49687f040712a821d1a5bb1b4f3d0c5d355"
+                "reference": "d18641db1d28daf7ee27925ae56fd5cb04ba72af"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/fea7f49687f040712a821d1a5bb1b4f3d0c5d355",
-                "reference": "fea7f49687f040712a821d1a5bb1b4f3d0c5d355",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/d18641db1d28daf7ee27925ae56fd5cb04ba72af",
+                "reference": "d18641db1d28daf7ee27925ae56fd5cb04ba72af",
                 "shasum": ""
             },
             "require": {
@@ -855,7 +855,7 @@
             "keywords": [
                 "User management"
             ],
-            "time": "2015-09-02 13:44:06"
+            "time": "2015-09-03 09:14:05"
         },
         {
             "name": "incenteev/composer-parameter-handler",
@@ -2071,6 +2071,62 @@
     ],
     "packages-dev": [
         {
+            "name": "coresphere/console-bundle",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/CoreSphere/ConsoleBundle.git",
+                "reference": "149e8ba64618040adb2c3e5e90cd8070386bf7e7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/CoreSphere/ConsoleBundle/zipball/149e8ba64618040adb2c3e5e90cd8070386bf7e7",
+                "reference": "149e8ba64618040adb2c3e5e90cd8070386bf7e7",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5",
+                "symfony/console": "~2.7|~3.0",
+                "symfony/dependency-injection": "~2.7|~3.0",
+                "symfony/event-dispatcher": "~2.7|~3.0",
+                "symfony/framework-bundle": "~2.7|~3.0",
+                "symfony/http-kernel": "~2.7|~3.0"
+            },
+            "require-dev": {
+                "doctrine/doctrine-fixtures-bundle": "^2.2",
+                "doctrine/doctrine-migrations-bundle": "^1.0",
+                "phpunit/phpunit": "^4.8",
+                "symfony/finder": "^2.7"
+            },
+            "type": "symfony-bundle",
+            "autoload": {
+                "psr-4": {
+                    "CoreSphere\\ConsoleBundle\\": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Laszlo Korte",
+                    "email": "coresphere@laszlokorte.de"
+                },
+                {
+                    "name": "Marmus Ullman",
+                    "email": "mail@markus-ullmann.de"
+                }
+            ],
+            "description": "This bundle allows you accessing the symfony2 console via your browser",
+            "keywords": [
+                "console",
+                "javascript",
+                "symfony"
+            ],
+            "time": "2015-08-31 16:22:52"
+        },
+        {
             "name": "sensio/generator-bundle",
             "version": "v2.5.3",
             "target-dir": "Sensio/Bundle/GeneratorBundle",
@@ -2123,7 +2179,8 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "friendsofsymfony/user-bundle": 20,
-        "voog/wysihtml": 20
+        "voog/wysihtml": 20,
+        "coresphere/console-bundle": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
