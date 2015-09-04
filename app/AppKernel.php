@@ -22,6 +22,7 @@ class AppKernel extends Kernel
             new Lulhum\CMSBundle\LulhumCMSBundle(),
             new FOS\UserBundle\FOSUserBundle(),
             new Liuggio\ExcelBundle\LiuggioExcelBundle(),
+            new Exercise\HTMLPurifierBundle\ExerciseHTMLPurifierBundle(),
         );
 
         if (in_array($this->getEnvironment(), array('dev', 'test'))) {

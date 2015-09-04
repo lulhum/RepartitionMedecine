@@ -41,7 +41,8 @@
 	"components/jquery": "1.11.1",
 	"twbs/bootstrap": "3.*",	
 	"voog/wysihtml": "@dev",
-	"eonasdan/bootstrap-datetimepicker": "~4.15"
+	"eonasdan/bootstrap-datetimepicker": "~4.15",
+	"exercise/htmlpurifier-bundle": "~0.2"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3",

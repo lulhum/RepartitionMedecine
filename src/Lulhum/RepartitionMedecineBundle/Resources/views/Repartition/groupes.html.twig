@@ -28,16 +28,55 @@
 {% endblock %}
 
 {% block body %}
-	<div>
-		{% for key, messages in app.session.flashbag.all() %}
-			{% for message in messages %}
-				<div class="alert alert-{{ key }}">
-					{{ message }}
-				</div>
+	<div class="row" >
+		<div>
+			{% for key, messages in app.session.flashbag.all() %}
+				{% for message in messages %}
+					<div class="alert alert-{{ key }}">
+						{{ message }}
+					</div>
+				{% endfor %}
 			{% endfor %}
-		{% endfor %}
-	</div>
+		</div>
 
+		<div class="col-md-6" >
+			<div class="panel panel-default" >
+				<div class="panel-heading" >
+					<strong>Périodes pour le groupe A:</strong>
+				</div>
+				<div class="panel-body" >
+					{% if app.user.promotion == 'DFASM1' %}
+						Octobre-Novembre<br/>
+						Février-Mars<br/>
+						Juin-Juillet
+					{% else %}
+						Décembre-Janvier<br/>
+						Avril-Mai<br/>
+						Août-Septembre
+					{% endif %}
+				</div>
+			</div>
+		</div>
+		<div class="col-md-6" >
+			<div class="panel panel-default" >
+				<div class="panel-heading" >
+					<strong>Périodes pour le groupe B:</strong>
+				</div>
+				<div class="panel-body" >
+					{% if app.user.promotion == 'DFASM1' %}
+						Décembre-Janvier<br/>
+						Avril-Mai<br/>
+						Août-Septembre			
+					{% else %}
+						Octobre-Novembre<br/>
+						Février-Mars<br/>
+						Juin-Juillet
+					{% endif %}
+				</div>
+			</div>	
+		</div>
+	</div>
+	
 	{% set expanded = false %}
 	{% set admin = false %}
 	{% include "LulhumRepartitionMedecineBundle:Repartition:groupes_content.html.twig" %}

@@ -13,6 +13,8 @@
 			{% endblock %}
 		</title>
 
+		<link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}?v2" />
+
 		{% block stylesheets %}
 			{% stylesheets '@bootstrap_css' '@LulhumRepartitionMedecineBundle/Resources/public/css/mytweaks.css' %}
 			<link rel="stylesheet" type="text/css" media="screen" href="{{ asset_url }}"/>
@@ -24,8 +26,10 @@
 		<div class="container">
 			
 			<div id="header" class="jumbotron">
-				<h2>{{ siteTitle }}</h2>
-
+				<h2>
+					<img src="{{ asset('img/logo.png') }}" alt="Logo des Élus étudiants – CG – UFR de médecine d'Amiens" />
+					{{ siteTitle }}
+				</h2>
 			</div>
 			
 			<nav class="navbar navbar-default">
@@ -71,9 +75,12 @@
 												<li><a href="{{ path('lulhum_repartitionmedecine_admin_repartition_parameters') }}">Paramètres</a></li>
 											</ul>
 										</li>
-									{% endif %}
+									{% else %}
+										<li><a href="{{ path('lulhum_user_contact') }}">Contact</a></li>
+									{% endif %}									
 									<li><a href="{{ path('fos_user_security_logout') }}">Déconnexion</a></li>
 								{% else %}
+									<li><a href="{{ path('lulhum_user_contact') }}">Contact</a></li>
 									<li><a href="{{ path('fos_user_security_login') }}">Connexion</a></li>
 								{% endif %}
 							{% endblock %}
