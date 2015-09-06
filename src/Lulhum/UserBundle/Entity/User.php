@@ -374,12 +374,12 @@ class User extends BaseUser
     {
         if(is_null($locked)) {
             return $this->stages->filter(function($stage) use (&$period) {                
-                return $stage->getPeriod()->getId() === $period->getId();
+                return $stage->getProposal()->getPeriod()->getId() === $period->getId();
             })->count();
         }
         else {
             return $this->stages->filter(function($stage) use (&$period, &$locked) {
-                return $stage->getLocked() === $locked &&  $stage->getPeriod()->getId() === $period->getId();
+                return $stage->getLocked() === $locked &&  $stage->getProposal()->getPeriod()->getId() === $period->getId();
             })->count();
         }        
     }

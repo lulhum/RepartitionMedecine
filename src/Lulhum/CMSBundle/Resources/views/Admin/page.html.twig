@@ -46,6 +46,7 @@
 	$(document).ready(function() {
 		var editor = new wysihtml5.Editor('lulhum_cms_page_content', {
 			toolbar: 'toolbar',
+			stylesheets: ["{% stylesheets '@LulhumRepartitionMedecineBundle/Resources/public/css/mytweaks.css' %}{{ asset_url }}{% endstylesheets %}"],
 			parserRules: wysihtml5ParserRules
 		});
 	});

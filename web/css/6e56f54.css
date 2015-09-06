@@ -17,3 +17,39 @@
 div.panel-danger div.panel-footer {
     background-color: #f2dede;
 }
+
+.wysiwyg-color-primary {
+  color: #337ab7;
+}
+a.wysiwyg-color-primary:hover,
+a.wysiwyg-color-primary:focus {
+  color: #286090;
+}
+.wysiwyg-color-success {
+  color: #3c763d;
+}
+a.wysiwyg-color-success:hover,
+a.wysiwyg-color-success:focus {
+  color: #2b542c;
+}
+.wysiwyg-color-info {
+  color: #31708f;
+}
+a.wysiwyg-color-info:hover,
+a.wysiwyg-color-info:focus {
+  color: #245269;
+}
+.wysiwyg-color-warning {
+  color: #8a6d3b;
+}
+a.wysiwyg-color-warning:hover,
+a.wysiwyg-color-warning:focus {
+  color: #66512c;
+}
+.wysiwyg-color-danger {
+  color: #a94442;
+}
+a.wysiwyg-color-danger:hover,
+a.wysiwyg-color-danger:focus {
+  color: #843534;
+}
