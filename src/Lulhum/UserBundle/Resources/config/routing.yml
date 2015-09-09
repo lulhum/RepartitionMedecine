@@ -51,3 +51,16 @@ lulhum_user_admin_groupmail:
 lulhum_user_contact:
     path: /contact
     defaults: { _controller: LulhumUserBundle:Contact:contact }
+
+lulhum_user_admin_export:
+    path: /admin/export/users.{ext}
+    defaults: { _controller: LulhumUserBundle:Admin:export }
+    requirements:
+        type: xls|csv|html|xlsx
+
+lulhum_user_admin_export_page:
+    path: /admin/export/users-{page}.{ext}
+    defaults: { _controller: LulhumUserBundle:Admin:export }
+    requirements:
+        ext: xls|csv|html|xlsx
+        page: \d+

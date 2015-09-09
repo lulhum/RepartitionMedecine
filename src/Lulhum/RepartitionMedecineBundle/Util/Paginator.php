@@ -35,6 +35,11 @@ class Paginator
         $this->offset = ($this->page - 1) * $max;        
     }
 
+    public function getIndex($localIndex)
+    {
+        return $this->offset + $localIndex;
+    }
+
     public function getUrl()
     {
         return $this->url;

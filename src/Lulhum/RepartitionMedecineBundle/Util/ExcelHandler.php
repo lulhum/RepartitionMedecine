@@ -37,6 +37,7 @@ class ExcelHandler
     const TABLES = array(
         'stagesbyuser',
         'stagesbycategory',
+        'users'
     );
     
     protected $phpExcelObject;
@@ -235,6 +236,72 @@ class ExcelHandler
                                      $periodsColumn[$periodId].$periodsColumnIndexes[$periodId],
                                      $this->removeAccents($stage->getUser())
                                  );            
+        }
+        $this->phpExcelObject->setActiveSheetIndex(0);
+    }
+
+    private function users()
+    {
+        $this->phpExcelObject->getProperties()->setCreator("liuggio")
+                             ->setLastModifiedBy($this->em->getRepository('LulhumRepartitionMedecineBundle:Parameter')->findOneByName('plateformMail')->getValue())
+                             ->setTitle($this->removeAccents('Liste des utilisateurs - ').(new \DateTime())->format('d/m/Y'))
+                             ->setSubject($this->removeAccents('Liste des utilisateurs - ').(new \DateTime())->format('d/m/Y'))
+                             ->setDescription($this->removeAccents('Liste des utilisateurs - ').(new \DateTime())->format('d/m/Y'))
+                             ->setKeywords($this->removeAccents("Utilisateurs Répartition Stages Médecine"))
+                             ->setCategory($this->removeAccents("Utilisateurs Répartition Stages Médecine"));
+        $start = true;
+        $promotion = null;
+        $this->sheet = 0;        
+        foreach($this->em->getRepository('LulhumUserBundle:User')->findBy(array(), array('promotion' => 'ASC', 'lastname' => 'ASC', 'firstname' => 'ASC')) as $user) {
+            if($user->getPromotion() != $promotion || $start) {
+                $start = false;
+                $promotion = $user->getPromotion();
+                if($this->sheet > 0) {
+                    $this->phpExcelObject->createSheet();
+                }
+                $this->phpExcelObject->setActiveSheetIndex($this->sheet);
+                $this->sheet++;
+                $this->phpExcelObject->getActiveSheet()
+                                     ->setTitle($this->removeAccents($user->getTextPromotion()))
+                                     ->setCellValue('A1', $this->htmlHelper->toRichTextObject('<b>'.$this->removeAccents('Nom').'</b>'))
+                                     ->getColumnDimension('A')->setAutoSize(true);
+                $this->phpExcelObject->getActiveSheet()
+                                     ->setCellValue('B1', $this->htmlHelper->toRichTextObject('<b>'.$this->removeAccents('Prénom').'</b>'))
+                                     ->getColumnDimension('B')->setAutoSize(true);
+                $this->phpExcelObject->getActiveSheet()
+                                     ->setCellValue('C1', $this->htmlHelper->toRichTextObject('<b>'.$this->removeAccents('Mail').'</b>'))
+                                     ->getColumnDimension('C')->setAutoSize(true);
+                $this->phpExcelObject->getActiveSheet()
+                                     ->setCellValue('D1', $this->htmlHelper->toRichTextObject('<b>'.$this->removeAccents('Téléphone').'</b>'))
+                                     ->getColumnDimension('D')->setAutoSize(true);
+                $this->phpExcelObject->getActiveSheet()
+                                     ->setCellValue('E1', $this->htmlHelper->toRichTextObject('<b>'.$this->removeAccents('N. Étudiant').'</b>'))
+                                     ->getColumnDimension('E')->setAutoSize(true);
+                $this->phpExcelObject->getActiveSheet()
+                                     ->setCellValue('F1', $this->htmlHelper->toRichTextObject('<b>'.$this->removeAccents('Groupe').'</b>'))
+                                     ->getColumnDimension('F')->setAutoSize(true);
+                $this->phpExcelObject->getActiveSheet()
+                                     ->setCellValue('G1', $this->htmlHelper->toRichTextObject('<b>'.$this->removeAccents('Présent').'</b>'))
+                                     ->getColumnDimension('G')->setAutoSize(true);
+                $this->phpExcelObject->getActiveSheet()
+                                     ->setCellValue('H1', $this->htmlHelper->toRichTextObject('<b>'.$this->removeAccents('Internet').'</b>'))
+                                     ->getColumnDimension('H')->setAutoSize(true);
+                $this->phpExcelObject->getActiveSheet()
+                                     ->setCellValue('I1', $this->htmlHelper->toRichTextObject('<b>'.$this->removeAccents('Procuration').'</b>'))
+                                     ->getColumnDimension('I')->setAutoSize(true);
+                $i = 1;
+            }
+            $i++;
+            $this->phpExcelObject->getActiveSheet()
+                                 ->setCellValue('A'.$i, $this->removeAccents($user->getLastname()))
+                                 ->setCellValue('B'.$i, $this->removeAccents($user->getFirstname()))
+                                 ->setCellValue('C'.$i, $this->removeAccents($user->getEmail()))
+                                 ->setCellValue('D'.$i, $this->removeAccents($user->getPhone()))
+                                 ->setCellValue('E'.$i, $this->removeAccents($user->getStudentId()))
+                                 ->setCellValue('F'.$i, $this->removeAccents($user->getTextRepartitionGroup()))
+                                 ->setCellValue('G'.$i, $this->removeAccents($user->getPresent()))
+                                 ->setCellValue('H'.$i, $this->removeAccents($user->getInternetAccess()))
+                                 ->setCellValue('I'.$i, $this->removeAccents($user->getTextProxy()));            
         }
         $this->phpExcelObject->setActiveSheetIndex(0);
     }

@@ -11,9 +11,21 @@
 {% endblock %}
 
 {% block body %}
-	{{ form_start(form) }}
+	{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
 	{{ include('LulhumUserBundle:Admin:user_type.html.twig') }}
 	<button class="btn btn-success" type="submit" >Modifier</button>
 	{{ form_rest(form) }}
 	{{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	{% javascripts '@LulhumRepartitionMedecineBundle/Resources/public/js/search-select-popover.js' %}
+	<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+	<script type="text/javascript">
+	$(document).ready(function() {
+		activateSearchSelectPopover();
+	});
+	</script>
 {% endblock %}

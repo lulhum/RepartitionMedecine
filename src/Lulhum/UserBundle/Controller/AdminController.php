@@ -5,9 +5,11 @@ namespace Lulhum\UserBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Lulhum\RepartitionMedecineBundle\Form\GroupActionType;
+use Lulhum\RepartitionMedecineBundle\Util\ExcelHandler;
 use Lulhum\RepartitionMedecineBundle\Util\Paginator;
 use Lulhum\UserBundle\Form\GroupMailType;
 use Lulhum\UserBundle\Form\UserFilterType;
@@ -260,6 +262,50 @@ class AdminController extends Controller
         return $this->render('LulhumUserBundle:Admin:groupmail.html.twig', array(
             'form' => $form->createView(),
         ));
+    }
+
+    public function exportAction($ext = 'xlsx', $page = null)
+    {
+        $excelHandler = new ExcelHandler(
+            $this->getDoctrine()->getManager(),
+            $this->get('phpexcel')->createPHPExcelObject(),
+            $this->get('phpexcel')->createHelperHTML(),
+            'users',
+            $ext
+        );
+        
+        $excelHandler->create();
+        $excelHandler->setPage($page);
+        $writer = $this->get('phpexcel')->createWriter($excelHandler->getPhpExcelObject(), $excelHandler->getWriter());
+        if(is_null($page)) {
+            if($excelHandler->supportSheets()) {
+                if($excelHandler->writeAllSheets()) {
+                    $writer->writeAllSheets();
+                }
+            }
+            else {
+                $sheets = $excelHandler->getPhpExcelObject()->getSheetCount();
+                for($i = 0; $i < $sheets; $i++) {
+                    $excelHandler->getPhpExcelObject()->setActiveSheetIndex($i);
+                    $writer->setSheetIndex($i);
+                    if($i < $excelHandler->getPhpExcelObject()->getSheetCount() -1) {
+                        $writer->save('php://output');
+                    }
+                }
+            }
+        }
+        
+        $response = $this->get('phpexcel')->createStreamedResponse($writer);
+        $dispositionHeader = $response->headers->makeDisposition(
+            ResponseHeaderBag::DISPOSITION_ATTACHMENT,
+            $excelHandler->getFilename()
+        );
+        $response->headers->set('Content-Type', $excelHandler->getContentType());
+        $response->headers->set('Pragma', 'public');
+        $response->headers->set('Cache-Control', 'maxage=1');
+        $response->headers->set('Content-Disposition', $dispositionHeader);
+
+        return $response;  
     }
 
 }

@@ -1,32 +1,32 @@
-<div class="form-group row" >
+<div class="form-group" >
 	{{ form_label(form.lastname, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
 	{{ form_errors(form.lastname) }}
 	<div class="col-md-10" >
 		{{ form_widget(form.lastname, {'attr': {'class': 'form-control'}}) }}
 	</div>
 </div>
-<div class="form-group row" >
+<div class="form-group" >
 	{{ form_label(form.firstname, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
 	{{ form_errors(form.firstname) }}
 	<div class="col-md-10" >
 		{{ form_widget(form.firstname, {'attr': {'class': 'form-control'}}) }}
 	</div>
 </div>
-<div class="form-group row" >
+<div class="form-group" >
 	{{ form_label(form.email, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
 	{{ form_errors(form.email) }}
 	<div class="col-md-10" >
 		{{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
 	</div>
 </div>
-<div class="form-group row" >
+<div class="form-group" >
 	{{ form_label(form.studentId, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
 	{{ form_errors(form.studentId) }}
 	<div class="col-md-10" >
 		{{ form_widget(form.studentId, {'attr': {'class': 'form-control'}}) }}
 	</div>
 </div>
-<div class="form-group row" >
+<div class="form-group" >
 	{{ form_label(form.phone, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
 	{{ form_errors(form.phone) }}
 	<div class="col-md-10" >
@@ -34,7 +34,7 @@
 	</div>
 </div>
 {% if form.promotion is defined %}
-	<div class="form-group row" >
+	<div class="form-group" >
 		{{ form_label(form.promotion, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
 		{{ form_errors(form.promotion) }}
 		<div class="col-md-10" >
@@ -43,7 +43,7 @@
 	</div>
 {% endif %}
 {% if form.repartitionGroup is defined %}
-	<div class="form-group row" >
+	<div class="form-group" >
 		{{ form_label(form.repartitionGroup, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
 		{{ form_errors(form.repartitionGroup) }}
 		<div class="col-md-10" >
@@ -52,7 +52,7 @@
 	</div>
 {% endif %}
 {% if form.repartitionGroupForce is defined %}
-	<div class="form-group row" >
+	<div class="form-group" >
 		{{ form_label(form.repartitionGroupForce, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
 		{{ form_errors(form.repartitionGroupForce) }}
 		<div class="col-md-10" >
@@ -62,30 +62,44 @@
 		</div>
 	</div>
 {% endif %}
-<div class="form-group row" >
+<div class="form-group" >
 	{{ form_label(form.present, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
 	{{ form_errors(form.present) }}
 	<div class="col-md-10" >
 		{{ form_widget(form.present, {'attr': {'class': 'form-control'}}) }}
 	</div>
 </div>
-<div class="form-group row" >
+<div class="form-group" >
 	{{ form_label(form.internetAccess, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
 	{{ form_errors(form.internetAccess) }}
 	<div class="col-md-10" >
 		{{ form_widget(form.internetAccess, {'attr': {'class': 'form-control'}}) }}
 	</div>
 </div>
-<div class="form-group row" >
+<div class="form-group" >
 	{{ form_label(form.proxy, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
 	{{ form_errors(form.proxy) }}
 	<div class="col-md-10" >
-		{{ form_widget(form.proxy, {'attr': {'class': 'form-control'}}) }}
+		<div class="input-group" >
+			{{ form_widget(form.proxy, {'attr': {'class': 'form-control'}}) }}
+			<span class="input-group-btn" >
+				<button class="btn btn-default"
+					type="button"
+					id="lulhum-user-search" 
+					data-container="body"
+					data-toggle="popover"
+					data-placement="left"
+					data-title="Rechercher un utilisateur"
+					data-html="true" >
+					<span class="glyphicon glyphicon-search" ></span>
+				</button>
+			</span>
+		</div>
 	</div>
 </div>
 {% if form.plainPassword is defined %}
 	{% for passwordField in form.plainPassword %}
-		<div class="form-group row" >
+		<div class="form-group" >
 			{{ form_label(passwordField, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
 			{{ form_errors(passwordField) }}
 			<div class="col-md-10" >

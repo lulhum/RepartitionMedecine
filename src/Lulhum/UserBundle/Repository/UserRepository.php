@@ -39,10 +39,10 @@ class UserRepository extends EntityRepository
         $queryBuilder = $this->createQueryBuilder('u');
         if(count($filter->getPromotions()) > 0) {
             $queryBuilder->andWhere('u.promotion IN(:promotions)')
-                         ->setParameter('promotion', $filter->getPromotions());
+                         ->setParameter('promotions', $filter->getPromotions());
         }
         if(!is_null($filter->getGroup())) {
-            $querBuilder->andWhere('u.repartitionGroup = :group')
+            $queryBuilder->andWhere('u.repartitionGroup = :group')
                         ->setParameter('group', $filter->getGroup());
         }
         $queryBuilder->addOrderBy('u.lastname')

@@ -20,6 +20,7 @@
 							{% for u in userListGroup %}
 								<tr>
 									{% if admin %}
+										<td>{{ loop.index }}</td>
 										{% if key == 'B' %}
 											<td>
 												<a href="{{ path('lulhum_repartitionmedecine_admin_repartitiongroup_switchuser', {'id': u.id}) }}">

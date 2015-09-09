@@ -116,6 +116,16 @@ class User extends BaseUser
         return $this->repartitionGroup;
     }
 
+    public function getTextRepartitionGroup()
+    {
+	if(is_null($this->repartitionGroup)) {
+
+	    return 'Indéfini';
+	}
+
+        return $this->repartitionGroup;
+    }
+
     public function getRepartitionGroupRequestedAt()
     {
         return $this->repartitionGroupRequestedAt;
@@ -254,6 +264,16 @@ class User extends BaseUser
     public function getProxy()
     {
         return $this->proxy;
+    }
+
+    public function getTextProxy()
+    {
+	if(is_null($this->proxy)) {
+
+	    return 'Non Renseigné';
+	}
+
+        return $this->proxy->getFullname();
     }
 
     public function setEmail($email)

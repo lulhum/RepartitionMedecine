@@ -119,6 +119,7 @@
 {% endblock %}
 
 {% block groupactionlisthead %}
+	<th></th>
 	<th>Utilisateur</th>
 	<th>Période</th>
 	<th>Proposition</th>
@@ -128,6 +129,7 @@
 {% endblock %}
 
 {% block groupactionlistbody %}
+	<td>{{ pagination.index(loop.index) }}</td>
 	<td>{{ stages[loop.index0].user.fullname }}</td>
 	<td>{{ stages[loop.index0].proposal.period }}</td>
 	<td>

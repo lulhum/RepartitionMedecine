@@ -217,7 +217,7 @@ class AdminController extends Controller
         ));
     }
 
-    public function exportAction($table, $ext = 'xls', $page = null)
+    public function exportAction($table, $ext = 'xlsx', $page = null)
     {
         $excelHandler = new ExcelHandler(
             $this->getDoctrine()->getManager(),

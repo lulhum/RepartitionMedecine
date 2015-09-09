@@ -6,17 +6,14 @@ namespace Lulhum\UserBundle\Form;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\DependencyInjection\Container;
 
 class ProfileType extends AbstractType
 {
     private $class;
-    private $container;
 
-    public function __construct($class, Container $container)
+    public function __construct($class)
     {
         $this->class = $class;
-        $this->container = $container;
     }
     
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -39,7 +36,12 @@ class ProfileType extends AbstractType
                 'label' => 'Personne de confiance ayant procuration en cas d\'absence',
                 'empty_value' => 'Pas de procuration',
                 'required' => false,
-                'class' => 'LulhumUserBundle:User'             
+                'class' => 'LulhumUserBundle:User',
+                'query_builder' => function($repository) {
+                    return $repository->createQueryBuilder('u')
+                                      ->addOrderBy('u.lastname')
+                                      ->addOrderBy('u.firstname');
+                }
             ))
             ;
     }

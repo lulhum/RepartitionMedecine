@@ -44,7 +44,12 @@ class RegistrationType extends AbstractType
                 'label' => 'Personne de confiance ayant procuration en cas d\'absence',
                 'empty_value' => 'Pas de procuration',
                 'required' => false,
-                'class' => 'LulhumUserBundle:User'             
+                'class' => 'LulhumUserBundle:User',
+                'query_builder' => function($repository) {
+                    return $repository->createQueryBuilder('u')
+                                      ->addOrderBy('u.lastname')
+                                      ->addOrderBy('u.firstname');
+                }
             ))
             ->add('plainPassword', 'repeated', array(
                 'type' => 'password',

@@ -46,7 +46,38 @@
 		<div class="form-group" >
 			<a class="btn btn-success" href="{{ path('lulhum_user_admin_user_add') }}" >Nouvel Utilisateur</a>
 		</div>
-	</div>
+		<div class="btn-group">
+			<a class="btn btn-default" href="{{ path('lulhum_user_admin_export', {'ext': 'xlsx'}) }}" data-export="table" >
+				<span class="glyphicon glyphicon-export" ></span>
+			</a>
+			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-export="toggle" aria-haspopup="true" aria-expanded="false">
+				<span class="caret"></span>
+				<span class="sr-only">Toggle Dropdown</span>
+			</button>
+			<ul class="dropdown-menu">
+				<li class="active" >
+					<a data-export="format" data-format="xlsx">
+						xlsx
+					</a>
+				</li>
+				<li>
+					<a data-export="format" data-format="xls">
+						xls
+					</a>
+				</li>
+				<li>
+					<a data-export="format" data-format="csv">
+						csv
+					</a>
+				</li>
+				<li>
+					<a data-export="format" data-format="html">
+						html
+					</a>
+				</li>
+			</ul>
+		</div>
+	</div>	
 	{{ form_rest(filterForm) }}
 	{{ form_end(filterForm) }}
 {% endblock %}
@@ -125,4 +156,25 @@
 		</span>
 		Supprimer l'utilisateur
 	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script type="text/javascript" >
+	$(document).ready(function() {
+		$('[data-export="format"]').click(function(e) {
+			var ext = $(this).attr('data-format');
+			$('[data-export="format"]').each(function() {
+				$(this).parent().attr('class', '');
+			});
+			$(this).parent().attr('class', 'active');
+			$('[data-export="table"]').each(function() {
+				$(this).attr('href', $(this).attr('href').replace(/\.[a-z]+$/, '.'+ext));
+			});
+			$(this).parents('div.btn-group').children('[data-export="toggle"').dropdown('toggle');
+			e.preventDefault();
+			return false;			
+		});
+	});
+	</script>
 {% endblock %}

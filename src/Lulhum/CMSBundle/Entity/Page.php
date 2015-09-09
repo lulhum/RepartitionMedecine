@@ -24,7 +24,13 @@ class Page
             'markup' => '[[fb:facebook]]',
             'pattern' => '/\[\[fb:([[:graph:]]*)\]\]/',
             'html' =>'<div class="fb-root" >$1</div>',
-        )
+        ),
+        'youtube' => array(
+            'description' => 'Intégration de vidéos Youtube',
+            'markup' => '[[yt:youtubeid]]',
+            'pattern' => '/\[\[yt:([[:graph:]]*)\]\]/',
+            'html' => '<div class="youtube-embed">$1</div>',
+        ),
     );
     /**
      * @var integer

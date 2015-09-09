@@ -27,25 +27,38 @@
 	<script type="text/javascript" >
 	$(document).ready(function() {
 		var $fbPlugins = $('div.fb-root');
-		if($fbPlugins.length == 0) return;
-		var prototype = '<div class="fb-page" data-href="https://www.facebook.com/__fblink__" data-tabs="timeline" data-width="500px" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><div class="fb-xfbml-parse-ignore"><blockquote cite="https://www.facebook.com/__fblink__"><a href="https://www.facebook.com/__fblink__">Facebook</a></blockquote></div></div>';
-		$fbPlugins.first().attr('id', 'fb-root');
-		$fbPlugins.each(function () {
-			var $pluginAnchor = $(this);
-			var link = $pluginAnchor.html();
-			$pluginAnchor.html('');
-			var $plugin = $(prototype.replace(/__fblink__/g, link));
-			$pluginAnchor.after($plugin);
-		});		
-		
-		(function(d, s, id) {
-			var js, fjs = d.getElementsByTagName(s)[0];
-			if (d.getElementById(id)) return;
-			js = d.createElement(s);
-			js.id = id;
-			js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.4";
-			fjs.parentNode.insertBefore(js, fjs);
-		} (document, 'script', 'facebook-jssdk'));
+		if($fbPlugins.length != 0) {
+			var prototype = '<div class="fb-page" data-href="https://www.facebook.com/__fblink__" data-tabs="timeline" data-width="500px" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true"><div class="fb-xfbml-parse-ignore"><blockquote cite="https://www.facebook.com/__fblink__"><a href="https://www.facebook.com/__fblink__">Facebook</a></blockquote></div></div>';
+			$fbPlugins.first().attr('id', 'fb-root');
+			$fbPlugins.each(function () {
+				var $pluginAnchor = $(this);
+				var link = $pluginAnchor.html();
+				$pluginAnchor.html('');
+				var $plugin = $(prototype.replace(/__fblink__/g, link));
+				$pluginAnchor.after($plugin);
+			});		
+			
+			(function(d, s, id) {
+				var js, fjs = d.getElementsByTagName(s)[0];
+				if (d.getElementById(id)) return;
+				js = d.createElement(s);
+				js.id = id;
+				js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.4";
+				fjs.parentNode.insertBefore(js, fjs);
+			} (document, 'script', 'facebook-jssdk'));
+		}
+
+		var $ytPlugins = $('div.youtube-embed');
+		if($ytPlugins.length != 0) {
+			var prototype = '<iframe width="560" height="315" src="https://www.youtube.com/embed/__youtubeid__?rel=0" frameborder="0" allowfullscreen></iframe>';
+			$ytPlugins.each(function () {
+				var $pluginAnchor = $(this);
+				var link = $pluginAnchor.html();
+				$pluginAnchor.html('');
+				var $plugin = $(prototype.replace(/__youtubeid__/g, link));
+				$pluginAnchor.append($plugin);
+			});
+		}
 	});	
 	</script>
 {% endblock %}
