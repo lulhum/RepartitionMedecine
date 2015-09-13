@@ -28,7 +28,7 @@ class Page
         'youtube' => array(
             'description' => 'Intégration de vidéos Youtube',
             'markup' => '[[yt:youtubeid]]',
-            'pattern' => '/\[\[yt:([[:graph:]]*)\]\]/',
+            'pattern' => '/\[\[yt:([[:alnum:]]*)\]\]/',
             'html' => '<div class="youtube-embed">$1</div>',
         ),
     );

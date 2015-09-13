@@ -17,3 +17,14 @@
 div.panel-danger div.panel-footer {
     background-color: #f2dede;
 }
+.select2-selection--multiple {
+    height: 70px;
+    overflow-y: auto;
+}
+.select2-container .select2-selection--single {
+    height: 70px;
+}
+.filter-select2 {
+    padding: 0 10px 0 10px;
+}
+.select2-container--default .select2-selection--multiple:before {content: ' ';display: block;position: absolute;border-color: #888 transparent transparent transparent;border-style: solid;border-width: 5px 4px 0 4px;height: 0;right: 6px;margin-left: -4px;margin-top: -2px;top: 50%;width: 0;cursor: pointer}

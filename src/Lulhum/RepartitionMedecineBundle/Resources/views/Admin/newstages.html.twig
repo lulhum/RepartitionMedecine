@@ -1,0 +1,52 @@
+{# src/Lulhum/RepartitionMedecineBundle/Resources/views/Admin/newstages.html.twig #}
+
+{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+
+{% block title %}
+Stage - {{ parent() }}
+{% endblock %}
+
+{% block stylesheets %}	
+	{% stylesheets '@select2_css' %}
+	<link rel="stylesheet" type="text/css" media="screen" href="{{ asset_url }}"/>
+        {% endstylesheets %}
+	{{ parent() }}
+{% endblock %}
+
+{% block bodytitle %}
+	<h3>Stage</h3>
+{% endblock %}
+
+{% block nobody %}
+	{{ form_start(form, {'attr': {'class': 'form-horizontal'}}) }}
+	<div class="panel-body" >
+		<div class="form-group" >
+			{{ form_label(form.user, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+			{{ form_errors(form.user) }}
+			{{ form_widget(form.user, {'attr': {'class': 'form-control select2'}}) }}				
+		</div>
+		<div class="form-group" >
+			{{ form_label(form.proposals, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
+			{{ form_errors(form.proposals) }}
+			{{ form_widget(form.proposals, {'attr': {'class': 'form-control select2-multiple'}}) }}
+		</div>
+	</div>
+	<div class="panel-footer" >
+		<button type="submit" class="btn btn-success" >Valider</button>
+	</div>		
+	{{ form_rest(form) }}
+	{{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	{% javascripts '@select2_js'%}
+	<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+	<script type="text/javascript" >
+	$(document).ready(function() {		
+		$('select.select2-multiple').select2();
+		$('select.select2').select2();
+	});
+	</script>
+{% endblock %}

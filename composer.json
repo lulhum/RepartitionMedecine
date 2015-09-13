@@ -20,6 +20,30 @@
                     "type": "git",
                     "reference": "master"
 		}
+            }	    
+	},
+	{
+	    "type": "package",
+	    "package": {
+		"name": "t0m/select2-bootstrap-css",
+		"version": "1.2.5",
+		"source": {
+                    "url": "https://github.com/t0m/select2-bootstrap-css.git",
+                    "type": "git",
+                    "reference": "master"
+		}
+            }
+	},
+	{
+	    "type": "package",
+	    "package": {
+		"name": "select2/select2",
+		"version": "3.5.4",
+		"source": {
+                    "url": "https://github.com/select2/select2.git",
+                    "type": "git",
+                    "reference": "master"
+		}
             }
 	}
     ],
@@ -42,7 +66,9 @@
 	"twbs/bootstrap": "3.*",	
 	"voog/wysihtml": "@dev",
 	"eonasdan/bootstrap-datetimepicker": "~4.15",
-	"exercise/htmlpurifier-bundle": "~0.2"
+	"exercise/htmlpurifier-bundle": "~0.2",
+	"t0m/select2-bootstrap-css": "~1.2",
+	"select2/select2": "~3.5"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3",

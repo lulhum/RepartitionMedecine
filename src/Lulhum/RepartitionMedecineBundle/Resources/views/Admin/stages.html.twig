@@ -6,67 +6,82 @@
 	Stages - {{ parent() }}
 {% endblock %}
 
+{% block stylesheets %}	
+	{% stylesheets '@select2_css' %}
+	<link rel="stylesheet" type="text/css" media="screen" href="{{ asset_url }}"/>
+        {% endstylesheets %}
+	{{ parent() }}
+{% endblock %}
+
 {% block bodytitle %}
 	<h3>Gestion des stages</h3>
 	<hr/>
-	{{ form_start(filterForm, {'attr': {'class': 'form-inline'}}) }}
+	{{ form_start(filterForm, {'attr': {'class': 'form-horizontal'}}) }}
 	{{ form_errors(filterForm) }}
-	<div class="form-group" >
-		{{ form_label(filterForm.stageProposals, null, {'label_attr': {'class': 'control-label'}}) }}
-		<br/>
-		{{ form_errors(filterForm.stageProposals) }}
-		{{ form_widget(filterForm.stageProposals, {'attr': {'class': 'form-control', 'size': '2'}}) }}
-	</div>
-	<div class="form-group" >
-		{{ form_label(filterForm.periods, null, {'label_attr': {'class': 'control-label'}}) }}
-		<br/>
-		{{ form_errors(filterForm.periods) }}
-		{{ form_widget(filterForm.periods, {'attr': {'class': 'form-control', 'size': '2'}}) }}
-	</div>
-	<div class="form-group" >
-		{{ form_label(filterForm.categoriesOr, null, {'label_attr': {'class': 'control-label'}}) }}
-		<br/>
-		{{ form_errors(filterForm.categoriesOr) }}
-		{{ form_widget(filterForm.categoriesOr, {'attr': {'class': 'form-control', 'size': '2'}}) }}
-	</div>
-	<div class="form-group" >
-		{{ form_label(filterForm.categoriesAnd, null, {'label_attr': {'class': 'control-label'}}) }}
-		<br/>
-		{{ form_errors(filterForm.categoriesAnd) }}
-		{{ form_widget(filterForm.categoriesAnd, {'attr': {'class': 'form-control', 'size': '2'}}) }}
-	</div>
-	<div class="form-group" >
-		{{ form_label(filterForm.promotions, null, {'label_attr': {'class': 'control-label'}}) }}
-		<br/>
-		{{ form_errors(filterForm.promotions) }}
-		{{ form_widget(filterForm.promotions, {'attr': {'class': 'form-control', 'size': '2'}}) }}
-	</div>
-	<div class="form-group" >
-		{{ form_label(filterForm.group, null, {'label_attr': {'class': 'control-label'}}) }}
-		<br/>
-		{{ form_errors(filterForm.group) }}
-		{{ form_widget(filterForm.group, {'attr': {'class': 'form-control', 'size': '2'}}) }}
-	</div>
-	<div class="form-group" >
-		{{ form_label(filterForm.locked, null, {'label_attr': {'class': 'control-label'}}) }}
-		<br/>
-		{{ form_errors(filterForm.locked) }}
-		{{ form_widget(filterForm.locked, {'attr': {'class': 'form-control', 'size': '2'}}) }}
-	</div>
-	<br/>
-	<div style="margin-top:10px" >
-		<div class="form-group" >
-			{{ form_widget(filterForm.filtrer, {'attr': {'class': 'btn btn-primary' }}) }}
+	<div class="row" >
+		<div class="col-md-3" >
+			<div class="form-group filter-select2" >
+				{{ form_label(filterForm.stageCategories, null, {'label_attr': {'class': 'control-label'}}) }}
+				{{ form_errors(filterForm.stageCategories) }}
+				{{ form_widget(filterForm.stageCategories, {'attr': {'class': 'form-control input-sm select2-multiple'}}) }}
+			</div>
 		</div>
-		<div class="form-group" >				
-			<a class="btn btn-primary" href="{{ path('lulhum_repartitionmedecine_admin_stage_stages_resetfilter') }}">Filtre par défaut</a>
+		<div class="col-md-3" >
+			<div class="form-group filter-select2" >
+				{{ form_label(filterForm.periods, null, {'label_attr': {'class': 'control-label'}}) }}
+				{{ form_errors(filterForm.periods) }}
+				{{ form_widget(filterForm.periods, {'attr': {'class': 'form-control input-sm select2-multiple'}}) }}
+			</div>
 		</div>
-		<div class="form-group" >				
-			<a class="btn btn-primary" href="{{ path('lulhum_repartitionmedecine_admin_stage_stages_nofilter') }}">Aucun filtre</a>
-		</div>	
-		<div class="form-group" >				
-			<a class="btn btn-success" href="{{ path('lulhum_repartitionmedecine_admin_stage_stages_new') }}">Nouveau Stage</a>
+		<div class="col-md-3" >
+			<div class="form-group filter-select2" >
+				{{ form_label(filterForm.categoriesOr, null, {'label_attr': {'class': 'control-label'}}) }}
+				{{ form_errors(filterForm.categoriesOr) }}
+				{{ form_widget(filterForm.categoriesOr, {'attr': {'class': 'form-control input-sm select2-multiple'}}) }}
+			</div>
 		</div>
+		<div class="col-md-3" >
+			<div class="form-group filter-select2" >
+				{{ form_label(filterForm.categoriesAnd, null, {'label_attr': {'class': 'control-label'}}) }}
+				{{ form_errors(filterForm.categoriesAnd) }}
+				{{ form_widget(filterForm.categoriesAnd, {'attr': {'class': 'form-control input-sm select2-multiple'}}) }}
+			</div>
+		</div>
+		<div class="col-md-3" >
+			<div class="form-group filter-select2" >
+				{{ form_label(filterForm.promotions, null, {'label_attr': {'class': 'control-label'}}) }}
+				{{ form_errors(filterForm.promotions) }}
+				{{ form_widget(filterForm.promotions, {'attr': {'class': 'form-control input-sm select2-multiple'}}) }}
+			</div>
+		</div>
+		<div class="col-md-3" >
+			<div class="form-group filter-select2" >
+				{{ form_label(filterForm.group, null, {'label_attr': {'class': 'control-label'}}) }}
+				{{ form_errors(filterForm.group) }}
+				{{ form_widget(filterForm.group, {'attr': {'class': 'form-control input-sm select2'}}) }}
+			</div>
+		</div>
+		<div class="col-md-3" >
+			<div class="form-group filter-select2" >
+				{{ form_label(filterForm.locked, null, {'label_attr': {'class': 'control-label'}}) }}
+				{{ form_errors(filterForm.locked) }}
+				{{ form_widget(filterForm.locked, {'attr': {'class': 'form-control input-sm select2'}}) }}
+			</div>
+		</div>
+		<div class="col-md-3" >
+			<div class="form-group filter-select2" >
+				{{ form_label(filterForm.users, null, {'label_attr': {'class': 'control-label'}}) }}
+				{{ form_errors(filterForm.users) }}
+				{{ form_widget(filterForm.users, {'attr': {'class': 'form-control input-sm select2-multiple'}}) }}
+			</div>
+		</div>
+	</div>
+	<div class="form-inline" >
+		{{ form_widget(filterForm.filtrer, {'attr': {'class': 'btn btn-primary' }}) }}				
+		<a class="btn btn-primary" href="{{ path('lulhum_repartitionmedecine_admin_stage_stages_resetfilter') }}">Filtre par défaut</a>				
+		<a class="btn btn-primary" href="{{ path('lulhum_repartitionmedecine_admin_stage_stages_nofilter') }}">Aucun filtre</a>			
+		<a class="btn btn-success" href="{{ path('lulhum_repartitionmedecine_admin_stage_stages_new') }}">Nouveau Stage</a>
+		<a class="btn btn-success" href="{{ path('lulhum_repartitionmedecine_admin_stage_stages_news') }}">Nouveaux Stages</a>
 		<div class="btn-group">
 			<div class="btn-group">
 				<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -179,6 +194,9 @@
 
 {% block javascripts %}
 	{{ parent() }}
+	{% javascripts '@select2_js'%}
+	<script type="text/javascript" src="{{ asset_url }}"></script>
+	{% endjavascripts %}
 	<script type="text/javascript" >
 	$(document).ready(function() {
 		$('[data-export="format"]').click(function(e) {
@@ -194,6 +212,9 @@
 			e.preventDefault();
 			return false;			
 		});
+
+		$('select.select2-multiple').select2();
+		$('select.select2').select2();
 	});
 	</script>
 {% endblock %}

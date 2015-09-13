@@ -101,6 +101,24 @@
 									data-showed="false"
 									style="overflow:hidden;text-overflow:ellipsis;" >
 									{{ p.category }}
+									{% set taked = p.stages.count %}
+									{% if p.hasRequirementType('maxPlaces') %}
+										{% set max = p.getRequirementsByType('maxPlaces').first.params %}
+										{% if taked > max %}
+											{% set labelMode = 'danger' %}
+										{% elseif taked == max %}
+											{% set labelMode = 'warning' %}
+										{% else %}
+											{% set labelMode = 'success' %}
+										{% endif %}
+										<span class="label label-{{ labelMode }}" style="display:inline-block;position:absolute;right:0" >
+											{{ taked  }}/{{ max }}
+										</span>
+									{% else %}
+										<span class="label label-success" style="display:inline-block;position:absolute;right:0">
+											{{ taked }}/&infin;
+										</span>
+									{% endif %}
 								</button>
 							{% endif %}
 						</td>

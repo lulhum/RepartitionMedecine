@@ -18,9 +18,9 @@ class StageFilterType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {        
         $builder
-            ->add('stageProposals', 'entity', array(
+            ->add('stageCategories', 'entity', array(
                 'label' => 'Modèles',
-                'class' => 'LulhumRepartitionMedecineBundle:StageProposal',
+                'class' => 'LulhumRepartitionMedecineBundle:StageCategory',
                 'multiple' => true,
                 'required' => false,
             ))
@@ -59,6 +59,17 @@ class StageFilterType extends AbstractType
                 'label' => 'Accepté',
                 'required' => false,
                 'empty_value' => 'Indifférent',
+            ))
+            ->add('users', 'entity', array(
+                'label' => 'Utilisateurs',
+                'class' => 'LulhumUserBundle:User',
+                'query_builder' => function($repository) {
+                    return $repository->createQueryBuilder('u')
+                                      ->addOrderBy('u.lastname')
+                                      ->addOrderBy('u.firstname');
+                },
+                'multiple' => true,
+                'required' => false,
             ))
             ->add('filtrer', 'submit');
     }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "94240c69d0d1fb0e8333609b187adc49",
+    "hash": "ae8d8ceb90193f53c1564d5d3657d8ea",
     "packages": [
         {
             "name": "components/jquery",
@@ -792,17 +792,16 @@
         },
         {
             "name": "exercise/htmlpurifier-bundle",
-            "version": "v0.2.1",
-            "target-dir": "Exercise/HTMLPurifierBundle",
+            "version": "v0.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Exercise/HTMLPurifierBundle.git",
-                "reference": "9e059322d259ebdf47d113eaef565f57a9320904"
+                "reference": "b158c87be426c2e675fb3f0e916e3c39a5244955"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Exercise/HTMLPurifierBundle/zipball/9e059322d259ebdf47d113eaef565f57a9320904",
-                "reference": "9e059322d259ebdf47d113eaef565f57a9320904",
+                "url": "https://api.github.com/repos/Exercise/HTMLPurifierBundle/zipball/b158c87be426c2e675fb3f0e916e3c39a5244955",
+                "reference": "b158c87be426c2e675fb3f0e916e3c39a5244955",
                 "shasum": ""
             },
             "require": {
@@ -821,8 +820,8 @@
                 }
             },
             "autoload": {
-                "psr-0": {
-                    "Exercise\\HTMLPurifierBundle": ""
+                "psr-4": {
+                    "Exercise\\HTMLPurifierBundle\\": ""
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -840,7 +839,7 @@
             "keywords": [
                 "htmlpurifier"
             ],
-            "time": "2015-08-19 13:36:46"
+            "time": "2015-08-28 17:17:25"
         },
         {
             "name": "ezyang/htmlpurifier",
@@ -892,12 +891,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/FriendsOfSymfony/FOSUserBundle.git",
-                "reference": "5bc36484f70c9e8e41e4135407a2efbec3500eca"
+                "reference": "6b7bb04c6d507bb5356bf70b2d1bc30ce64ffc60"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/5bc36484f70c9e8e41e4135407a2efbec3500eca",
-                "reference": "5bc36484f70c9e8e41e4135407a2efbec3500eca",
+                "url": "https://api.github.com/repos/FriendsOfSymfony/FOSUserBundle/zipball/6b7bb04c6d507bb5356bf70b2d1bc30ce64ffc60",
+                "reference": "6b7bb04c6d507bb5356bf70b2d1bc30ce64ffc60",
                 "shasum": ""
             },
             "require": {
@@ -951,7 +950,7 @@
             "keywords": [
                 "User management"
             ],
-            "time": "2015-09-04 07:24:39"
+            "time": "2015-09-07 08:53:52"
         },
         {
             "name": "incenteev/composer-parameter-handler",
@@ -1470,6 +1469,16 @@
             "time": "2015-08-10 12:35:38"
         },
         {
+            "name": "select2/select2",
+            "version": "3.5.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/select2/select2.git",
+                "reference": "master"
+            },
+            "type": "library"
+        },
+        {
             "name": "sensio/distribution-bundle",
             "version": "v4.0.1",
             "target-dir": "Sensio/Bundle/DistributionBundle",
@@ -1869,23 +1878,23 @@
         },
         {
             "name": "symfony/symfony",
-            "version": "v2.7.3",
+            "version": "v2.7.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/symfony.git",
-                "reference": "a9af4708b4bb650c4897e9b8dfbfbdb2ea5f0486"
+                "reference": "1fdf23fe28876844b887b0e1935c9adda43ee645"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/symfony/zipball/a9af4708b4bb650c4897e9b8dfbfbdb2ea5f0486",
-                "reference": "a9af4708b4bb650c4897e9b8dfbfbdb2ea5f0486",
+                "url": "https://api.github.com/repos/symfony/symfony/zipball/1fdf23fe28876844b887b0e1935c9adda43ee645",
+                "reference": "1fdf23fe28876844b887b0e1935c9adda43ee645",
                 "shasum": ""
             },
             "require": {
                 "doctrine/common": "~2.3",
                 "php": ">=5.3.9",
                 "psr/log": "~1.0",
-                "twig/twig": "~1.18"
+                "twig/twig": "~1.20|~2.0"
             },
             "replace": {
                 "symfony/asset": "self.version",
@@ -1987,7 +1996,17 @@
             "keywords": [
                 "framework"
             ],
-            "time": "2015-07-31 13:24:45"
+            "time": "2015-09-08 14:26:39"
+        },
+        {
+            "name": "t0m/select2-bootstrap-css",
+            "version": "1.2.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/t0m/select2-bootstrap-css.git",
+                "reference": "master"
+            },
+            "type": "library"
         },
         {
             "name": "twbs/bootstrap",
@@ -2094,16 +2113,16 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.21.1",
+            "version": "v1.21.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "ca8d3aa90b6a01c82e07909fe815d6b443e75a23"
+                "reference": "ddce1136beb8db29b9cd7dffa8ab518b978c9db3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/ca8d3aa90b6a01c82e07909fe815d6b443e75a23",
-                "reference": "ca8d3aa90b6a01c82e07909fe815d6b443e75a23",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/ddce1136beb8db29b9cd7dffa8ab518b978c9db3",
+                "reference": "ddce1136beb8db29b9cd7dffa8ab518b978c9db3",
                 "shasum": ""
             },
             "require": {
@@ -2151,7 +2170,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2015-08-26 08:58:31"
+            "time": "2015-09-09 05:28:51"
         },
         {
             "name": "voog/wysihtml",

@@ -18,13 +18,19 @@ class StageRepository extends EntityRepository
         }
         elseif(!$filter->getCategoriesOr()->isEmpty() || !$filter->getCategoriesAnd()->isEmpty() || !$filter->getPeriods()->isEmpty() || count($filter->getPromotions()) != 0) {
             $queryBuilder->join('s.proposal', 'p');
-        }
+        }        
         if(!$filter->getPeriods()->isEmpty()) {
             $queryBuilder->join('p.period', 't', 'WITH', 't.id IN(:periods)')
                          ->setParameter('periods', $filter->getPeriods()->map(function($ob) {return $ob->getId();})->toArray());
         }
-        if(!$filter->getCategoriesOr()->isEmpty() || !$filter->getCategoriesAnd()->isEmpty()) {
-            $queryBuilder->join('p.category', 'c');
+        if(!$filter->getStageCategories()->isEmpty() || !$filter->getCategoriesOr()->isEmpty() || !$filter->getCategoriesAnd()->isEmpty()) {
+            if(!$filter->getStageCategories()->isEmpty()) {
+                $queryBuilder->join('p.category', 'c', 'WITH', 'c.id IN(:stagecats)')
+                             ->setParameter('stagecats', $filter->getStageCategories()->map(function($ob) {return $ob->getId();})->toArray());
+            }
+            else {
+                $queryBuilder->join('p.category', 'c');
+            }
             if(!$filter->getCategoriesOr()->isEmpty()) {
                 $queryBuilder->join('c.categories', 'cor', 'WITH', 'cor.id IN(:catsor)')
                              ->setParameter('catsor', $filter->getCategoriesOr()->map(function($ob) {return $ob->getId();})->toArray());
@@ -48,9 +54,15 @@ class StageRepository extends EntityRepository
         if(!is_null($filter->getLocked())) {
             $queryBuilder->andWhere('s.locked = :locked')
                          ->setParameter('locked', $filter->getLocked());
+        }        
+        if(!$filter->getUsers()->isEmpty()) {
+            $queryBuilder->join('s.user', 'u', 'WITH', 'u.id IN(:users)')
+                         ->setParameter('users', $filter->getUsers()->map(function($ob) {return $ob->getId();})->toArray());
         }
-
-        $queryBuilder->join('s.user', 'u');
+        else {
+            $queryBuilder->join('s.user', 'u');
+        }
+        
         $queryBuilder->addOrderBy('u.lastname')
                      ->addOrderBy('u.firstname');
         if(!is_null($max)) {
@@ -65,7 +77,7 @@ class StageRepository extends EntityRepository
 
     public function filteredFind(StageFilter $filter, $max = null, $offset = null)
     {
-        return $this->filteredFindQB($filter)->getQuery()->getResult();
+        return $this->filteredFindQB($filter, $max, $offset)->getQuery()->getResult();
     }
 
     public function filteredFindCount(StageFilter $filter)

@@ -227,6 +227,10 @@ lulhum_repartitionmedecine_admin_stage_stages_new:
     path: /admin/stages/stages/new
     defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:newStage }
 
+lulhum_repartitionmedecine_admin_stage_stages_news:
+    path: /admin/stages/stages/news
+    defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:newStages }
+
 lulhum_repartitionmedecine_admin_stage_stages_delete:
     path: /admin/stages/stages/delete/{id}
     defaults: { _controller: LulhumRepartitionMedecineBundle:AdminStages:deleteStage }

@@ -27,10 +27,12 @@ use Lulhum\RepartitionMedecineBundle\Form\StageFilterType;
 use Lulhum\RepartitionMedecineBundle\Form\PeriodType;
 use Lulhum\RepartitionMedecineBundle\Form\StageProposalType;
 use Lulhum\RepartitionMedecineBundle\Form\StageProposalFilterType;
+use Lulhum\RepartitionMedecineBundle\Form\StagesBagType;
 use Lulhum\RepartitionMedecineBundle\Form\StageType;
 use Lulhum\RepartitionMedecineBundle\Util\Paginator;
 use Lulhum\RepartitionMedecineBundle\Util\StageProposalGroupAction;
 use Lulhum\RepartitionMedecineBundle\Util\StageGroupAction;
+use Lulhum\RepartitionMedecineBundle\Util\StagesBag;
 use Lulhum\UserBundle\Entity\User;
 
 class AdminStagesController extends Controller
@@ -650,6 +652,32 @@ class AdminStagesController extends Controller
             'groupActionForm' => $groupActionForm->createView(),
             'requirements' => $requirements,
             'pagination' => $pagination,
+        ));
+    }
+
+    public function newStagesAction(Request $request)
+    {
+        $stages = new StagesBag();
+        $form = $this->createForm(new StagesBagType(), $stages);
+
+        $form->handleRequest($request);
+
+        if($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            foreach($stages->getProposals() as $proposal) {
+                $stage = new Stage();
+                $stage->setUser($stages->getUser());
+                $stage->setProposal($proposal);
+                $stage->setLocked(true);
+                $em->persist($stage);
+            }
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('lulhum_repartitionmedecine_admin_stage_stages'));
+        }
+
+        return $this->render('LulhumRepartitionMedecineBundle:Admin:newstages.html.twig', array(
+            'form' => $form->createView(),
         ));
     }
 

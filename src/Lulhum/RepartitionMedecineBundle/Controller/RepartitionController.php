@@ -50,7 +50,7 @@ class RepartitionController extends Controller
             }
             $listItems[] = array(
                 'label' => 'Stages',
-                'path' => 'lulhum_repartitionmedecine_stages_proposals',
+                'path' => 'lulhum_repartitionmedecine_stages_calendar',
                 'options' => array()
             );
         }
