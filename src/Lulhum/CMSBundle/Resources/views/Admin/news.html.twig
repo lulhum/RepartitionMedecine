@@ -1,0 +1,42 @@
+{# src/Lulhum/CMSBundle/Resources/views/Admin/news.html.twig #}
+
+{% extends "LulhumRepartitionMedecineBundle::adminlayout.html.twig" %}
+
+{% block title %}
+	Nouvelles - {{ parent() }}
+{% endblock %}
+
+{% block bodytitle %}
+	<h3>Gestion des nouvelles</h3>
+{% endblock %}
+
+{% block body %}
+	{% for form in forms %}
+		{% set new = news[loop.index0] %}
+		<div class="alert alert-{{ new.level }}" >
+			{{ form_start(form) }}
+			<div class="form-group" >
+				{{ form_label(form.content, null, {'label_attr': {'class': 'control-label'}}) }}
+				{{ form_errors(form.content) }}
+				{{ form_widget(form.content, {'attr': {'class': 'form-control'}}) }}
+			</div>
+			<div class="form-group form-inline" >
+				{{ form_label(form.visibility, null, {'label_attr': {'class': 'control-label'}}) }}
+				{{ form_errors(form.visibility) }}
+				{{ form_widget(form.visibility, {'attr': {'class': 'form-control', 'size': '2'}}) }}
+				{{ form_label(form.level, null, {'label_attr': {'class': 'control-label'}}) }}
+				{{ form_errors(form.level) }}
+				{{ form_widget(form.level, {'attr': {'class': 'form-control', 'size': '2'}}) }}
+			</div>
+			<div class="form-group" >
+				{% if loop.last %}
+					<button type="submit" class="btn btn-success" >Ajouter</button>
+				{% else %}
+					<button type="submit" class="btn btn-primary" >Modifier</button>
+				{% endif %}
+			</div>
+			{{ form_rest(form) }}
+			{{ form_end(form) }}
+		</div>
+	{% endfor %}
+{% endblock %}

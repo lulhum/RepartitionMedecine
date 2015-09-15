@@ -56,8 +56,10 @@
 		{{ form_label(form.repartitionGroupForce, null, {'label_attr': {'class': 'control-label col-md-2'}}) }}
 		{{ form_errors(form.repartitionGroupForce) }}
 		<div class="col-md-10" >
-			<div class="pull-left" >
-				{{ form_widget(form.repartitionGroupForce, {'attr': {'class': 'form-control'}}) }}
+			<div class="checkbox" >
+				<label>
+					{{ form_widget(form.repartitionGroupForce) }}
+				</label>
 			</div>
 		</div>
 	</div>

@@ -68,7 +68,24 @@
 	<table class="table table-condensed" style="table-layout: fixed">
 		<tr>
 			{% for month in 1..12 %}
-				<th class="col-md-1">{{ date('2000-'~((month + 8) % 12 + 1)~'-01')|localizeddate('none', 'none', 'fr', null, 'MMMM')|capitalize }}</th>
+				<th class="col-md-1">
+					{{ date('2000-'~((month + 8) % 12 + 1)~'-01')|localizeddate('none', 'none', 'fr', null, 'MMMM')|capitalize }}
+					<br />
+					<div class="label label-primary col-md-12" >
+						Inscrits:
+						{{ calendar.monthRequests(month-1) }}
+					</div>
+					<br />
+					<div class="label label-primary col-md-12" >
+						Places:
+						{% set places = calendar.monthPlaces(month-1) %}
+						{% if places > 1000000 %}
+							&infin;
+						{% else %}
+							{{ places }}
+						{% endif %}
+					</div>
+				</th>
 			{% endfor %}
 		</tr>
 		{% for category in calendar.categoriesId %}

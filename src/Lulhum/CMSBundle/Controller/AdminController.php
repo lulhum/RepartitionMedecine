@@ -5,7 +5,9 @@ namespace Lulhum\CMSBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Lulhum\CMSBundle\Entity\Page;
+use Lulhum\CMSBundle\Entity\SiteNew;
 use Lulhum\CMSBundle\Form\PageType;
+use Lulhum\CMSBundle\Form\SiteNewType;
 
 class AdminController extends Controller
 {
@@ -91,6 +93,40 @@ class AdminController extends Controller
         return $this->render('LulhumRepartitionMedecineBundle:Admin:confirm.html.twig', array(
             'form' => $form->createView(),
             'message' => $message,
+        ));
+    }
+
+    public function newsAction(Request $request)
+    {        
+        $em = $this->getDoctrine()->getManager();
+        $news = $em->getRepository('LulhumCMSBundle:SiteNew')->findAll();
+        $news[] = new SiteNew();
+
+        $i=0;
+        $forms = array_map(function($new) use (&$i) {
+            return $this->createForm(new SiteNewType($i++), $new);
+        }, $news);    
+
+        array_map(function($form) use (&$request) {
+            $form->handleRequest($request);
+        }, $forms);
+
+        $i=0;
+        foreach($forms as $form) {
+            if($form->isValid()) {
+                $em->persist($news[$i]);
+                $em->flush();
+
+                return $this->redirect($this->generateUrl('lulhum_cms_admin_news'));
+            }
+            $i++;
+        }       
+
+        return $this->render('LulhumCMSBundle:Admin:news.html.twig', array(
+            'news' => $news,
+            'forms' => array_map(function($form) {
+                return $form->createView();
+            }, $forms),
         ));
     }
         

@@ -41,6 +41,11 @@ class Calendar
                 }
             }
         }
+        $this->categories = array_filter($this->categories, function($category) {
+            return array_reduce($category, function($carry, $item) {
+                return ($carry || !is_null($item));
+            }, false);
+        });
     }
 
     public function getCategoriesId()
@@ -66,6 +71,26 @@ class Calendar
     public function getProposal($id)
     {
         return $this->proposals[$id];
+    }
+
+    public function getMonthPlaces($month)
+    {
+        return array_reduce($this->categories, function($carry, $item) use ($month) {
+            if(is_null($item[$this->keys[$month]])) {                
+                return $carry;
+            }            
+            return $carry + $this->proposals[$item[$this->keys[$month]]]->countPlaces();
+        }, 0);
+    }
+
+    public function getMonthRequests($month)
+    {
+        return array_reduce($this->categories, function($carry, $item) use ($month) {
+            if(is_null($item[$this->keys[$month]])) {                
+                return $carry;
+            }            
+            return $carry + $this->proposals[$item[$this->keys[$month]]]->getStages()->count();
+        }, 0);
     }
 
 }

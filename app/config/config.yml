@@ -38,6 +38,7 @@ twig:
     globals:
         lulhum_toolbox: "@lulhum_toolbox"
         lulhum_parameters: "@lulhum_parameters_repository"
+        lulhum_news: "@lulhum_news_repository"
 
 # Assetic Configuration
 assetic:
