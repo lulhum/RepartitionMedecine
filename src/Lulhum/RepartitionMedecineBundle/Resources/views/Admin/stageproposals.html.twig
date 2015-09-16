@@ -125,7 +125,7 @@
 		{% if stageProposals[loop.index0].hasRequirementType('maxPlaces') %}
 			{% set maxPlaces = stageProposals[loop.index0].getRequirementsByType('maxPlaces').first.params %}
 			{% set usedPlaces = stageProposals[loop.index0].stages.count %}
-			<div class="label label-{% if maxPlaces < usedPlaces %}danger{% else %}success{% endif %}" >
+			<div class="label label-{% if maxPlaces < usedPlaces %}danger{% elseif maxPlaces == usedPlaces %}warning{% else %}success{% endif %}" >
 				{{ usedPlaces }}
 				/						
 				{{ maxPlaces }}

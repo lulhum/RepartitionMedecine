@@ -42,3 +42,6 @@ div.carousel-inner .text-center {
   background-color: #f5f5f5;
   border-color: #ddd;
 }
+.carousel-control {
+    background-image: none !important;
+}

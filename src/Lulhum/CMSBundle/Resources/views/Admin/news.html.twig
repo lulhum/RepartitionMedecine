@@ -28,11 +28,12 @@
 				{{ form_errors(form.level) }}
 				{{ form_widget(form.level, {'attr': {'class': 'form-control', 'size': '2'}}) }}
 			</div>
-			<div class="form-group" >
+			<div class="form-group form-inline" >
 				{% if loop.last %}
 					<button type="submit" class="btn btn-success" >Ajouter</button>
 				{% else %}
 					<button type="submit" class="btn btn-primary" >Modifier</button>
+					<a class="btn btn-danger" href="{{ path('lulhum_cms_admin_news_delete', {'id': new.id}) }}" >Supprimer</a>
 				{% endif %}
 			</div>
 			{{ form_rest(form) }}

@@ -129,5 +129,30 @@ class AdminController extends Controller
             }, $forms),
         ));
     }
+
+    public function deleteNewAction(Request $request, SiteNew $new, $id)
+    {            
+        $form = $this->get('form.factory')
+                     ->createBuilder('form')
+                     ->add('Confirmer', 'submit', array('attr' => array('class' => 'btn btn-danger')))
+                     ->getForm();
+
+        $form->handleRequest($request);
+
+        if($form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($new);
+            $em->flush();
+
+            return $this->redirect($this->generateUrl('lulhum_cms_admin_news'));
+        }
+
+        $message = 'Vous êtes sur le point de supprimer définitivement cette nouvelle';
+
+        return $this->render('LulhumRepartitionMedecineBundle:Admin:confirm.html.twig', array(
+            'form' => $form->createView(),
+            'message' => $message,
+        ));
+    }
         
 }

@@ -22,6 +22,12 @@ lulhum_cms_admin_news:
     path: /admin/news
     defaults: { _controller: LulhumCMSBundle:Admin:news }
 
+lulhum_cms_admin_news_delete:
+    path: /admin/news/delete/{id}
+    defaults: { _controller: LulhumCMSBundle:Admin:deleteNew }
+    requirements:
+        id: \d+
+
 lulhum_cms_page:
     path: /page/{id}
     defaults: { _controller: LulhumCMSBundle:Page:Page }
